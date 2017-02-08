@@ -7,6 +7,7 @@
 #include "Core/Component/mesh_component.h"
 #include "Core/Component/camera_component.h"
 #include "Core/Component/light_component.h"
+#include "Core/Window/game_window.h"
 
 int main(int args, char** argv)
 {
@@ -14,10 +15,13 @@ int main(int args, char** argv)
 	
 
 	Hikari::GameEngine* gameEngine = new Hikari::GameEngine();
+	gameEngine->Initialise();
 	Hikari::GameInstance* gameInstance = gameEngine->CreateGameInstance();
 
-	Ogre::RenderWindow* window = gameEngine->GetOgreRoot()->initialise(true, "Ogre3D test");
-	window->setFullscreen(false, 600, 400);
+	gameEngine->GetGameWindow()->SetTitle("Hikari Client");
+
+	//Ogre::RenderWindow* window = gameEngine->GetOgreRoot()->initialise(true, "Ogre3D test");
+	//window->setFullscreen(false, 600, 400);
 
 	Ogre::ResourceGroupManager::getSingleton().addResourceLocation("OgreExport.zip", "Zip");
 	Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();

@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.3)
 project(Client)
 
+add_definitions(-DHIKARI_CLIENT)
+
 # Gather c++ files
 file(GLOB_RECURSE SRC_FILES 
 	../Source/*.h
@@ -35,6 +37,10 @@ file(GLOB_RECURSE SRC_COMPONENT
     "${SharedSourceDir}/Core/Component/*.cpp"
     "${SharedSourceDir}/Core/Component/*.h"
 )
+file(GLOB_RECURSE SRC_WINDOW
+    "${SharedSourceDir}/Core/Window/*.cpp"
+    "${SharedSourceDir}/Core/Window/*.h"
+)
 
 source_group("Core\\Object" FILES ${SRC_OBJECT})
 source_group("Core\\Debug" FILES ${SRC_DEBUG})
@@ -42,12 +48,12 @@ source_group("Core\\Actor" FILES ${SRC_ACTOR})
 source_group("Core\\World" FILES ${SRC_WORLD})
 source_group("Core\\Engine" FILES ${SRC_ENGINE})
 source_group("Core\\Component" FILES ${SRC_COMPONENT})
+source_group("Core\\Window" FILES ${SRC_WINDOW})
 
 FILE(GLOB_RECURSE children RELATIVE ${SharedSourceDir} ${SharedSourceDir}/*)
 FOREACH(child ${children})
 
 IF(IS_DIRECTORY ${SharedSourceDir}/${curdir}/${child})
-	message( ${curdir}/${child})
 	include_directories ( ${curdir}/${child})
 ENDIF()
 ENDFOREACH()
@@ -94,7 +100,6 @@ IF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 		add_custom_command(TARGET GET Client PRE_BUILD
 				COMMAND ${CMAKE_COMMAND} -E
 				copy ${AddonFile} ${DLL_TO_DBG}/)
-			message(${DLL_TO_DBG})
 	endforeach(AddonFile)
 ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 

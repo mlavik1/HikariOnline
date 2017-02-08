@@ -3,14 +3,23 @@
 
 #include "Core/Debug/debug.h"
 #include "Core/Debug/st_assert.h"
+#include "Core/Window/game_window.h"
 
 namespace Hikari
 {
 	GameEngine::GameEngine()
 	{
-		LOG_INFO() << "Creating game engine";
+		mOgreRoot = nullptr;
+		mGameWindow = nullptr;
+	}
+
+	void GameEngine::Initialise()
+	{
+		LOG_INFO() << "Initialising game engine";
 		mOgreRoot = new Ogre::Root("plugins_d.cfg");
 		__Assert(mOgreRoot->showConfigDialog());
+
+		mGameWindow = new GameWindow(this);
 	}
 
 	GameInstance* GameEngine::CreateGameInstance()
