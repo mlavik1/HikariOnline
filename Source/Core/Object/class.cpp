@@ -13,6 +13,7 @@ namespace Hikari
 		{
 			mBaseClass->mChildClasses.push_back(this);
 		}
+		mCreatedInstanceCount = 0;
 	}
 
 	const std::string &Class::GetFullName() const
@@ -59,9 +60,14 @@ namespace Hikari
 	Object* Class::CreateInstance()
 	{
 		if (mStaticConstructor != nullptr)
-			return mStaticConstructor();
+		{
+			Object* createdObject = mStaticConstructor();
+			return createdObject;
+		}
 		else
+		{
 			return nullptr;
+		}
 	}
 
 

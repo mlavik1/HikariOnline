@@ -1,5 +1,5 @@
-#ifndef MING3D_CLASS_H
-#define MING3D_CLASS_H
+#ifndef HIKARI_CLASS_H
+#define HIKARI_CLASS_H
 
 /*=============================================================================================
 							A Class structure for Hikari::Object
@@ -19,6 +19,8 @@ namespace Hikari
 
 	class Class
 	{
+		friend class Object;
+
 		typedef Hikari::Class*(*staticclassaccessor_t)();
 		typedef Hikari::Object*(*staticconstructor_t)();
 
@@ -27,6 +29,7 @@ namespace Hikari
 		Hikari::Class* mBaseClass;				// Pointer to base class
 		std::vector<Hikari::Class*> mChildClasses;
 		staticconstructor_t mStaticConstructor; // Static functions that calls an empty constructor
+		unsigned int mCreatedInstanceCount;		// Number of created instances (destroyed isntances are also counted)
 
 	public:
 		Class(const char* arg_name, staticconstructor_t constructor = 0, Hikari::Class* superclass = 0);

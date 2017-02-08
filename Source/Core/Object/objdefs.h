@@ -18,6 +18,11 @@ struct MingObject_EmptyConstructorParams
 	
 };
 
+struct ObjectInitialiserParams
+{
+
+};
+
 // Do not use this directly!
 #define DEFINE_CLASS_INTERNAL(name, constructorinitlist, baseclassaccessor) \
 private: \

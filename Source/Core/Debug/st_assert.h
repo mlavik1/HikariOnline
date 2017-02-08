@@ -3,16 +3,19 @@
 
 #include <assert.h>
 #include "debug.h"
+#include <intrin.h>
 
 #define __Assert(expr) \
-	if(!(expr)) \
+	if(!(expr)) { \
 		LOG_ERROR() << "Assertion error on " << #expr; \
-	assert(expr);
+		__debugbreak(); \
+	}
 
 #define __AssertComment(expr, comment) \
-	if(!(expr)) \
+	if(!(expr)) { \
 		LOG_ERROR() << "Assertion error on " << #expr << ", \"" << comment << "\""; \
-	assert(expr);
+	__debugbreak(); \
+	}
 	
 
 #endif

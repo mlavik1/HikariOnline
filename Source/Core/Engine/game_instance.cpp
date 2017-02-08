@@ -11,6 +11,8 @@ namespace Hikari
 		__Assert(arg_engine != nullptr);
 		__Assert(arg_engine->GetOgreRoot() != nullptr);
 
+		LOG_INFO() << "Creating game instance";
+
 		mGameEngine = arg_engine;
 		Ogre::SceneManager* sceneManager = mGameEngine->GetOgreRoot()->createSceneManager(Ogre::ST_GENERIC);
 		mWorld = new World(this, sceneManager);

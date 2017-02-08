@@ -11,6 +11,11 @@ namespace Hikari
 	public:
 		GameInstance(GameEngine* arg_engine);
 
+		inline World* GetWorld()
+		{
+			return mWorld;
+		}
+
 	private:
 		GameEngine* mGameEngine;
 		World* mWorld;

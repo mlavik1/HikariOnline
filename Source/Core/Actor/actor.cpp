@@ -1,7 +1,7 @@
 #include "actor.h"
 
 #include "Core/World/world.h"
-#include "Core/Debug/st_assert.h"
+#include "Core/Component/component.h"
 
 IMPLEMENT_CLASS(Hikari::Actor)
 
@@ -11,7 +11,7 @@ namespace Hikari
 	{
 		__Assert(arg_world != nullptr);
 		mWorld = arg_world;
-		mSceneNode = mWorld->GetSceneManager()->getRootSceneNode()->createChildSceneNode("");
+		mSceneNode = mWorld->GetSceneManager()->getRootSceneNode()->createChildSceneNode(mObjectName);
 	}
 
 	const Ogre::Vector3& Actor::GetPosition() const
@@ -32,6 +32,22 @@ namespace Hikari
 	void Actor::SetScale(const Ogre::Vector3& arg_scale)
 	{
 		mSceneNode->setScale(arg_scale);
+	}
+
+
+	void Actor::Initialise()
+	{
+
+	}
+
+	void Actor::OnStart()
+	{
+
+	}
+
+	void Actor::OnStop()
+	{
+
 	}
 
 	

@@ -1,5 +1,5 @@
-#ifndef MING3D_OBJECT_H
-#define MING3D_OBJECT_H
+#ifndef HIKARI_OBJECT_H
+#define HIKARI_OBJECT_H
 
 /*=============================================================================================
 Base class for most classes in the Engine.
@@ -10,6 +10,7 @@ Making a class inherit from Hikari::Object will:
 ==============================================================================================*/
 #include "Core/Object/objdefs.h"
 #include "Core/Object/objectrefhandle.h"
+#include "string"
 
 namespace Hikari
 {
@@ -20,16 +21,23 @@ namespace Hikari
 	private:
 		ObjectFlagRegister mObjectFlags;
 		ObjectRefHandle* mObjectRefHandle;
+	
+	protected:
+		std::string mObjectName;
 
 	public:
 		Object();
 		~Object();
+
+		virtual void InitialiseObject(ObjectInitialiserParams arg_params);
 
 		void Destroy();
 
 		virtual void OnDestroy() {}; // TODO: call this on all objects marked for pending destroy
 		
 		inline ObjectRefHandle*  GetRefHandle() { return mObjectRefHandle; }
+
+		std::string GetMemoryHash() const;
 
 	};
 }

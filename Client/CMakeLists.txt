@@ -31,12 +31,17 @@ file(GLOB_RECURSE SRC_ENGINE
     "${SharedSourceDir}/Core/Engine/*.cpp"
     "${SharedSourceDir}/Core/Engine/*.h"
 )
+file(GLOB_RECURSE SRC_COMPONENT
+    "${SharedSourceDir}/Core/Component/*.cpp"
+    "${SharedSourceDir}/Core/Component/*.h"
+)
 
 source_group("Core\\Object" FILES ${SRC_OBJECT})
 source_group("Core\\Debug" FILES ${SRC_DEBUG})
 source_group("Core\\Actor" FILES ${SRC_ACTOR})
 source_group("Core\\World" FILES ${SRC_WORLD})
 source_group("Core\\Engine" FILES ${SRC_ENGINE})
+source_group("Core\\Component" FILES ${SRC_COMPONENT})
 
 FILE(GLOB_RECURSE children RELATIVE ${SharedSourceDir} ${SharedSourceDir}/*)
 FOREACH(child ${children})
