@@ -1,5 +1,6 @@
 #include "game_engine.h"
 #include "Core/Engine/game_instance.h"
+#include "Core/Managers/time_manager.h"
 
 #include "Core/Debug/debug.h"
 #include "Core/Debug/st_assert.h"
@@ -23,6 +24,7 @@ namespace Hikari
 		mOgreRoot = new Ogre::Root("plugins_d.cfg");
 		__Assert(mOgreRoot->showConfigDialog());
 
+		TimeManager::Create();
 		mGameWindow = new GameWindow(this);
 	}
 

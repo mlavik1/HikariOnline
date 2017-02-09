@@ -70,6 +70,7 @@ ENDFOREACH()
 
 include_directories ("../Dependencies/Include/Ogre")
 include_directories ("../Dependencies/Include/Boost")
+include_directories ("../Dependencies/Include/SFML-2.4.1")
 include_directories ("../Source")
 include_directories ("Source")
 
@@ -83,9 +84,9 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 	
 	TARGET_LINK_LIBRARIES(Client ${LIB_DIR}/OgreMain_d.lib)
 	TARGET_LINK_LIBRARIES(Client ${LIB_DIR}/OIS_d.lib)
-	#TARGET_LINK_LIBRARIES(Client ${LIB_DIR}/sfml-window-d.lib)#TEMP
-	#TARGET_LINK_LIBRARIES(Client ${LIB_DIR}/sfml-graphics-d.lib)#TEMP
-	#TARGET_LINK_LIBRARIES(Client ${LIB_DIR}/sfml-system-d.lib)#TEMP
+	TARGET_LINK_LIBRARIES(Client ${LIB_DIR}/sfml-system-d.lib)
+	TARGET_LINK_LIBRARIES(Client ${LIB_DIR}/sfml-main-d.lib)
+	TARGET_LINK_LIBRARIES(Client ${LIB_DIR}/sfml-network-d.lib)
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 
 
