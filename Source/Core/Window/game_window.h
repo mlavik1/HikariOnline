@@ -23,6 +23,11 @@ namespace Hikari
 		GameWindow(GameEngine* arg_engine);
 
 		void SetTitle(const char* arg_title);
+
+		inline Ogre::RenderWindow* GetRenderWindow()
+		{
+			return mRenderWindow;
+		}
 	};
 }
 

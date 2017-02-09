@@ -14,15 +14,13 @@ int main(int args, char** argv)
 	LOG_INFO() << "starting client";
 	
 
-	Hikari::GameEngine* gameEngine = new Hikari::GameEngine();
+	Hikari::GameEngine* gameEngine = Hikari::GameEngine::Create();
 	gameEngine->Initialise();
 	Hikari::GameInstance* gameInstance = gameEngine->CreateGameInstance();
 
 	gameEngine->GetGameWindow()->SetTitle("Hikari Client");
 
-	//Ogre::RenderWindow* window = gameEngine->GetOgreRoot()->initialise(true, "Ogre3D test");
-	//window->setFullscreen(false, 600, 400);
-
+	// TEMP - todo
 	Ogre::ResourceGroupManager::getSingleton().addResourceLocation("OgreExport.zip", "Zip");
 	Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
@@ -38,22 +36,11 @@ int main(int args, char** argv)
 	Hikari::LightComponent* lightComp = actor->AddComponent<Hikari::LightComponent>();
 	lightComp->Initialise();
 
-	/*
-	Ogre::Root* root = new Ogre::Root("plugins_d.cfg");
-
-	if (!root->showConfigDialog())
-	{
-		return -1;
-	}*/
-
-	//Ogre::RenderWindow* window = root->initialise(true, "Ogre3D test");
-	//window->setFullscreen(false, 600, 400);
-
-	//Ogre::SceneManager* sceneManager = root->createSceneManager(Ogre::ST_GENERIC);
+	// TODO: initialise components and actors from game engine!
 
 	while (1)
 	{
-
+		gameEngine->TickGameInstance(gameInstance);
 	}
 
 	return 0;

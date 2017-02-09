@@ -5,6 +5,8 @@ namespace Hikari
 {
 	class GameEngine;
 	class World;
+	class InputManager;
+	class TickManager;
 
 	class GameInstance
 	{
@@ -16,9 +18,13 @@ namespace Hikari
 			return mWorld;
 		}
 
+		void Tick();
+
 	private:
 		GameEngine* mGameEngine;
 		World* mWorld;
+		TickManager* mTickManager;
+		InputManager* mInputManager;
 	};
 }
 

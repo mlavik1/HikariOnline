@@ -7,8 +7,12 @@
 
 namespace Hikari
 {
+	__ImplementSingleton(GameEngine)
+
 	GameEngine::GameEngine()
 	{
+		__ConstructSingleton(GameEngine)
+
 		mOgreRoot = nullptr;
 		mGameWindow = nullptr;
 	}
@@ -20,6 +24,17 @@ namespace Hikari
 		__Assert(mOgreRoot->showConfigDialog());
 
 		mGameWindow = new GameWindow(this);
+	}
+
+	void GameEngine::TickGameInstance(GameInstance* arg_instance)
+	{
+		__Assert(arg_instance != nullptr);
+
+		arg_instance->Tick();
+
+#ifdef HIKARI_CLIENT
+		mOgreRoot->renderOneFrame();
+#endif
 	}
 
 	GameInstance* GameEngine::CreateGameInstance()

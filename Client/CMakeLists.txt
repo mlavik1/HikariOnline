@@ -41,6 +41,14 @@ file(GLOB_RECURSE SRC_WINDOW
     "${SharedSourceDir}/Core/Window/*.cpp"
     "${SharedSourceDir}/Core/Window/*.h"
 )
+file(GLOB_RECURSE SRC_COMMON
+    "${SharedSourceDir}/Core/Common/*.cpp"
+    "${SharedSourceDir}/Core/Common/*.h"
+)
+file(GLOB_RECURSE SRC_MANAGERS
+    "${SharedSourceDir}/Core/Managers/*.cpp"
+    "${SharedSourceDir}/Core/Managers/*.h"
+)
 
 source_group("Core\\Object" FILES ${SRC_OBJECT})
 source_group("Core\\Debug" FILES ${SRC_DEBUG})
@@ -49,6 +57,8 @@ source_group("Core\\World" FILES ${SRC_WORLD})
 source_group("Core\\Engine" FILES ${SRC_ENGINE})
 source_group("Core\\Component" FILES ${SRC_COMPONENT})
 source_group("Core\\Window" FILES ${SRC_WINDOW})
+source_group("Core\\Common" FILES ${SRC_COMMON})
+source_group("Core\\Managers" FILES ${SRC_MANAGERS})
 
 FILE(GLOB_RECURSE children RELATIVE ${SharedSourceDir} ${SharedSourceDir}/*)
 FOREACH(child ${children})

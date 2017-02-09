@@ -2,6 +2,7 @@
 #define HIKARI_GAMEENGINE_H
 
 #include "OGRE/Ogre.h"
+#include "Core/Common/singleton.h"
 
 namespace Hikari
 {
@@ -10,10 +11,16 @@ namespace Hikari
 
 	class GameEngine
 	{
-	public:
+		__DeclareSingleton(Hikari::GameEngine);
+
+	protected:
 		GameEngine();
 
+	public:
 		void Initialise();
+
+		void TickGameInstance(GameInstance* arg_instance);
+
 		GameInstance* CreateGameInstance();
 
 		inline Ogre::Root* GetOgreRoot()
@@ -21,6 +28,7 @@ namespace Hikari
 			return mOgreRoot;
 		}
 
+		// TODO: move to GameInstance
 		inline GameWindow* GetGameWindow()
 		{
 			return mGameWindow;
