@@ -3,6 +3,7 @@
 
 #include "OGRE/Ogre.h"
 #include "Core/Common/singleton.h"
+#include <vector>
 
 namespace Hikari
 {
@@ -15,6 +16,7 @@ namespace Hikari
 
 	protected:
 		GameEngine();
+		~GameEngine();
 
 	public:
 		void Initialise();
@@ -28,15 +30,9 @@ namespace Hikari
 			return mOgreRoot;
 		}
 
-		// TODO: move to GameInstance
-		inline GameWindow* GetGameWindow()
-		{
-			return mGameWindow;
-		}
-
 	private:
 		Ogre::Root* mOgreRoot;
-		GameWindow* mGameWindow;
+		std::vector<GameInstance*> mGameInstances;
 		
 	};
 }

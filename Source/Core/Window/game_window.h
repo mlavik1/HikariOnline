@@ -9,7 +9,7 @@
 
 namespace Hikari
 {
-	class GameEngine;
+	class GameInstance;
 
 	class GameWindow
 	{
@@ -20,7 +20,7 @@ namespace Hikari
 #endif
 
 	public:
-		GameWindow(GameEngine* arg_engine);
+		GameWindow();
 
 		void SetTitle(const char* arg_title);
 

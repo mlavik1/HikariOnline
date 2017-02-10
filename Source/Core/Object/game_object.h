@@ -7,6 +7,8 @@
 namespace Hikari
 {
 	class World;
+	class TickManager;
+	class InputManager;
 
 	class GameObject : public Hikari::Object
 	{
@@ -31,6 +33,10 @@ namespace Hikari
 		//virtual void Tick() = 0;
 		virtual void OnStart();
 		virtual void OnStop();
+
+
+		TickManager* GetTickManager();
+		InputManager* GetInputManager();
 
 	};
 }

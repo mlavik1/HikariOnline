@@ -23,8 +23,7 @@ namespace Hikari
 		TickProperties mTickProperties;
 	public:
 		virtual void Tick(float arg_deltatime) = 0;
-		virtual void Activate() = 0;
-		virtual void Deactivate() = 0;
+		virtual void ActivateTicable(bool arg_activate) = 0;
 
 		// todo....
 		//   should maybe use a TickFunction like UE instead?

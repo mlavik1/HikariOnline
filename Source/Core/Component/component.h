@@ -2,13 +2,14 @@
 #define HIKARI_COMPONENT_H
 
 #include "Core/Object/game_object.h"
+#include "Core/Engine/tickable.h"
 
 namespace Hikari
 {
 	class Actor;
 	class World;
 
-	class Component : public Hikari::GameObject
+	class Component : public Hikari::GameObject, public Hikari::Tickable
 	{
 		DEFINE_CLASS(Hikari::Component, Hikari::GameObject)
 
@@ -22,6 +23,9 @@ namespace Hikari
 		virtual void Initialise() override;
 		virtual void OnStart() override;
 		virtual void OnStop() override;
+
+		virtual void Tick(float arg_deltatime) override;
+		virtual void ActivateTicable(bool arg_activate) override;
 
 	protected:
 		Actor* mParent;

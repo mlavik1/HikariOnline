@@ -1,5 +1,10 @@
 #include "game_object.h"
 
+#include "Core/Managers/input_manager.h"
+#include "Core/Managers/tick_manager.h"
+#include "Core/World/world.h"
+#include "Core/Engine/game_instance.h"
+
 IMPLEMENT_CLASS(Hikari::GameObject)
 
 namespace Hikari
@@ -34,5 +39,15 @@ namespace Hikari
 	void GameObject::OnStop()
 	{
 
+	}
+
+	TickManager* GameObject::GetTickManager()
+	{
+		return mWorld->GetGameInstance()->GetTickManager();
+	}
+
+	InputManager* GameObject::GetInputManager()
+	{
+		return mWorld->GetGameInstance()->GetInputManager();
 	}
 }

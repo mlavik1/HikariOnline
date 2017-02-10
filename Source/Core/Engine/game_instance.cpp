@@ -1,6 +1,7 @@
 #include "game_instance.h"
 
 #include "Core/Engine/game_engine.h"
+#include "Core/Window/game_window.h"
 #include "Core/Debug/st_assert.h"
 #include "Core/World/world.h"
 #include "Core/Managers/input_manager.h"
@@ -16,6 +17,7 @@ namespace Hikari
 		LOG_INFO() << "Creating game instance";
 
 		mGameEngine = arg_engine;
+		mGameWindow = new GameWindow();
 		mTickManager = new TickManager();
 		mInputManager = new InputManager(this);
 		
@@ -23,8 +25,16 @@ namespace Hikari
 		mWorld = new World(this, sceneManager);
 	}
 
+	GameInstance::~GameInstance()
+	{
+		delete mInputManager;
+		delete mTickManager;
+		delete mWorld;
+	}
+
 	void GameInstance::Tick()
 	{
-
+		Ogre::WindowEventUtilities::messagePump();
+		mInputManager->CaptureInput();
 	}
 }

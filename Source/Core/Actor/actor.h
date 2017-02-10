@@ -4,6 +4,7 @@
 #include "Core/Object/game_object.h"
 #include "OGRE/Ogre.h"
 #include "Core/Debug/st_assert.h"
+#include "Core/Engine/tickable.h"
 #include <vector>
 
 namespace Hikari
@@ -11,7 +12,7 @@ namespace Hikari
 	class World;
 	class Component;
 
-	class Actor : public GameObject
+	class Actor : public GameObject, public Tickable
 	{
 		DEFINE_CLASS(Hikari::Actor, Hikari::GameObject)
 
@@ -48,6 +49,9 @@ namespace Hikari
 		virtual void Initialise() override;
 		virtual void OnStart() override;
 		virtual void OnStop() override;
+
+		virtual void Tick(float arg_deltatime) override;
+		virtual void ActivateTicable(bool arg_activate) override;
 	};
 }
 #endif

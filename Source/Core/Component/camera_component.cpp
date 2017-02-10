@@ -2,6 +2,7 @@
 
 #include "Core/World/world.h"
 #include "Core/Engine/game_engine.h"
+#include "Core/Engine/game_instance.h"
 #include "Core/Window/game_window.h"
 
 IMPLEMENT_CLASS(Hikari::CameraComponent)
@@ -21,7 +22,7 @@ namespace Hikari
 		mCamera->setNearClipDistance(5); // todo: make function
 
 		// TEMP -todo
-		Ogre::Viewport* viewport = Hikari::GameEngine::Instance()->GetGameWindow()->GetRenderWindow()->addViewport(mCamera);
+		Ogre::Viewport* viewport = mWorld->GetGameInstance()->GetGameWindow()->GetRenderWindow()->addViewport(mCamera);
 		viewport->setBackgroundColour(Ogre::ColourValue(0.0f, 0.0f, 1.0f));
 	}
 }

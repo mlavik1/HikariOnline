@@ -18,7 +18,7 @@ int main(int args, char** argv)
 	gameEngine->Initialise();
 	Hikari::GameInstance* gameInstance = gameEngine->CreateGameInstance();
 
-	gameEngine->GetGameWindow()->SetTitle("Hikari Client");
+	gameInstance->GetGameWindow()->SetTitle("Hikari Client");
 
 	// TEMP - todo
 	Ogre::ResourceGroupManager::getSingleton().addResourceLocation("OgreExport.zip", "Zip");

@@ -14,28 +14,96 @@ namespace Hikari
 		OIS::ParamList oisParamList;
 		size_t windowHwnd = 0;
 		std::ostringstream windowHndStr;
-		GameEngine::Instance()->GetGameWindow()->GetRenderWindow()->getCustomAttribute("WINDOW", &windowHwnd);
+		arg_gameinstance->GetGameWindow()->GetRenderWindow()->getCustomAttribute("WINDOW", &windowHwnd);
 		windowHndStr << windowHwnd;
 		oisParamList.insert(std::make_pair(std::string("WINDOW"), windowHndStr.str()));
 
 		mInputSystem = OIS::InputManager::createInputSystem(oisParamList);
-		mMouseInputObject = static_cast<OIS::Mouse*>(mInputSystem->createInputObject(OIS::OISMouse, false));
-		mKeyboardInputObject = static_cast<OIS::Keyboard*>(mInputSystem->createInputObject(OIS::OISKeyboard, false));
+
+		if (mInputSystem)
+		{
+			mMouseInputObject = static_cast<OIS::Mouse*>(mInputSystem->createInputObject(OIS::OISMouse, true));
+			mKeyboardInputObject = static_cast<OIS::Keyboard*>(mInputSystem->createInputObject(OIS::OISKeyboard, true));
+
+			mKeyboardInputObject->setEventCallback(this);
+			mMouseInputObject->setEventCallback(this);
+		}
+
+		setupInputMap();
+	}
+
+	InputManager::~InputManager()
+	{
+		if (mInputSystem)
+		{
+			if (mKeyboardInputObject)
+			{
+				mInputSystem->destroyInputObject(mKeyboardInputObject);
+			}
+			if (mMouseInputObject)
+			{
+				mInputSystem->destroyInputObject(mMouseInputObject);
+			}
+			mInputSystem->destroyInputSystem(mInputSystem);
+		}
 	}
 
 	void InputManager::CaptureInput()
 	{
+		mKeyUpMap.clear();
+		mKeyDownMap.clear();
+
 		mMouseInputObject->capture();
 		mKeyboardInputObject->capture();
 	}
 
+
+	bool InputManager::GetKey(const char* arg_key)
+	{
+		try {
+			InputMapKeyCode keyCode = mKeycodeMap.at(arg_key);
+			return mKeyPressedMap.at(keyCode);
+		}
+		catch (const std::out_of_range& oor) {}
+		return false;
+	}
+
+	bool InputManager::GetKeyDown(const char* arg_key)
+	{
+		try {
+			InputMapKeyCode keyCode = mKeycodeMap.at(arg_key);
+			return mKeyUpMap.at(keyCode);
+		}
+		catch (const std::out_of_range& oor) {}
+		return false;
+	}
+
+	bool InputManager::GetKeyUp(const char* arg_key)
+	{
+		try {
+			InputMapKeyCode keyCode = mKeycodeMap.at(arg_key);
+			return mKeyDownMap.at(keyCode);
+		}
+		catch (const std::out_of_range& oor) {}
+		return false;
+	}
+
+
+	/***/
+	/***************************** OIS EVENTS *****************************/
+
+
 	bool InputManager::keyPressed(const OIS::KeyEvent &e)
 	{
+		mKeyDownMap[e.key] = true;
+		mKeyPressedMap[e.key] = true;
 		return true;
 	}
 
 	bool InputManager::keyReleased(const OIS::KeyEvent &e)
 	{
+		mKeyPressedMap[e.key] = false;
+		mKeyUpMap[e.key] = true;
 		return true;
 	}
 
@@ -78,5 +146,21 @@ namespace Hikari
 	{
 		return true;
 	}
+
+
+
+
+	void InputManager::setupInputMap()
+	{
+		// TODO: read from ini-file
+
+		mKeycodeMap["up"] == OIS::KeyCode::KC_UP;
+		mKeycodeMap["down"] == OIS::KeyCode::KC_DOWN;
+		mKeycodeMap["left"] == OIS::KeyCode::KC_LEFT;
+		mKeycodeMap["right"] == OIS::KeyCode::KC_RIGHT;
+		mKeycodeMap["space"] == OIS::KeyCode::KC_SPACE;
+		mKeycodeMap["return"] == OIS::KeyCode::KC_RETURN;
+	}
+
 
 }

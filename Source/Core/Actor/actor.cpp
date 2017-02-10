@@ -2,6 +2,8 @@
 
 #include "Core/World/world.h"
 #include "Core/Component/component.h"
+#include "Core/Managers/tick_manager.h"
+#include "Core/Engine/game_instance.h"
 
 IMPLEMENT_CLASS(Hikari::Actor)
 
@@ -47,7 +49,25 @@ namespace Hikari
 
 	void Actor::OnStop()
 	{
+		
+	}
 
+
+	void Actor::Tick(float arg_deltatime)
+	{
+
+	}
+
+	void Actor::ActivateTicable(bool arg_activate)
+	{
+		if (arg_activate)
+		{
+			GetTickManager()->RegisterTickable(this, TickGroup::Actors);
+		}
+		else
+		{
+			// TODO
+		}	
 	}
 
 	

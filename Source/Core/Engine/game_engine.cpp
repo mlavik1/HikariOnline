@@ -15,7 +15,14 @@ namespace Hikari
 		__ConstructSingleton(GameEngine)
 
 		mOgreRoot = nullptr;
-		mGameWindow = nullptr;
+	}
+
+	GameEngine::~GameEngine()
+	{
+		for (GameInstance* gameInstance : mGameInstances)
+		{
+			delete gameInstance;
+		}
 	}
 
 	void GameEngine::Initialise()
@@ -25,7 +32,6 @@ namespace Hikari
 		__Assert(mOgreRoot->showConfigDialog());
 
 		TimeManager::Create();
-		mGameWindow = new GameWindow(this);
 	}
 
 	void GameEngine::TickGameInstance(GameInstance* arg_instance)
