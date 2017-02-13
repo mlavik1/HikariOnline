@@ -9,6 +9,7 @@
 #include "Core/Component/light_component.h"
 #include "Core/Window/game_window.h"
 #include "Core/Managers/input_manager.h"
+#include "Core/Actor/player_character.h"
 
 int main(int args, char** argv)
 {
@@ -25,7 +26,7 @@ int main(int args, char** argv)
 	Ogre::ResourceGroupManager::getSingleton().addResourceLocation("OgreExport.zip", "Zip");
 	Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
-	Hikari::Actor* actor = new Hikari::Actor(gameInstance->GetWorld());
+	Hikari::PlayerCharacter* actor = new Hikari::PlayerCharacter(gameInstance->GetWorld());
 	actor->Initialise();
 	actor->SetScale(Ogre::Vector3(10, 10, 10));
 
@@ -42,23 +43,33 @@ int main(int args, char** argv)
 
 	while (1)
 	{
-		if(gameInstance->GetInputManager()->GetKeyDown("q"))
+		if(gameInstance->GetInputManager()->GetKeyDown("1"))
 		{
 			meshComp->SetActiveAnimation("idle");
 		}
-		else if (gameInstance->GetInputManager()->GetKeyDown("w"))
+		else if (gameInstance->GetInputManager()->GetKeyDown("2"))
 		{
 			meshComp->SetActiveAnimation("walk");
 		}
 
+
+		if (gameInstance->GetInputManager()->GetKey("d"))
+		{
+			actor->Rotate(Ogre::Vector3::UNIT_Y, 0.5f);
+		}
+		if (gameInstance->GetInputManager()->GetKey("a"))
+		{
+			actor->Rotate(Ogre::Vector3::UNIT_Y, -0.5f);
+		}
+
 		if (gameInstance->GetInputManager()->GetKey("up"))
 		{
-			Ogre::Vector3 vec = Ogre::Vector3::UNIT_Y * 0.02f;
+			Ogre::Vector3 vec = actor->GetForwardVector() * 0.06f;
 			actor->SetPosition(actor->GetPosition() + vec);
 		}
-		if (gameInstance->GetInputManager()->GetKey("right"))
+		if (gameInstance->GetInputManager()->GetKey("down"))
 		{
-			Ogre::Vector3 vec = Ogre::Vector3::UNIT_X * 0.02f;
+			Ogre::Vector3 vec = actor->GetUpVector() * 0.06f;
 			actor->SetPosition(actor->GetPosition() + vec);
 		}
 

@@ -160,8 +160,12 @@ namespace Hikari
 		mKeycodeMap["right"] = OIS::KeyCode::KC_RIGHT;
 		mKeycodeMap["space"] = OIS::KeyCode::KC_SPACE;
 		mKeycodeMap["return"] = OIS::KeyCode::KC_RETURN;
-		mKeycodeMap["q"] = OIS::KeyCode::KC_Q;
 		mKeycodeMap["w"] = OIS::KeyCode::KC_W;
+		mKeycodeMap["a"] = OIS::KeyCode::KC_A;
+		mKeycodeMap["s"] = OIS::KeyCode::KC_S;
+		mKeycodeMap["d"] = OIS::KeyCode::KC_D;
+		mKeycodeMap["1"] = OIS::KeyCode::KC_1;
+		mKeycodeMap["2"] = OIS::KeyCode::KC_2;
 	}
 
 

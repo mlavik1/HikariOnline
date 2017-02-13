@@ -25,9 +25,14 @@ namespace Hikari
 
 		const Ogre::Vector3& GetPosition() const;
 		const Ogre::Vector3& GetScale() const;
+		const Ogre::Quaternion& GetRotation() const;
+		const Ogre::Vector3& GetForwardVector() const;
+		const Ogre::Vector3& GetUpVector() const;
+		const Ogre::Vector3& GetRightVector() const;
 
 		void SetPosition(const Ogre::Vector3& arg_position);
 		void SetScale(const Ogre::Vector3& arg_scale);
+		void Rotate(const Ogre::Vector3& arg_axis, float arg_degrees);
 
 		inline Ogre::SceneNode* GetSceneNode()
 		{

@@ -26,6 +26,27 @@ namespace Hikari
 		return mSceneNode->getScale();
 	}
 
+	const Ogre::Quaternion& Actor::GetRotation() const
+	{
+		return mSceneNode->getOrientation();
+	}
+
+	const Ogre::Vector3& Actor::GetForwardVector() const
+	{
+		return GetRotation().zAxis();
+	}
+
+	const Ogre::Vector3& Actor::GetUpVector() const
+	{
+		return GetRotation().yAxis();
+	}
+
+	const Ogre::Vector3& Actor::GetRightVector() const
+	{
+		return GetRotation().xAxis();
+	}
+
+
 	void Actor::SetPosition(const Ogre::Vector3& arg_position)
 	{
 		mSceneNode->setPosition(arg_position);
@@ -36,6 +57,10 @@ namespace Hikari
 		mSceneNode->setScale(arg_scale);
 	}
 
+	void Actor::Rotate(const Ogre::Vector3& arg_axis, float arg_degrees)
+	{
+		mSceneNode->rotate(arg_axis, Ogre::Radian(Ogre::Degree(arg_degrees).valueRadians()));
+	}
 
 	void Actor::Initialise()
 	{
@@ -44,7 +69,7 @@ namespace Hikari
 
 	void Actor::OnStart()
 	{
-
+		
 	}
 
 	void Actor::OnStop()
