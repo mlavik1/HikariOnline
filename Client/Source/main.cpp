@@ -8,11 +8,12 @@
 #include "Core/Component/camera_component.h"
 #include "Core/Component/light_component.h"
 #include "Core/Window/game_window.h"
+#include "Core/Managers/input_manager.h"
 
 int main(int args, char** argv)
 {
 	LOG_INFO() << "starting client";
-	
+
 
 	Hikari::GameEngine* gameEngine = Hikari::GameEngine::Create();
 	gameEngine->Initialise();
@@ -26,6 +27,7 @@ int main(int args, char** argv)
 
 	Hikari::Actor* actor = new Hikari::Actor(gameInstance->GetWorld());
 	actor->Initialise();
+	actor->SetScale(Ogre::Vector3(10, 10, 10));
 
 	Hikari::MeshComponent* meshComp = actor->AddComponent<Hikari::MeshComponent>();
 	meshComp->Initialise();
@@ -40,6 +42,14 @@ int main(int args, char** argv)
 
 	while (1)
 	{
+		if(gameInstance->GetInputManager()->GetKeyDown("down"))
+		{
+			meshComp->SetActiveAnimation("idle");
+		}
+		else if (gameInstance->GetInputManager()->GetKeyDown("up"))
+		{
+			meshComp->SetActiveAnimation("walk");
+		}
 		gameEngine->TickGameInstance(gameInstance);
 	}
 

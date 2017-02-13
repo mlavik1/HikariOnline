@@ -36,5 +36,6 @@ namespace Hikari
 	{
 		Ogre::WindowEventUtilities::messagePump();
 		mInputManager->CaptureInput();
+		mTickManager->Tick(0.01f); // TEMP- TODO: get delta time
 	}
 }

@@ -39,7 +39,7 @@ namespace Hikari
 
 	void Actor::Initialise()
 	{
-
+		ActivateTicable(true);
 	}
 
 	void Actor::OnStart()

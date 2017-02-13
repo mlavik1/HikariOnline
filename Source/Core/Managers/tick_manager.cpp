@@ -22,7 +22,7 @@ namespace Hikari
 			const std::vector<Tickable*>& tickGroupElements = mTickables[tickGroup];
 			for (Tickable* tickable : tickGroupElements)
 			{
-				tickable->Tick(arg_deltatime);
+				tickable->Tick(arg_deltatime); // TODO: get delta time for tickable
 			}
 		}
 	}

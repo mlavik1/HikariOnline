@@ -154,12 +154,12 @@ namespace Hikari
 	{
 		// TODO: read from ini-file
 
-		mKeycodeMap["up"] == OIS::KeyCode::KC_UP;
-		mKeycodeMap["down"] == OIS::KeyCode::KC_DOWN;
-		mKeycodeMap["left"] == OIS::KeyCode::KC_LEFT;
-		mKeycodeMap["right"] == OIS::KeyCode::KC_RIGHT;
-		mKeycodeMap["space"] == OIS::KeyCode::KC_SPACE;
-		mKeycodeMap["return"] == OIS::KeyCode::KC_RETURN;
+		mKeycodeMap["up"] = OIS::KeyCode::KC_UP;
+		mKeycodeMap["down"] = OIS::KeyCode::KC_DOWN;
+		mKeycodeMap["left"] = OIS::KeyCode::KC_LEFT;
+		mKeycodeMap["right"] = OIS::KeyCode::KC_RIGHT;
+		mKeycodeMap["space"] = OIS::KeyCode::KC_SPACE;
+		mKeycodeMap["return"] = OIS::KeyCode::KC_RETURN;
 	}
 
 
