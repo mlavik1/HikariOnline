@@ -6,6 +6,7 @@
 #include "Core/World/world.h"
 #include "Core/Managers/input_manager.h"
 #include "Core/Managers/tick_manager.h"
+#include "Core/Managers/time_manager.h"
 
 namespace Hikari
 {
@@ -36,6 +37,9 @@ namespace Hikari
 	{
 		Ogre::WindowEventUtilities::messagePump();
 		mInputManager->CaptureInput();
-		mTickManager->Tick(0.01f); // TEMP- TODO: get delta time
+		float currentTime = TimeManager::Instance()->GetTimeSeconds();
+		float deltaTime = currentTime - mLastTime;
+		mTickManager->Tick(deltaTime); // TEMP- TODO: get delta time
+		mLastTime = currentTime;
 	}
 }

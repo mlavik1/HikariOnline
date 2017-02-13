@@ -42,14 +42,26 @@ int main(int args, char** argv)
 
 	while (1)
 	{
-		if(gameInstance->GetInputManager()->GetKeyDown("down"))
+		if(gameInstance->GetInputManager()->GetKeyDown("q"))
 		{
 			meshComp->SetActiveAnimation("idle");
 		}
-		else if (gameInstance->GetInputManager()->GetKeyDown("up"))
+		else if (gameInstance->GetInputManager()->GetKeyDown("w"))
 		{
 			meshComp->SetActiveAnimation("walk");
 		}
+
+		if (gameInstance->GetInputManager()->GetKey("up"))
+		{
+			Ogre::Vector3 vec = Ogre::Vector3::UNIT_Y * 0.02f;
+			actor->SetPosition(actor->GetPosition() + vec);
+		}
+		if (gameInstance->GetInputManager()->GetKey("right"))
+		{
+			Ogre::Vector3 vec = Ogre::Vector3::UNIT_X * 0.02f;
+			actor->SetPosition(actor->GetPosition() + vec);
+		}
+
 		gameEngine->TickGameInstance(gameInstance);
 	}
 

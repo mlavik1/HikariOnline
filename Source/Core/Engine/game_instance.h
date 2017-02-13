@@ -43,6 +43,7 @@ namespace Hikari
 		World* mWorld;
 		TickManager* mTickManager;
 		InputManager* mInputManager;
+		float mLastTime = 0.0f;
 	};
 }
 
