@@ -16,8 +16,7 @@ namespace Hikari
 
 	void MeshComponent::Initialise()
 	{
-		ActivateTicable(true);
-
+		Component::Initialise();
 
 		// THIS IS TEMP
 

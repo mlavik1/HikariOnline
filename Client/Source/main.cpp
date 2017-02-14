@@ -10,6 +10,7 @@
 #include "Core/Window/game_window.h"
 #include "Core/Managers/input_manager.h"
 #include "Core/Actor/player_character.h"
+#include "Core/Component/movement_component.h"
 
 int main(int args, char** argv)
 {
@@ -64,13 +65,19 @@ int main(int args, char** argv)
 
 		if (gameInstance->GetInputManager()->GetKey("up"))
 		{
-			Ogre::Vector3 vec = actor->GetForwardVector() * 0.06f;
-			actor->SetPosition(actor->GetPosition() + vec);
+			//Ogre::Vector3 vec = actor->GetForwardVector() * 0.06f;
+			//actor->SetPosition(actor->GetPosition() + vec);
+			actor->GetMovementComponent()->AddInput(actor->GetForwardVector());
 		}
-		if (gameInstance->GetInputManager()->GetKey("down"))
+		else if (gameInstance->GetInputManager()->GetKey("down"))
 		{
-			Ogre::Vector3 vec = actor->GetUpVector() * 0.06f;
-			actor->SetPosition(actor->GetPosition() + vec);
+			//Ogre::Vector3 vec = actor->GetUpVector() * 0.06f;
+			//actor->SetPosition(actor->GetPosition() + vec);
+			actor->GetMovementComponent()->AddInput(actor->GetUpVector());
+		}
+		else
+		{
+			actor->GetMovementComponent()->SetVelocity(Ogre::Vector3::ZERO);
 		}
 
 		gameEngine->TickGameInstance(gameInstance);

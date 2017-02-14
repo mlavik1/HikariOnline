@@ -15,12 +15,14 @@ namespace Hikari
 
 	void Component::Initialise()
 	{
-
+		ActivateTicable(true);
 	}
+
 	void Component::OnStart()
 	{
 
 	}
+
 	void Component::OnStop()
 	{
 

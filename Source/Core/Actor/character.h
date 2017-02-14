@@ -5,11 +5,18 @@
 
 namespace Hikari
 {
+	class MovementComponent;
+
 	class Character : public Hikari::Actor
 	{
 		DEFINE_CLASS(Hikari::Character, Hikari::Actor)
 	public:
 		Character(Hikari::World* arg_world);
+
+		MovementComponent* GetMovementComponent();
+
+	private:
+		MovementComponent* mMovementComponent;
 	};
 }
 
