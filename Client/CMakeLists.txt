@@ -53,6 +53,10 @@ file(GLOB_RECURSE SRC_ANIMATION
     "${SharedSourceDir}/Core/Animation/*.cpp"
     "${SharedSourceDir}/Core/Animation/*.h"
 )
+file(GLOB_RECURSE SRC_NETWORKING
+    "${SharedSourceDir}/Core/Networking/*.cpp"
+    "${SharedSourceDir}/Core/Networking/*.h"
+)
 
 source_group("Core\\Object" FILES ${SRC_OBJECT})
 source_group("Core\\Debug" FILES ${SRC_DEBUG})
@@ -64,6 +68,7 @@ source_group("Core\\Window" FILES ${SRC_WINDOW})
 source_group("Core\\Common" FILES ${SRC_COMMON})
 source_group("Core\\Managers" FILES ${SRC_MANAGERS})
 source_group("Core\\Animation" FILES ${SRC_ANIMATION})
+source_group("Core\\Networking" FILES ${SRC_NETWORKING})
 
 FILE(GLOB_RECURSE children RELATIVE ${SharedSourceDir} ${SharedSourceDir}/*)
 FOREACH(child ${children})
@@ -73,6 +78,7 @@ IF(IS_DIRECTORY ${SharedSourceDir}/${curdir}/${child})
 ENDIF()
 ENDFOREACH()
 
+include_directories ("../Dependencies/Include/SDL2")
 include_directories ("../Dependencies/Include/Ogre")
 include_directories ("../Dependencies/Include/Boost")
 include_directories ("../Dependencies/Include/SFML-2.4.1")
@@ -86,7 +92,9 @@ add_executable(Client ${SRC_FILES})
 message("${LIB_DIR}}")
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-	
+	TARGET_LINK_LIBRARIES(Client ${LIB_DIR}/SDL2.lib)
+	TARGET_LINK_LIBRARIES(Client ${LIB_DIR}/SDL2main.lib)
+	TARGET_LINK_LIBRARIES(Client ${LIB_DIR}/SDL2_net.lib)
 	TARGET_LINK_LIBRARIES(Client ${LIB_DIR}/OgreMain_d.lib)
 	TARGET_LINK_LIBRARIES(Client ${LIB_DIR}/OIS_d.lib)
 	TARGET_LINK_LIBRARIES(Client ${LIB_DIR}/sfml-system-d.lib)
