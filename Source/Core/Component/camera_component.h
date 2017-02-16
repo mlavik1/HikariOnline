@@ -13,6 +13,7 @@ namespace Hikari
 		virtual void InitialiseObject(ObjectInitialiserParams arg_params) override;
 
 		virtual void Initialise() override;
+		virtual void Tick(float arg_deltatime) override;
 
 	protected:
 		Ogre::Camera* mCamera;

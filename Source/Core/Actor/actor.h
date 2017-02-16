@@ -19,6 +19,7 @@ namespace Hikari
 	protected:
 		Ogre::SceneNode* mSceneNode;
 		std::vector<Component*> mComponents;
+		Hikari::Actor* mParent;
 
 	public:
 		Actor(Hikari::World* arg_world);
@@ -30,9 +31,18 @@ namespace Hikari
 		const Ogre::Vector3& GetUpVector() const;
 		const Ogre::Vector3& GetRightVector() const;
 
+		const Ogre::Vector3& GetPositionAbsolute() const;
+		const Ogre::Vector3& GetScaleAbsolute() const;
+		const Ogre::Quaternion& GetRotationAbsolute() const;
+		const Ogre::Vector3& GetForwardVectorAbsolute() const;
+		const Ogre::Vector3& GetUpVectorAbsolute() const;
+		const Ogre::Vector3& GetRightVectorAbsolute() const;
+
 		void SetPosition(const Ogre::Vector3& arg_position);
 		void SetScale(const Ogre::Vector3& arg_scale);
 		void Rotate(const Ogre::Vector3& arg_axis, float arg_degrees);
+
+		void SetParent(Actor* arg_parent);
 
 		inline Ogre::SceneNode* GetSceneNode()
 		{

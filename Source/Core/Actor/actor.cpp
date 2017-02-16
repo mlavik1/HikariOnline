@@ -12,6 +12,7 @@ namespace Hikari
 	Actor::Actor(Hikari::World* arg_world)
 	{
 		__Assert(arg_world != nullptr);
+		mParent = nullptr;
 		mWorld = arg_world;
 		mSceneNode = mWorld->GetSceneManager()->getRootSceneNode()->createChildSceneNode(mObjectName);
 	}
@@ -46,6 +47,36 @@ namespace Hikari
 		return GetRotation().xAxis();
 	}
 
+	const Ogre::Vector3& Actor::GetPositionAbsolute() const
+	{
+		return mSceneNode->_getDerivedPosition();
+	}
+
+	const Ogre::Vector3& Actor::GetScaleAbsolute() const
+	{
+		return mSceneNode->_getDerivedScale();
+	}
+
+	const Ogre::Quaternion& Actor::GetRotationAbsolute() const
+	{
+		return mSceneNode->_getDerivedOrientation();
+	}
+
+	const Ogre::Vector3& Actor::GetForwardVectorAbsolute() const
+	{
+		return GetRotationAbsolute().zAxis();
+	}
+
+	const Ogre::Vector3& Actor::GetUpVectorAbsolute() const
+	{
+		return GetRotationAbsolute().yAxis();
+	}
+
+	const Ogre::Vector3& Actor::GetRightVectorAbsolute() const
+	{
+		return GetRotationAbsolute().xAxis();
+	}
+
 
 	void Actor::SetPosition(const Ogre::Vector3& arg_position)
 	{
@@ -60,6 +91,18 @@ namespace Hikari
 	void Actor::Rotate(const Ogre::Vector3& arg_axis, float arg_degrees)
 	{
 		mSceneNode->rotate(arg_axis, Ogre::Radian(Ogre::Degree(arg_degrees).valueRadians()));
+	}
+	
+
+	void Actor::SetParent(Actor* arg_parent)
+	{
+		if (mSceneNode->getParent() != nullptr)
+		{
+			mSceneNode->getParent()->removeChild(mSceneNode);
+		}
+		
+		mParent = arg_parent;
+		mParent->mSceneNode->addChild(mSceneNode);
 	}
 
 	void Actor::Initialise()

@@ -4,6 +4,7 @@
 #include "Core/Engine/game_engine.h"
 #include "Core/Engine/game_instance.h"
 #include "Core/Actor/actor.h"
+#include "Core/World/world.h"
 #include "Core/Component/mesh_component.h"
 #include "Core/Component/camera_component.h"
 #include "Core/Component/light_component.h"
@@ -23,6 +24,9 @@ int main(int args, char** argv)
 
 	gameInstance->GetGameWindow()->SetTitle("Hikari Client");
 
+	// TODO: make scene settings
+	gameInstance->GetWorld()->GetSceneManager()->setAmbientLight(Ogre::ColourValue(0.2f, 0.2f, 0.2f));
+
 	// TEMP - todo
 	Ogre::ResourceGroupManager::getSingleton().addResourceLocation("OgreExport.zip", "Zip");
 	Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
@@ -34,11 +38,14 @@ int main(int args, char** argv)
 	Hikari::MeshComponent* meshComp = actor->AddComponent<Hikari::MeshComponent>();
 	meshComp->Initialise();
 
-	Hikari::CameraComponent* camComp = actor->AddComponent<Hikari::CameraComponent>();
-	camComp->Initialise();
-
 	Hikari::LightComponent* lightComp = actor->AddComponent<Hikari::LightComponent>();
 	lightComp->Initialise();
+
+	Hikari::Actor* cameraActor = new Hikari::Actor(gameInstance->GetWorld());
+	cameraActor->SetPosition(Ogre::Vector3(0.0f, 10.0f, -50.0f));
+	cameraActor->Rotate(Ogre::Vector3::UNIT_X, 20.0f);
+	Hikari::CameraComponent* camComp = cameraActor->AddComponent<Hikari::CameraComponent>();
+	camComp->Initialise();
 
 	// TODO: initialise components and actors from game engine!
 
@@ -56,11 +63,11 @@ int main(int args, char** argv)
 
 		if (gameInstance->GetInputManager()->GetKey("d"))
 		{
-			actor->Rotate(Ogre::Vector3::UNIT_Y, 0.5f);
+			actor->Rotate(Ogre::Vector3::UNIT_Y, 0.8f);
 		}
 		if (gameInstance->GetInputManager()->GetKey("a"))
 		{
-			actor->Rotate(Ogre::Vector3::UNIT_Y, -0.5f);
+			actor->Rotate(Ogre::Vector3::UNIT_Y, -0.8f);
 		}
 
 		if (gameInstance->GetInputManager()->GetKey("up"))

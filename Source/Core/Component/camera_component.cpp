@@ -1,5 +1,6 @@
 #include "camera_component.h"
 
+#include "Core/Actor/actor.h"
 #include "Core/World/world.h"
 #include "Core/Engine/game_engine.h"
 #include "Core/Engine/game_instance.h"
@@ -16,13 +17,20 @@ namespace Hikari
 
 	void CameraComponent::Initialise()
 	{
-		mCamera = mWorld->GetSceneManager()->createCamera(mObjectName);
-		mCamera->setPosition(Ogre::Vector3(0, 0, 50));  // todo: make function
-		mCamera->lookAt(Ogre::Vector3(0, 0, 0)); // todo: use SceneNOde's orientation
-		mCamera->setNearClipDistance(5); // todo: make function
+		Hikari::Component::Initialise();
 
+		mCamera = mWorld->GetSceneManager()->createCamera(mObjectName);
+		mCamera->setNearClipDistance(5); // todo: make function
+		
 		// TEMP -todo
 		Ogre::Viewport* viewport = mWorld->GetGameInstance()->GetGameWindow()->GetRenderWindow()->addViewport(mCamera);
 		viewport->setBackgroundColour(Ogre::ColourValue(0.0f, 0.0f, 1.0f));
+	}
+
+	void CameraComponent::Tick(float arg_deltatime)
+	{
+		const Ogre::Vector3& parentPos = mParent->GetPositionAbsolute();
+		mCamera->setPosition(parentPos);
+		mCamera->lookAt(parentPos + mParent->GetForwardVectorAbsolute() * 10.0f);
 	}
 }
