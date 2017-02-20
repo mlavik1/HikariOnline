@@ -15,6 +15,7 @@ namespace Hikari
 		mParent = nullptr;
 		mWorld = arg_world;
 		mSceneNode = mWorld->GetSceneManager()->getRootSceneNode()->createChildSceneNode(mObjectName);
+		mWorld->AddActor(this);
 	}
 
 	const Ogre::Vector3& Actor::GetPosition() const

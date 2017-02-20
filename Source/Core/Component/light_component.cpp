@@ -13,6 +13,8 @@ namespace Hikari
 
 	void LightComponent::Initialise()
 	{
+		Component::Initialise();
+
 		mLight = mWorld->GetSceneManager()->createLight(mObjectName);
 		mLight->setType(Ogre::Light::LT_DIRECTIONAL); // todo: make function
 		mLight->setDirection(Ogre::Vector3(0.1, -1, 0.1)); // todo: use SceneNode's forward vector

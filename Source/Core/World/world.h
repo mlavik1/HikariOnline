@@ -2,6 +2,9 @@
 #define HIKARI_WORLD_H
 
 #include "OGRE/Ogre.h"
+#include "terrain.h"
+#include "Core/Actor/actor.h"
+#include <vector>
 
 namespace Hikari
 {
@@ -12,6 +15,11 @@ namespace Hikari
 	private:
 		Ogre::SceneManager* mSceneManager;
 		GameInstance* mGameInstance;
+		std::vector<Actor*> mActors;
+		Terrain* mTerrain;
+		int mWorldSizeX = 1000;
+		int mWorldSizeZ = 1000;
+		float mGridUnitSize = 1.0f;
 
 	public:
 		World(GameInstance* arg_gameinstance, Ogre::SceneManager* arg_scenemanager);
@@ -25,6 +33,12 @@ namespace Hikari
 		{
 			return mSceneManager;
 		}
+
+		void AddActor(Actor* arg_actor);
+
+		float GetTerrainHeight(float arg_x, float arg_z);
+
+		void LoadTerrain();
 	};
 }
 

@@ -2,6 +2,8 @@
 
 #include "Core/Debug/st_assert.h"
 #include "Core/Engine/game_instance.h"
+#include "Core/Component/terrain_component.h"
+#include "Core/Misc/ogre_utils.h"
 
 namespace Hikari
 {
@@ -11,5 +13,122 @@ namespace Hikari
 		__Assert(arg_scenemanager != nullptr);
 		mGameInstance = arg_gameinstance;
 		mSceneManager = arg_scenemanager;
+		mTerrain = nullptr;
 	}
+
+	void World::AddActor(Actor* arg_actor)
+	{
+		mActors.push_back(arg_actor);
+	}
+
+	void World::LoadTerrain()
+	{
+		size_t gridWidth = mWorldSizeX / mGridUnitSize;
+		size_t gridSize = (mWorldSizeX * mWorldSizeX) / mGridUnitSize;
+		mTerrain = new Terrain();
+		mTerrain->HeightMap = new float[gridSize];
+		std::fill(mTerrain->HeightMap, mTerrain->HeightMap + gridSize, -1000000.0f);
+		//std::vector<size_t>* triangleIndexArray = new std::vector<size_t>[gridSize];
+
+		for (Actor* actor : mActors)
+		{
+			TerrainComponent* terrainComp = actor->GetComponentOfType<TerrainComponent>();
+			if (terrainComp != nullptr)
+			{
+				std::vector<Ogre::Vector3> vertices;
+				std::vector<unsigned int> indices;
+				OgreUtils::GetMeshInfo(actor, vertices, indices);
+
+				size_t numVertices = vertices.size();
+				size_t numTriangles = numVertices / 3;
+
+				for (size_t i_triangle = 0; i_triangle < numTriangles; i_triangle += 3)
+				{
+					int minX = mWorldSizeX * mGridUnitSize + 1;
+					int maxX = -1;
+					int minZ = mWorldSizeZ * mGridUnitSize + 1;
+					int maxZ = -1;
+					for (size_t i = 0; i < 3; i++)
+					{
+						size_t i_vertex = i_triangle + i;
+						const Ogre::Vector3& vertex = vertices[i_vertex];
+						minX = std::min(minX, (int)vertex.x);
+						maxX = std::max(maxX, (int)vertex.x);
+						minZ = std::min(minZ, (int)vertex.z);
+						maxZ = std::max(maxZ, (int)vertex.z);
+					}
+
+					minX = std::max(minX, 0);
+					minZ = std::max(minZ, 0);
+					maxX = std::min(maxX, mWorldSizeX);
+					maxZ = std::min(maxZ, mWorldSizeZ);
+
+					const Ogre::Vector3& p0 = vertices[i_triangle];
+					const Ogre::Vector3& p1 = vertices[i_triangle + 1];
+					const Ogre::Vector3& p2 = vertices[i_triangle + 2];
+					const float& p0x = vertices[i_triangle].x;
+					const float& p0z = vertices[i_triangle].z;
+					const float& p1x = vertices[i_triangle + 1].x;
+					const float& p1z = vertices[i_triangle + 1].z;
+					const float& p2x = vertices[i_triangle + 2].x;
+					const float& p2z = vertices[i_triangle + 2].z;
+
+					float triangleSignedArea = 0.5 *(-p1z*p2x + p0z*(-p1x + p2x) + p0x*(p1z - p2z) + p1x*p2z);
+
+					for (int x = minX; x <= maxX; x++)
+					{
+						for (int z = minZ; z <= maxZ; z++)
+						{
+							float px = x * mGridUnitSize;
+							float pz = z * mGridUnitSize;
+
+							float s = 1.0f / (2.0f * triangleSignedArea)*(p0z*p2x - p0x*p2z + (p2z - p0z)*px + (p0x - p2x)*pz);
+							float t = 1.0f / (2.0f * triangleSignedArea)*(p0x*p1z - p0z*p1x + (p0z - p1z)*px + (p1x - p0x)*pz);
+							if (s >= 0.0f && t >= 0.0f && (1.0f - s - t) >= 0.0f)
+							{ // point is inside triangle
+								Ogre::Vector3 u = p1 - p0;
+								Ogre::Vector3 v = p2 - p0;
+								Ogre::Vector3 p = p0 + u*s + v*t;
+								mTerrain->HeightMap[(size_t)x + (((size_t)z) * gridWidth)] = p.y;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		LOG_INFO() << "Finished creating terrain height map";
+	}
+
+
+	float World::GetTerrainHeight(float arg_x, float arg_z)
+	{
+		float height = 0.0f;
+
+		if (mTerrain != nullptr && arg_x >= 0.0f && arg_x < mWorldSizeX && arg_z >= 0.0f && arg_z < mWorldSizeZ)
+		{
+			const size_t gridWidth = mWorldSizeX / mGridUnitSize;
+			size_t x = (size_t)arg_x;
+			size_t z = (size_t)arg_z;
+#ifdef Tullball
+			height = mTerrain->HeightMap[x + (z * gridWidth)];
+#else
+			size_t x2 = x + 1;
+			size_t z2 = z + 1;
+			float s = arg_x - (float)x;
+			float t = arg_z - (float)z;
+			float height0 = mTerrain->HeightMap[x + (z * gridWidth)];
+			float height1 = mTerrain->HeightMap[x2 + (z * gridWidth)];
+			float height2 = mTerrain->HeightMap[x + (z2 * gridWidth)];
+			float height3 = mTerrain->HeightMap[x2 + (z2 * gridWidth)];
+
+			float heightA = height1*s + height0*(1.0f - s);
+			float heightB = height3*s + height2*(1.0f - s);
+			height = heightB * t + heightA * (1.0f - t);
+#endif
+		}
+
+		return height;
+	}
+
 }

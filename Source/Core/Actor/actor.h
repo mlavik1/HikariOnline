@@ -61,6 +61,20 @@ namespace Hikari
 			return newComp;
 		}
 
+		template <typename T>
+		T *GetComponentOfType()
+		{
+			__AssertComment((std::is_base_of<Component, T>::value), "Must be subclass of Component");
+
+			for (Component* comp : mComponents)
+			{
+				T* compT = dynamic_cast<T*>(comp);
+				if (compT != nullptr)
+					return compT;
+			}
+			return nullptr;
+		}
+
 		virtual void Initialise() override;
 		virtual void OnStart() override;
 		virtual void OnStop() override;

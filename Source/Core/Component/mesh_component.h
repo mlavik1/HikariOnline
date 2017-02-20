@@ -17,6 +17,7 @@ namespace Hikari
 		std::unordered_map<std::string, AnimationInstance*> mAnimationInstances;
 		std::vector<AnimationInstance*> mFadeOutAnims;
 		AnimationInstance* mActiveAnim;
+		Ogre::Entity* mOgreEntity;
 
 	public:
 		virtual void InitialiseObject(ObjectInitialiserParams arg_params) override;
@@ -25,8 +26,12 @@ namespace Hikari
 
 		virtual void Tick(float arg_deltatime) override;
 
+		Ogre::Entity* GetOgreEntity();
+
 		AnimationInstance* GetActiveAnimation();
 		void SetActiveAnimation(const char* arg_name);
+
+		void SetMesh(const char* arg_mesh);
 
 	};
 }

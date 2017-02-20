@@ -17,24 +17,6 @@ namespace Hikari
 	void MeshComponent::Initialise()
 	{
 		Component::Initialise();
-
-		// THIS IS TEMP
-
-		Ogre::Entity* ent = mWorld->GetSceneManager()->createEntity("GMObject0.mesh");
-		mParent->GetSceneNode()->attachObject(ent);
-
-		for (std::pair<Ogre::String, Ogre::AnimationState*> pair : ent->getAllAnimationStates()->getAnimationStateIterator())
-		{
-			std::string animName = pair.first.c_str();
-			std::transform(animName.begin(), animName.end(), animName.begin(), ::tolower);
-			AnimationInstance* animInstance = new AnimationInstance(pair.second);
-			mAnimationInstances.emplace(animName, animInstance);
-		}
-
-		//animationState = ent->getAnimationState("walk");
-		//animationState->setLoop(true);
-		//animationState->setEnabled(true);
-	
 		
 	}
 
@@ -90,6 +72,11 @@ namespace Hikari
 		}
 	}
 
+	Ogre::Entity* MeshComponent::GetOgreEntity()
+	{
+		return mOgreEntity;
+	}
+
 	AnimationInstance* MeshComponent::GetActiveAnimation()
 	{
 		return mActiveAnim;
@@ -110,6 +97,26 @@ namespace Hikari
 			mActiveAnim->SetWeight(0.0f);
 			mActiveAnim->BeginPlay();
 		}
+	}
+
+	void MeshComponent::SetMesh(const char* arg_mesh)
+	{
+		// THIS IS TEMP
+
+		mOgreEntity = mWorld->GetSceneManager()->createEntity(arg_mesh);
+		mParent->GetSceneNode()->attachObject(mOgreEntity);
+
+		if (mOgreEntity->getAllAnimationStates() != 0)
+		{
+			for (std::pair<Ogre::String, Ogre::AnimationState*> pair : mOgreEntity->getAllAnimationStates()->getAnimationStateIterator())
+			{
+				std::string animName = pair.first.c_str();
+				std::transform(animName.begin(), animName.end(), animName.begin(), ::tolower);
+				AnimationInstance* animInstance = new AnimationInstance(pair.second);
+				mAnimationInstances.emplace(animName, animInstance);
+			}
+		}
+		
 	}
 	
 }
