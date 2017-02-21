@@ -13,6 +13,7 @@
 #include "Core/Actor/player_character.h"
 #include "Core/Component/movement_component.h"
 #include "Core/Component/terrain_component.h"
+#include "Core/Debug/debug_graphics.h"
 
 int main(int args, char** argv)
 {
@@ -65,6 +66,11 @@ int main(int args, char** argv)
 
 	gameInstance->GetWorld()->LoadTerrain();
 	// TODO: initialise components and actors from game engine!
+
+	std::vector<Ogre::Vector3> points;
+	points.push_back(actor->GetPositionAbsolute());
+	points.push_back(actor->GetPositionAbsolute() + Ogre::Vector3::UNIT_Y * 2.0f);
+	Hikari::DebugGraphics::DrawDebugPoints(gameInstance->GetWorld(), points, 20.0f, Ogre::ColourValue::Red, 10.0f);
 
 	while (1)
 	{
