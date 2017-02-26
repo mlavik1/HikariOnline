@@ -28,8 +28,8 @@ namespace Hikari
 	void DebugGraphics::DrawDebugPoints(World* arg_world, std::vector<Ogre::Vector3> arg_points, Ogre::Real arg_pointsize, Ogre::ColourValue arg_colour, float arg_lifetime)
 	{
 		Ogre::SceneManager* sceneMgr = arg_world->GetSceneManager();
-		Ogre::ManualObject* manualObject = sceneMgr->createManualObject("manual1");
-		Ogre::SceneNode* manualObjectNode = sceneMgr->getRootSceneNode()->createChildSceneNode("manual1_node");
+		Ogre::ManualObject* manualObject = sceneMgr->createManualObject();
+		Ogre::SceneNode* manualObjectNode = sceneMgr->getRootSceneNode()->createChildSceneNode();
 
 		Ogre::MaterialPtr manualObjectMaterial = Ogre::MaterialManager::getSingleton().create("manual1Material", "General");
 		manualObjectMaterial->setReceiveShadows(false);

@@ -14,6 +14,9 @@ Making a class inherit from Hikari::Object will:
 
 namespace Hikari
 {
+	class Function;
+	class FunctionArgContainer;
+
 	class Object
 	{
 		DEFINE_CLASS_INTERNAL(Hikari::Object, , 0)
@@ -30,6 +33,8 @@ namespace Hikari
 		~Object();
 
 		virtual void InitialiseObject(ObjectInitialiserParams arg_params);
+
+		void CallFunction(Function* arg_function, FunctionArgContainer args);
 
 		void Destroy();
 

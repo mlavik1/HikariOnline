@@ -1,6 +1,7 @@
 #include "class.h"
 #include "object.h"
 #include "Core/Debug/st_assert.h"
+#include "function.h"
 
 namespace Hikari
 {
@@ -14,6 +15,11 @@ namespace Hikari
 			mBaseClass->mChildClasses.push_back(this);
 		}
 		mCreatedInstanceCount = 0;
+	}
+
+	void Class::AddMemberFunction(Function* arg_function)
+	{
+		mMemberFunctions[arg_function->mFunctionName] = arg_function;
 	}
 
 	const std::string &Class::GetFullName() const
@@ -81,6 +87,16 @@ namespace Hikari
 				return childClass;
 			}
 			return childClass->GetChildClassByName(arg_name, arg_fullname);
+		}
+		return nullptr;
+	}
+
+	Function* Class::GetFunctionByName(const char* arg_name)
+	{
+		auto iter = mMemberFunctions.find(arg_name);
+		if (iter != mMemberFunctions.end())
+		{
+			return iter->second;
 		}
 		return nullptr;
 	}

@@ -1,7 +1,9 @@
 #ifndef HIKARI_OBJDEFS_H
 #define HIKARI_OBJDEFS_H
 
+#include "Core/Common/macros.h"
 #include "Core/Object/class.h"
+#include "Core/Object/function.h"
 
 typedef uint32_t ObjectFlagRegister;
 
@@ -53,7 +55,7 @@ public: \
 
 /**
 * Define a class, that directly or indirectly inherits from Hikari::Object.
-* 
+*
 * The class will have Run-Time Type Information available through GetClass() and GetStaticClass().
 * This macro will generate a constructor with parameters, so the class will have no implicit default constructor.
 * IMPORTANT: You will need to add the IMPLEMENT_CLASS(classname)-macro to your source file.
@@ -68,3 +70,43 @@ public: \
 	Hikari::Class* ##classname##::StaticClass = ##classname##::CreateStaticClass();
 
 #endif
+
+#define BEGIN_REGISTER_CLASSPROPERTIES(classname) \
+	static bool RegisterClassProperties() \
+	{ \
+		Hikari::Class* myClass = ##classname##::GetStaticClass(); \
+
+#define END_REGISTER_CLASSPROPERTIES(classname) \
+	return 0; \
+	}
+
+#define REGISTER_CLASS_FUNCTION(classname, functionname) \
+	std::string functionName = #functionname; \
+	void(Hikari::Object::*funcPtr)(Hikari::FunctionArgContainer) = (void(Hikari::Object::*)(Hikari::FunctionArgContainer))(&##classname##::call_##functionname##); \
+	Hikari::Function* func = new Hikari::Function(functionName, funcPtr); \
+	myClass->AddMemberFunction(func);
+
+#define REGISTER_CLASSPROPERTIES(classname) \
+	bool sdfsdfjkjghrghre = ##classname##::RegisterClassProperties();
+	
+#define CALL_FUNCTION(objectptr, functionname, ...) \
+	objectptr->CallFunction(objectptr->GetClass()->GetFunctionByName(#functionname), getargs_##functionname##(__VA_ARGS__));
+
+/**
+* Define a function.
+* This will enable RTTI and simple Reflection - and is required for RPC calls.
+*/
+#define DEFINE_FUNCTION(functionname, ...) \
+FunctionArgContainer BOOST_PP_CAT(getargs_, functionname) BOOST_PP_IF(BOOST_PP_IS_EMPTY(__VA_ARGS__),(),GetDargs(Bogus, __VA_ARGS__)) \
+{ \
+	FunctionArgContainer args; \
+	BOOST_PP_IF(BOOST_PP_IS_EMPTY(__VA_ARGS__), ,args.TemplateConstruct<) __VA_ARGS__ BOOST_PP_IF(BOOST_PP_IS_EMPTY(__VA_ARGS__), ,>) BOOST_PP_IF(BOOST_PP_IS_EMPTY(__VA_ARGS__), ,GetCargs(Bogus, __VA_ARGS__);) \
+	return args; \
+} \
+void BOOST_PP_CAT(call_, functionname) (FunctionArgContainer args) \
+{ \
+	BOOST_PP_IF(BOOST_PP_IS_EMPTY(__VA_ARGS__), , \
+		MakeVars(Bogus,__VA_ARGS__) )\
+	BOOST_PP_IF(BOOST_PP_IS_EMPTY(__VA_ARGS__), ,args.TemplateAccess<) __VA_ARGS__ BOOST_PP_IF(BOOST_PP_IS_EMPTY(__VA_ARGS__), ,>) BOOST_PP_IF(BOOST_PP_IS_EMPTY(__VA_ARGS__), ,GetCargs(Bogus, __VA_ARGS__);) \
+	functionname GetCargs(Bogus, __VA_ARGS__); \
+}

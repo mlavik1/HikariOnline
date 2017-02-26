@@ -8,6 +8,7 @@ namespace Hikari
 	class InputManager;
 	class TickManager;
 	class GameWindow;
+	class Client;
 
 	class GameInstance
 	{
@@ -37,6 +38,13 @@ namespace Hikari
 			return mInputManager;
 		}
 
+#ifdef HIKARI_CLIENT
+		inline Client* GetClient()
+		{
+			return mClient;
+		}
+#endif
+
 	private:
 		GameEngine* mGameEngine;
 		GameWindow* mGameWindow;
@@ -44,6 +52,10 @@ namespace Hikari
 		TickManager* mTickManager;
 		InputManager* mInputManager;
 		float mLastTime = 0.0f;
+
+#ifdef HIKARI_CLIENT
+		Client* mClient;
+#endif
 	};
 }
 

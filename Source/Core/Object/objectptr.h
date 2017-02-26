@@ -18,6 +18,8 @@ namespace Hikari
 	private:
 		ObjectRefHandle* mRefHandle;
 
+		inline Object* getObjectSafe() const { return (mRefHandle != nullptr ? mRefHandle->GetObject() : nullptr); }
+
 	public:
 		ObjectPtr();
 		ObjectPtr(Object* arg_object);

@@ -11,11 +11,13 @@ See objdefs.h
 
 #include <string>
 #include <vector>
+#include <unordered_map>
 
 namespace Hikari
 {
 	// Forward declarations:
 	class Object;
+	class Function;
 
 	class Class
 	{
@@ -30,9 +32,12 @@ namespace Hikari
 		std::vector<Hikari::Class*> mChildClasses;
 		staticconstructor_t mStaticConstructor; // Static functions that calls an empty constructor
 		unsigned int mCreatedInstanceCount;		// Number of created instances (destroyed isntances are also counted)
+		std::unordered_map<std::string, Function*> mMemberFunctions;
 
 	public:
 		Class(const char* arg_name, staticconstructor_t constructor = 0, Hikari::Class* superclass = 0);
+
+		void AddMemberFunction(Function* arg_function);
 
 		/**
 		* Gets the full name of the class, with namespace.
@@ -78,6 +83,8 @@ namespace Hikari
 		*/
 		Class* GetChildClassByName(const char* arg_name, bool arg_fullname);
 
+		Function* GetFunctionByName(const char* arg_name);
+
 		/**
 		* Returns a pointer to the static Class-instance of a class by the given name (if it exists).
 		*
@@ -85,7 +92,7 @@ namespace Hikari
 		* @param arg_fullname			Use full name (with namespace) when comparing class names.
 		*/
 		static Class* GetClassByName(const char* arg_name, bool arg_fullname);
-		
+
 	};
 }
 

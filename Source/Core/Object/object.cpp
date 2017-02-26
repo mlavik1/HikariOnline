@@ -1,5 +1,6 @@
 #include "object.h"
 #include <sstream>
+#include "function.h"
 
 IMPLEMENT_CLASS(Hikari::Object)
 
@@ -22,6 +23,11 @@ namespace Hikari
 	Object::~Object()
 	{
 		mObjectRefHandle->SetObject(nullptr);
+	}
+
+	void Object::CallFunction(Function* arg_function, FunctionArgContainer args)
+	{
+		(this->*(arg_function->mFunctionPointer))(args);
 	}
 
 	void Object::Destroy()

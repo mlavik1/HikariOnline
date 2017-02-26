@@ -7,6 +7,7 @@
 #include "Core/Managers/input_manager.h"
 #include "Core/Managers/tick_manager.h"
 #include "Core/Managers/time_manager.h"
+#include "Core/Engine/client.h"
 
 namespace Hikari
 {
@@ -24,6 +25,10 @@ namespace Hikari
 		
 		Ogre::SceneManager* sceneManager = mGameEngine->GetOgreRoot()->createSceneManager(Ogre::ST_GENERIC);
 		mWorld = new World(this, sceneManager);
+
+#ifdef HIKARI_CLIENT
+		mClient = new Client(this);
+#endif
 	}
 
 	GameInstance::~GameInstance()
@@ -39,7 +44,12 @@ namespace Hikari
 		mInputManager->CaptureInput();
 		float currentTime = TimeManager::Instance()->GetTimeSeconds();
 		float deltaTime = currentTime - mLastTime;
-		mTickManager->Tick(deltaTime); // TEMP- TODO: get delta time
+		
+#ifdef HIKARI_CLIENT
+		mClient->TickClient(deltaTime);
+#endif
+		mTickManager->Tick(deltaTime);
+
 		mLastTime = currentTime;
 	}
 }

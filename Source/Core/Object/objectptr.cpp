@@ -42,37 +42,37 @@ namespace Hikari
 	template<typename T>
 	T* ObjectPtr<T>::operator->() const
 	{
-		return static_cast<T*>(mRefHandle->GetObject());
+		return static_cast<T*>(getObjectSafe());
 	}
 
 	template<typename T>
 	bool ObjectPtr<T>::operator==(const ObjectPtr<T>& arg_other) const
 	{
-		return this->mRefHandle->GetObject() == arg_other.mRefHandle->GetObject();
+		return getObjectSafe() == arg_other.getObjectSafe();
 	}
 
 	template<typename T>
 	bool ObjectPtr<T>::operator!=(const ObjectPtr<T>& arg_other) const
 	{
-		return this->mRefHandle->GetObject() != arg_other.mRefHandle->GetObject();
+		return getObjectSafe() != arg_other.getObjectSafe();
 	}
 
 	template<typename T>
 	bool ObjectPtr<T>::operator==(const T* arg_other) const
 	{
-		return this->mRefHandle->GetObject() == arg_other;
+		return getObjectSafe() == arg_other;
 	}
 
 	template<typename T>
 	bool ObjectPtr<T>::operator!=(const T* arg_other) const
 	{
-		return this->mRefHandle->GetObject() != arg_other;
+		return getObjectSafe() != arg_other;
 	}
 
 	template<typename T>
 	bool ObjectPtr<T>::IsValid() const
 	{
-		return this->mRefHandle->GetObject() != nullptr;
+		return getObjectSafe() != nullptr;
 	}
 
 }

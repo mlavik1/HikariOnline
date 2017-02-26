@@ -4,6 +4,7 @@
 #include "Core/Engine/game_instance.h"
 #include "Core/Component/terrain_component.h"
 #include "Core/Misc/ogre_utils.h"
+#include "Core/Debug/debug_graphics.h"
 
 namespace Hikari
 {
@@ -24,6 +25,7 @@ namespace Hikari
 	void World::LoadTerrain()
 	{
 		size_t gridWidth = mWorldSizeX / mGridUnitSize;
+		size_t gridHeight = mWorldSizeZ / mGridUnitSize;
 		size_t gridSize = (mWorldSizeX * mWorldSizeX) / mGridUnitSize;
 		mTerrain = new Terrain();
 		mTerrain->HeightMap = new float[gridSize];
@@ -42,26 +44,29 @@ namespace Hikari
 				size_t numVertices = vertices.size();
 				size_t numTriangles = numVertices / 3;
 
+				const int maxGridX = mWorldSizeX * mGridUnitSize;
+				const int maxGridZ = mWorldSizeZ * mGridUnitSize;
+
 				for (size_t i_triangle = 0; i_triangle < numTriangles; i_triangle += 3)
 				{
-					int minX = mWorldSizeX * mGridUnitSize + 1;
+					int minX = maxGridX + 1;
 					int maxX = -1;
-					int minZ = mWorldSizeZ * mGridUnitSize + 1;
+					int minZ = maxGridZ + 1;
 					int maxZ = -1;
 					for (size_t i = 0; i < 3; i++)
 					{
 						size_t i_vertex = i_triangle + i;
 						const Ogre::Vector3& vertex = vertices[i_vertex];
-						minX = std::min(minX, (int)vertex.x);
-						maxX = std::max(maxX, (int)vertex.x);
-						minZ = std::min(minZ, (int)vertex.z);
-						maxZ = std::max(maxZ, (int)vertex.z);
+						minX = std::min(minX, (int)(vertex.x / mGridUnitSize));
+						maxX = std::max(maxX, (int)(vertex.x / mGridUnitSize));
+						minZ = std::min(minZ, (int)(vertex.z / mGridUnitSize));
+						maxZ = std::max(maxZ, (int)(vertex.z / mGridUnitSize));
 					}
 
 					minX = std::max(minX, 0);
 					minZ = std::max(minZ, 0);
-					maxX = std::min(maxX, mWorldSizeX);
-					maxZ = std::min(maxZ, mWorldSizeZ);
+					maxX = std::min(maxX, maxGridX);
+					maxZ = std::min(maxZ, maxGridZ);
 
 					const Ogre::Vector3& p0 = vertices[i_triangle];
 					const Ogre::Vector3& p1 = vertices[i_triangle + 1];
@@ -98,6 +103,28 @@ namespace Hikari
 		}
 
 		LOG_INFO() << "Finished creating terrain height map";
+		
+
+		// TEMP TEST:
+
+		std::vector<Ogre::Vector3> processedUnits;
+		std::vector<Ogre::Vector3> unprocessedUnits;
+
+		for (size_t grid_x = 0; grid_x < gridWidth; grid_x++)
+		{
+			for (size_t grid_z = 0; grid_z < gridHeight; grid_z++)
+			{
+				float x = grid_x * mGridUnitSize;
+				float z = grid_z * mGridUnitSize;
+				float height = mTerrain->HeightMap[grid_x + (grid_z * gridWidth)];
+				if (height > -200.0f)
+					processedUnits.push_back(Ogre::Vector3(x, height + 2.0f, z));
+				else
+					unprocessedUnits.push_back(Ogre::Vector3(x, 14.0f, z));
+			}
+		}
+		DebugGraphics::DrawDebugPoints(this, processedUnits, 5.0f, Ogre::ColourValue::Green, 10.0f);
+		DebugGraphics::DrawDebugPoints(this, unprocessedUnits, 5.0f, Ogre::ColourValue::Red, 10.0f);
 	}
 
 

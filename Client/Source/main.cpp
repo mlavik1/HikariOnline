@@ -14,11 +14,13 @@
 #include "Core/Component/movement_component.h"
 #include "Core/Component/terrain_component.h"
 #include "Core/Debug/debug_graphics.h"
+#include "Core/Engine/client.h"
+#include "Core/Controller/ingame_controller.h"
+#include "Core/Object/function.h"
 
 int main(int args, char** argv)
 {
 	LOG_INFO() << "starting client";
-
 
 	Hikari::GameEngine* gameEngine = Hikari::GameEngine::Create();
 	gameEngine->Initialise();
@@ -43,7 +45,8 @@ int main(int args, char** argv)
 	meshComp->SetMesh("GMObject0.mesh");
 	meshComp->Initialise();
 
-	Hikari::LightComponent* lightComp = actor->AddComponent<Hikari::LightComponent>();
+	Hikari::Actor* lightActor = new Hikari::Actor(gameInstance->GetWorld());
+	Hikari::LightComponent* lightComp = lightActor->AddComponent<Hikari::LightComponent>();
 	lightComp->Initialise();
 
 	Hikari::Actor* cameraActor = new Hikari::Actor(gameInstance->GetWorld());
@@ -67,51 +70,16 @@ int main(int args, char** argv)
 	gameInstance->GetWorld()->LoadTerrain();
 	// TODO: initialise components and actors from game engine!
 
-	std::vector<Ogre::Vector3> points;
-	points.push_back(actor->GetPositionAbsolute());
-	points.push_back(actor->GetPositionAbsolute() + Ogre::Vector3::UNIT_Y * 2.0f);
-	Hikari::DebugGraphics::DrawDebugPoints(gameInstance->GetWorld(), points, 20.0f, Ogre::ColourValue::Red, 10.0f);
+	//std::vector<Ogre::Vector3> points;
+	//points.push_back(actor->GetPositionAbsolute());
+	//points.push_back(actor->GetPositionAbsolute() + Ogre::Vector3::UNIT_Y * 2.0f);
+	//Hikari::DebugGraphics::DrawDebugPoints(gameInstance->GetWorld(), points, 20.0f, Ogre::ColourValue::Red, 10.0f);
+
+	gameInstance->GetClient()->GetInGameController()->SetControlledCharacter(actor);
 
 	while (1)
 	{
-		float terrainHeight = gameInstance->GetWorld()->GetTerrainHeight(actor->GetPositionAbsolute().x, actor->GetPositionAbsolute().z);
-		//std::cout << terrainHeight << std::endl;
-		actor->SetPosition(Ogre::Vector3(actor->GetPosition().x, terrainHeight, actor->GetPosition().z));
-		if(gameInstance->GetInputManager()->GetKeyDown("1"))
-		{
-			meshComp->SetActiveAnimation("idle");
-		}
-		else if (gameInstance->GetInputManager()->GetKeyDown("2"))
-		{
-			meshComp->SetActiveAnimation("walk");
-		}
-
-
-		if (gameInstance->GetInputManager()->GetKey("d"))
-		{
-			actor->Rotate(Ogre::Vector3::UNIT_Y, 1.8f);
-		}
-		if (gameInstance->GetInputManager()->GetKey("a"))
-		{
-			actor->Rotate(Ogre::Vector3::UNIT_Y, -1.8f);
-		}
-
-		if (gameInstance->GetInputManager()->GetKey("up"))
-		{
-			//Ogre::Vector3 vec = actor->GetForwardVector() * 0.06f;
-			//actor->SetPosition(actor->GetPosition() + vec);
-			actor->GetMovementComponent()->AddInput(actor->GetForwardVector());
-		}
-		else if (gameInstance->GetInputManager()->GetKey("down"))
-		{
-			//Ogre::Vector3 vec = actor->GetUpVector() * 0.06f;
-			//actor->SetPosition(actor->GetPosition() + vec);
-			actor->GetMovementComponent()->AddInput(actor->GetUpVector());
-		}
-		else
-		{
-			actor->GetMovementComponent()->SetVelocity(Ogre::Vector3::ZERO);
-		}
+		
 
 		gameEngine->TickGameInstance(gameInstance);
 	}
