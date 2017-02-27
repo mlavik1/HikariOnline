@@ -42,20 +42,22 @@ namespace Hikari
 				OgreUtils::GetMeshInfo(actor, vertices, indices);
 
 				size_t numVertices = vertices.size();
-				size_t numTriangles = numVertices / 3;
+				size_t numIndices = indices.size();
+				size_t numTriangles = indices.size() / 3;
 
 				const int maxGridX = mWorldSizeX * mGridUnitSize;
 				const int maxGridZ = mWorldSizeZ * mGridUnitSize;
 
-				for (size_t i_triangle = 0; i_triangle < numTriangles; i_triangle += 3)
+				for (size_t i_index = 0; i_index < numIndices - 3; i_index++)
 				{
 					int minX = maxGridX + 1;
 					int maxX = -1;
 					int minZ = maxGridZ + 1;
 					int maxZ = -1;
+					int triangleIndices[3] = {indices[i_index], indices[i_index + 1] , indices[i_index + 2] };
 					for (size_t i = 0; i < 3; i++)
 					{
-						size_t i_vertex = i_triangle + i;
+						size_t i_vertex = triangleIndices[i];
 						const Ogre::Vector3& vertex = vertices[i_vertex];
 						minX = std::min(minX, (int)(vertex.x / mGridUnitSize));
 						maxX = std::max(maxX, (int)(vertex.x / mGridUnitSize));
@@ -68,15 +70,15 @@ namespace Hikari
 					maxX = std::min(maxX, maxGridX);
 					maxZ = std::min(maxZ, maxGridZ);
 
-					const Ogre::Vector3& p0 = vertices[i_triangle];
-					const Ogre::Vector3& p1 = vertices[i_triangle + 1];
-					const Ogre::Vector3& p2 = vertices[i_triangle + 2];
-					const float& p0x = vertices[i_triangle].x;
-					const float& p0z = vertices[i_triangle].z;
-					const float& p1x = vertices[i_triangle + 1].x;
-					const float& p1z = vertices[i_triangle + 1].z;
-					const float& p2x = vertices[i_triangle + 2].x;
-					const float& p2z = vertices[i_triangle + 2].z;
+					const Ogre::Vector3& p0 = vertices[triangleIndices[0]];
+					const Ogre::Vector3& p1 = vertices[triangleIndices[1]];
+					const Ogre::Vector3& p2 = vertices[triangleIndices[2]];
+					const float& p0x = p0.x;
+					const float& p0z = p0.z;
+					const float& p1x = p1.x;
+					const float& p1z = p1.z;
+					const float& p2x = p2.x;
+					const float& p2z = p2.z;
 
 					float triangleSignedArea = 0.5 *(-p1z*p2x + p0z*(-p1x + p2x) + p0x*(p1z - p2z) + p1x*p2z);
 
@@ -94,7 +96,9 @@ namespace Hikari
 								Ogre::Vector3 u = p1 - p0;
 								Ogre::Vector3 v = p2 - p0;
 								Ogre::Vector3 p = p0 + u*s + v*t;
-								mTerrain->HeightMap[(size_t)x + (((size_t)z) * gridWidth)] = p.y;
+								const float& oldHeight = mTerrain->HeightMap[(size_t)x + (((size_t)z) * gridWidth)];
+								if(p.y > oldHeight)
+									mTerrain->HeightMap[(size_t)x + (((size_t)z) * gridWidth)] = p.y;
 							}
 						}
 					}
