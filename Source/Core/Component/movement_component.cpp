@@ -16,9 +16,11 @@ namespace Hikari
 		mMovementMode = MovementMode::Walking;
 
 		MovementModeSettings defaultMovementModeSettings;
-		defaultMovementModeSettings.Acceleration = 8.0f;
-		defaultMovementModeSettings.MaxSpeed = 10.0f;
+		defaultMovementModeSettings.Acceleration = 50.0f;
+		defaultMovementModeSettings.MaxSpeed = 15.0f;
 		SetMovementModeSettings(MovementMode::Walking, defaultMovementModeSettings);
+		defaultMovementModeSettings.Acceleration = 8.0f;
+		defaultMovementModeSettings.MaxSpeed = 20.0f;
 		SetMovementModeSettings(MovementMode::Flying, defaultMovementModeSettings);
 		SetMovementModeSettings(MovementMode::None, MovementModeSettings());
 	}
@@ -71,6 +73,7 @@ namespace Hikari
 
 	void MovementComponent::SetVelocity(Ogre::Vector3 arg_velocity)
 	{
+		mRequestedInput = Ogre::Vector3::ZERO;
 		mVelocity = arg_velocity;
 	}
 

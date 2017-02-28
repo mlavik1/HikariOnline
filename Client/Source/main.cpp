@@ -34,6 +34,8 @@ int main(int args, char** argv)
 	// TEMP - todo
 	Ogre::ResourceGroupManager::getSingleton().addResourceLocation("OgreExport.zip", "Zip");
 	Ogre::ResourceGroupManager::getSingleton().addResourceLocation("TerrainTest.zip", "Zip");
+	Ogre::ResourceGroupManager::getSingleton().addResourceLocation("Skybox1.zip", "Zip");
+	Ogre::ResourceGroupManager::getSingleton().addResourceLocation("Skybox2.zip", "Zip");
 	Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
 	Hikari::PlayerCharacter* actor = new Hikari::PlayerCharacter(gameInstance->GetWorld());
@@ -49,15 +51,9 @@ int main(int args, char** argv)
 	Hikari::LightComponent* lightComp = lightActor->AddComponent<Hikari::LightComponent>();
 	lightComp->Initialise();
 
-	Hikari::Actor* cameraActor = new Hikari::Actor(gameInstance->GetWorld());
-	cameraActor->SetPosition(Ogre::Vector3(130.0f, 45.0f, 80.0f));
-	cameraActor->Rotate(Ogre::Vector3::UNIT_X, 40.0f);
-	Hikari::CameraComponent* camComp = cameraActor->AddComponent<Hikari::CameraComponent>();
-	camComp->Initialise();
-
 	Hikari::PlayerCharacter* landscapeTest = new Hikari::PlayerCharacter(gameInstance->GetWorld());
 	landscapeTest->SetScale(Ogre::Vector3(0.6f, 0.3f, 0.6f));
-	landscapeTest->Rotate(Ogre::Vector3(1.0f, 0.0f, 0.0f), 90.0f);
+	landscapeTest->Rotate(Ogre::Vector3(1.0f, 0.0f, 0.0f), 270.0f);
 	landscapeTest->SetPosition(Ogre::Vector3(130.0f, 0.0f, 130.0f));
 	//landscapeTest->SetPosition(Ogre::Vector3(0.0f, 0.0f, 100.0f));
 	landscapeTest->Initialise();
@@ -66,6 +62,8 @@ int main(int args, char** argv)
 	landscapeComp->Initialise();
 	Hikari::TerrainComponent* terrainComp = landscapeTest->AddComponent<Hikari::TerrainComponent>();
 	terrainComp->Initialise();
+
+	gameInstance->GetWorld()->GetSceneManager()->setSkyBox(true, "Skybox2", 15000.0f);
 
 	gameInstance->GetWorld()->LoadTerrain();
 	// TODO: initialise components and actors from game engine!

@@ -112,7 +112,7 @@ namespace Hikari
 			{
 				std::string animName = pair.first.c_str();
 				std::transform(animName.begin(), animName.end(), animName.begin(), ::tolower);
-				AnimationInstance* animInstance = new AnimationInstance(pair.second);
+				AnimationInstance* animInstance = new AnimationInstance(pair.second, pair.first);
 				mAnimationInstances.emplace(animName, animInstance);
 			}
 		}

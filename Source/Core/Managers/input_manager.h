@@ -3,12 +3,15 @@
 
 #include "OIS/OIS.h"
 #include <unordered_map>
+#include <stdint.h>
+#include "OGRE/Ogre.h"
 
 namespace Hikari
 {
 	class GameInstance;
 
 	typedef OIS::KeyCode InputMapKeyCode;
+	typedef unsigned int MouseButtonID;
 
 	class InputManager : public OIS::KeyListener, public OIS::MouseListener, public OIS::JoyStickListener
 	{
@@ -21,6 +24,12 @@ namespace Hikari
 		bool GetKey(const char* arg_key);
 		bool GetKeyDown(const char* arg_key);
 		bool GetKeyUp(const char* arg_key);
+
+		bool GetMousePressed(MouseButtonID arg_button);
+		bool GetMouseReleased(MouseButtonID arg_button);
+
+		const Ogre::Vector2& GetMouseMove() const;
+		const Ogre::Vector2& GetMousePosition() const;
 
 	private:
 		GameInstance* mGameInstance;
@@ -35,6 +44,11 @@ namespace Hikari
 		std::unordered_map<InputMapKeyCode, bool> mKeyUpMap;
 		std::unordered_map<InputMapKeyCode, bool> mKeyPressedMap;
 
+		MouseButtonID mMousePressStates;
+		MouseButtonID mMouseReleaseStates;
+
+		Ogre::Vector2 mMouseMove;
+		Ogre::Vector2 mMousePosition;
 
 		void setupInputMap();
 		bool keyPressed(const OIS::KeyEvent &e) override;

@@ -4,9 +4,10 @@
 
 namespace Hikari
 {
-	AnimationInstance::AnimationInstance(Ogre::AnimationState* arg_animstate)
+	AnimationInstance::AnimationInstance(Ogre::AnimationState* arg_animstate, std::string arg_name)
 	{
 		__Assert(arg_animstate != nullptr);
+		mName = arg_name;
 		mPlayRate = 1.0f;
 		mBlendWeight = 0.0f;
 		mAnimationState = arg_animstate;
@@ -65,5 +66,10 @@ namespace Hikari
 	bool AnimationInstance::GetLoopEnabled() const
 	{
 		return mLoopEnabled;
+	}
+
+	std::string AnimationInstance::GetName() const
+	{
+		return mName;
 	}
 }

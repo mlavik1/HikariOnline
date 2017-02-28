@@ -127,8 +127,8 @@ namespace Hikari
 					unprocessedUnits.push_back(Ogre::Vector3(x, 14.0f, z));
 			}
 		}
-		DebugGraphics::DrawDebugPoints(this, processedUnits, 5.0f, Ogre::ColourValue::Green, 10.0f);
-		DebugGraphics::DrawDebugPoints(this, unprocessedUnits, 5.0f, Ogre::ColourValue::Red, 10.0f);
+		//DebugGraphics::DrawDebugPoints(this, processedUnits, 5.0f, Ogre::ColourValue::Black, 10.0f);
+		//DebugGraphics::DrawDebugPoints(this, unprocessedUnits, 5.0f, Ogre::ColourValue::Red, 10.0f);
 	}
 
 

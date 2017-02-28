@@ -8,11 +8,14 @@ namespace Hikari
 {
 	class PlayerCharacter;
 	class Client;
+	class Actor;
 
 	class InGameController : public ClientController
 	{
 	protected:
 		ObjectPtr<PlayerCharacter> mControlledCharacter;
+		Actor* mCameraActor = nullptr;
+		Actor* mCameraAttachPoint = nullptr;
 
 	public:
 		InGameController(Client* arg_client);

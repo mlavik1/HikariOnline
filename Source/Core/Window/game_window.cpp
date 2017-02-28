@@ -8,7 +8,7 @@ namespace Hikari
 	GameWindow::GameWindow()
 	{
 		mRenderWindow = GameEngine::Instance()->GetOgreRoot()->initialise(true, "Hikari");
-		mRenderWindow->setFullscreen(false, 600, 400);
+		mRenderWindow->setFullscreen(false, 800, 600);
 
 #ifdef _WIN32
 		mRenderWindow->getCustomAttribute("WINDOW", &mHWND);
