@@ -19,12 +19,13 @@ namespace Hikari
 		LOG_INFO() << "Creating game instance";
 
 		mGameEngine = arg_engine;
-		mGameWindow = new GameWindow();
-		mTickManager = new TickManager();
-		mInputManager = new InputManager(this);
-		
 		Ogre::SceneManager* sceneManager = mGameEngine->GetOgreRoot()->createSceneManager(Ogre::ST_GENERIC);
 		mWorld = new World(this, sceneManager);
+
+		mGameWindow = new GameWindow(this);
+		mTickManager = new TickManager();
+		mInputManager = new InputManager(this);
+	
 
 #ifdef HIKARI_CLIENT
 		mClient = new Client(this);

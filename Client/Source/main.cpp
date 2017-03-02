@@ -18,12 +18,23 @@
 #include "Core/Controller/ingame_controller.h"
 #include "Core/Object/function.h"
 
+#include "MyGUI/MyGUI.h"
+#include "MyGUI/MyGUI_OgrePlatform.h"
+
 int main(int args, char** argv)
 {
 	LOG_INFO() << "starting client";
 
 	Hikari::GameEngine* gameEngine = Hikari::GameEngine::Create();
 	gameEngine->Initialise();
+
+	// TEMP - todo :  NOTE: must come before MyGUI::OGrePlatform is initialised...
+	Ogre::ResourceGroupManager::getSingleton().addResourceLocation("OgreExport.zip", "Zip");
+	Ogre::ResourceGroupManager::getSingleton().addResourceLocation("TerrainTest.zip", "Zip");
+	Ogre::ResourceGroupManager::getSingleton().addResourceLocation("MyGUIMedia.zip", "Zip");
+	Ogre::ResourceGroupManager::getSingleton().addResourceLocation("Skybox2.zip", "Zip");
+	Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
+
 	Hikari::GameInstance* gameInstance = gameEngine->CreateGameInstance();
 
 	gameInstance->GetGameWindow()->SetTitle("Hikari Client");
@@ -31,13 +42,7 @@ int main(int args, char** argv)
 	// TODO: make scene settings
 	gameInstance->GetWorld()->GetSceneManager()->setAmbientLight(Ogre::ColourValue(0.2f, 0.2f, 0.2f));
 
-	// TEMP - todo
-	Ogre::ResourceGroupManager::getSingleton().addResourceLocation("OgreExport.zip", "Zip");
-	Ogre::ResourceGroupManager::getSingleton().addResourceLocation("TerrainTest.zip", "Zip");
-	Ogre::ResourceGroupManager::getSingleton().addResourceLocation("Skybox1.zip", "Zip");
-	Ogre::ResourceGroupManager::getSingleton().addResourceLocation("Skybox2.zip", "Zip");
-	Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
-
+	
 	Hikari::PlayerCharacter* actor = new Hikari::PlayerCharacter(gameInstance->GetWorld());
 	actor->Initialise();
 	actor->SetScale(Ogre::Vector3(10, 10, 10));
@@ -55,7 +60,6 @@ int main(int args, char** argv)
 	landscapeTest->SetScale(Ogre::Vector3(0.6f, 0.3f, 0.6f));
 	landscapeTest->Rotate(Ogre::Vector3(1.0f, 0.0f, 0.0f), 270.0f);
 	landscapeTest->SetPosition(Ogre::Vector3(130.0f, 0.0f, 130.0f));
-	//landscapeTest->SetPosition(Ogre::Vector3(0.0f, 0.0f, 100.0f));
 	landscapeTest->Initialise();
 	Hikari::MeshComponent* landscapeComp = landscapeTest->AddComponent<Hikari::MeshComponent>();
 	landscapeComp->SetMesh("ID3.mesh");
@@ -68,16 +72,22 @@ int main(int args, char** argv)
 	gameInstance->GetWorld()->LoadTerrain();
 	// TODO: initialise components and actors from game engine!
 
-	//std::vector<Ogre::Vector3> points;
-	//points.push_back(actor->GetPositionAbsolute());
-	//points.push_back(actor->GetPositionAbsolute() + Ogre::Vector3::UNIT_Y * 2.0f);
-	//Hikari::DebugGraphics::DrawDebugPoints(gameInstance->GetWorld(), points, 20.0f, Ogre::ColourValue::Red, 10.0f);
 
 	gameInstance->GetClient()->GetInGameController()->SetControlledCharacter(actor);
 
+
+
+	MyGUI::Gui* mGUI = gameInstance->GetGameWindow()->GetMyGUI();
+	
+	MyGUI::ButtonPtr button = mGUI->createWidget<MyGUI::Button>("Button", 10, 10, 300, 26, MyGUI::Align::Default, "Main");
+	button->setCaption("exit");
+
+	MyGUI::WindowPtr guiWIndow = mGUI->createWidget<MyGUI::Window>("Button", 100, 100, 300, 300, MyGUI::Align::Default, "Main");
+	guiWIndow->setAlign(MyGUI::Align::Bottom);
+
+
 	while (1)
 	{
-		
 
 		gameEngine->TickGameInstance(gameInstance);
 	}

@@ -19,12 +19,7 @@ namespace Hikari
 	{
 		Hikari::Component::Initialise();
 
-		mCamera = mWorld->GetSceneManager()->createCamera(mObjectName);
-		mCamera->setNearClipDistance(5); // todo: make function
-		
-		// TEMP -todo
-		Ogre::Viewport* viewport = mWorld->GetGameInstance()->GetGameWindow()->GetRenderWindow()->addViewport(mCamera);
-		viewport->setBackgroundColour(Ogre::ColourValue(0.0f, 0.0f, 1.0f));
+		mCamera = mWorld->GetGameInstance()->GetGameWindow()->GetMainCamera();
 	}
 
 	void CameraComponent::Tick(float arg_deltatime)

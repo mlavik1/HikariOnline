@@ -3,6 +3,7 @@
 #include "Core/Engine/game_engine.h"
 #include "Core/Window/game_window.h"
 #include <sstream>
+#include "MYGUI/MyGUI.h"
 
 namespace Hikari
 {
@@ -37,6 +38,11 @@ namespace Hikari
 
 			mKeyboardInputObject->setEventCallback(this);
 			mMouseInputObject->setEventCallback(this);
+
+			// TODO: listen to GameWindow::Resize
+			const OIS::MouseState &mouseState = mMouseInputObject->getMouseState();
+			mouseState.width = mGameInstance->GetGameWindow()->GetWidth();
+			mouseState.height = mGameInstance->GetGameWindow()->GetHeight();
 		}
 
 		setupInputMap();
@@ -129,6 +135,7 @@ namespace Hikari
 	{
 		mKeyDownMap[e.key] = true;
 		mKeyPressedMap[e.key] = true;
+		MyGUI::InputManager::getInstance().injectKeyPress(MyGUI::KeyCode::Enum(e.key), e.text);
 		return true;
 	}
 
@@ -136,6 +143,7 @@ namespace Hikari
 	{
 		mKeyPressedMap[e.key] = false;
 		mKeyUpMap[e.key] = true;
+		MyGUI::InputManager::getInstance().injectKeyRelease(MyGUI::KeyCode::Enum(e.key));
 		return true;
 	}
 
@@ -143,12 +151,14 @@ namespace Hikari
 	{
 		mMouseMove = Ogre::Vector2(e.state.X.rel, e.state.Y.rel);
 		mMousePosition = Ogre::Vector2(e.state.X.abs, e.state.Y.abs);
+		MyGUI::InputManager::getInstance().injectMouseMove(e.state.X.abs, e.state.Y.abs, e.state.Z.abs);
 		return true;
 	}
 
 	bool InputManager::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 	{
 		mMousePressStates |= ((MouseButtonID)1 << id);
+		MyGUI::InputManager::getInstance().injectMousePress(e.state.X.abs, e.state.Y.abs, MyGUI::MouseButton::Enum(id));
 		return true;
 	}
 
@@ -156,6 +166,7 @@ namespace Hikari
 	{
 		mMouseReleaseStates |= ((MouseButtonID)1 << id);
 		mMousePressStates &= !((MouseButtonID)1 << id);
+		MyGUI::InputManager::getInstance().injectMouseRelease(e.state.X.abs, e.state.Y.abs, MyGUI::MouseButton::Enum(id));
 		return true;
 	}
 

@@ -31,6 +31,9 @@ namespace Hikari
 		const Ogre::Vector2& GetMouseMove() const;
 		const Ogre::Vector2& GetMousePosition() const;
 
+		OIS::Keyboard* GetKeyboardInputObject() { return mKeyboardInputObject; }
+		OIS::Mouse* GetMouseInputObject() { return mMouseInputObject; }
+
 	private:
 		GameInstance* mGameInstance;
 

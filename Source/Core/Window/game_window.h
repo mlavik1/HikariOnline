@@ -6,6 +6,8 @@
 #ifdef _WIN32
 #include <Windows.h>
 #endif
+#include "MYGUI/MyGUI.h"
+#include "MyGUI/MyGUI_OgrePlatform.h"
 
 namespace Hikari
 {
@@ -18,16 +20,30 @@ namespace Hikari
 #ifdef _WIN32
 		HWND mHWND;
 #endif
+		MyGUI::Gui* mMyGUI;
+
+		/**
+		* Main camera of the client.
+		*/
+		Ogre::Camera* mMainCamera;
+		/**
+		* Main viewport of the client.
+		*/
+		Ogre::Viewport* mMainViewport;
 
 	public:
-		GameWindow();
+		GameWindow(GameInstance* arg_gameinstance);
+
+		MyGUI::Gui* GetMyGUI();
+		Ogre::Camera* GetMainCamera();
+		Ogre::Viewport* GetMainViewport();
+		Ogre::RenderWindow* GetRenderWindow();
+
+		int GetWidth() const;
+		int GetHeight() const;
 
 		void SetTitle(const char* arg_title);
-
-		inline Ogre::RenderWindow* GetRenderWindow()
-		{
-			return mRenderWindow;
-		}
+		void Resize(int arg_width, int arg_height);
 	};
 }
 

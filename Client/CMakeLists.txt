@@ -92,6 +92,7 @@ include_directories ("../Dependencies/Include/SDL2")
 include_directories ("../Dependencies/Include/Ogre")
 include_directories ("../Dependencies/Include/Boost")
 include_directories ("../Dependencies/Include/SFML-2.4.1")
+include_directories ("../Dependencies/Include/MYGUI")
 include_directories ("../Source")
 include_directories ("Source")
 
@@ -110,6 +111,10 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 	TARGET_LINK_LIBRARIES(Client ${LIB_DIR}/sfml-system-d.lib)
 	TARGET_LINK_LIBRARIES(Client ${LIB_DIR}/sfml-main-d.lib)
 	TARGET_LINK_LIBRARIES(Client ${LIB_DIR}/sfml-network-d.lib)
+	TARGET_LINK_LIBRARIES(Client ${LIB_DIR}/EditorFramework_d.lib)
+	TARGET_LINK_LIBRARIES(Client ${LIB_DIR}/MyGUI.OgrePlatform_d.lib)
+	TARGET_LINK_LIBRARIES(Client ${LIB_DIR}/MyGUIEngine_d.lib)
+	TARGET_LINK_LIBRARIES(Client ${LIB_DIR}/Plugin_StrangeButton_d.lib)
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 
 
