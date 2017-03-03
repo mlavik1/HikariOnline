@@ -20,12 +20,12 @@ namespace Hikari
 		arg_gameinstance->GetGameWindow()->GetRenderWindow()->getCustomAttribute("WINDOW", &windowHwnd);
 		windowHndStr << windowHwnd;
 		oisParamList.insert(std::make_pair(std::string("WINDOW"), windowHndStr.str()));
-		oisParamList.insert(std::make_pair(std::string("w32_mouse"), std::string("DISCL_FOREGROUND")));
-		oisParamList.insert(std::make_pair(std::string("w32_mouse"), std::string("DISCL_NONEXCLUSIVE")));
+		//oisParamList.insert(std::make_pair(std::string("w32_mouse"), std::string("DISCL_FOREGROUND")));
+		//oisParamList.insert(std::make_pair(std::string("w32_mouse"), std::string("DISCL_NONEXCLUSIVE")));
 		oisParamList.insert(std::make_pair(std::string("w32_keyboard"), std::string("DISCL_FOREGROUND")));
 		oisParamList.insert(std::make_pair(std::string("w32_keyboard"), std::string("DISCL_NONEXCLUSIVE")));
 		oisParamList.insert(std::make_pair(std::string("x11_mouse_grab"), std::string("false")));
-		oisParamList.insert(std::make_pair(std::string("x11_mouse_hide"), std::string("false")));
+		//oisParamList.insert(std::make_pair(std::string("x11_mouse_hide"), std::string("false")));
 		oisParamList.insert(std::make_pair(std::string("x11_keyboard_grab"), std::string("false")));
 		oisParamList.insert(std::make_pair(std::string("XAutoRepeatOn"), std::string("true")));
 
@@ -135,7 +135,12 @@ namespace Hikari
 	{
 		mKeyDownMap[e.key] = true;
 		mKeyPressedMap[e.key] = true;
-		MyGUI::InputManager::getInstance().injectKeyPress(MyGUI::KeyCode::Enum(e.key), e.text);
+		MyGUI::Char myguiChar = (MyGUI::Char)e.text;
+		bool bProcessed = MyGUI::InputManager::getInstance().injectKeyPress(MyGUI::KeyCode::Enum(e.key), myguiChar);
+		if (bProcessed)
+		{
+			int a = 2;
+		}
 		return true;
 	}
 

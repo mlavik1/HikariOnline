@@ -8,6 +8,7 @@
 #include "Core/Managers/tick_manager.h"
 #include "Core/Managers/time_manager.h"
 #include "Core/Engine/client.h"
+#include "Core/Managers/window_manager.h"
 
 namespace Hikari
 {
@@ -28,6 +29,7 @@ namespace Hikari
 	
 
 #ifdef HIKARI_CLIENT
+		mWindowManager = new WindowManager(this);
 		mClient = new Client(this);
 #endif
 	}

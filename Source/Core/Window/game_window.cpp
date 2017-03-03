@@ -10,7 +10,7 @@ namespace Hikari
 	GameWindow::GameWindow(GameInstance* arg_gameinstance)
 	{
 		mRenderWindow = GameEngine::Instance()->GetOgreRoot()->initialise(true, "Hikari");
-		mRenderWindow->setFullscreen(false, 800, 600);
+		//mRenderWindow->setFullscreen(false, 1024, 768);
 		
 #ifdef _WIN32
 		mRenderWindow->getCustomAttribute("WINDOW", &mHWND);
@@ -21,7 +21,7 @@ namespace Hikari
 		mMainCamera->setNearClipDistance(5);
 		Ogre::Viewport* viewport = GetRenderWindow()->addViewport(mMainCamera);
 		viewport->setBackgroundColour(Ogre::ColourValue(0.0f, 0.0f, 1.0f));
-
+		
 		MyGUI::OgrePlatform* mPlatform;
 		mPlatform = new MyGUI::OgrePlatform();
 		mPlatform->initialise(mRenderWindow, arg_gameinstance->GetWorld()->GetSceneManager());

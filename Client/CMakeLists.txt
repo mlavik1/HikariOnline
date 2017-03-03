@@ -65,6 +65,10 @@ file(GLOB_RECURSE SRC_CONTROLLER
     "${SharedSourceDir}/Core/Controller/*.cpp"
     "${SharedSourceDir}/Core/Controller/*.h"
 )
+file(GLOB_RECURSE SRC_GUI
+    "${SharedSourceDir}/GUI/*.cpp"
+    "${SharedSourceDir}/GUI/*.h"
+)
 
 source_group("Core\\Object" FILES ${SRC_OBJECT})
 source_group("Core\\Debug" FILES ${SRC_DEBUG})
@@ -79,6 +83,7 @@ source_group("Core\\Animation" FILES ${SRC_ANIMATION})
 source_group("Core\\Networking" FILES ${SRC_NETWORKING})
 source_group("Core\\Misc" FILES ${SRC_MISC})
 source_group("Core\\Controller" FILES ${SRC_CONTROLLER})
+source_group("GUI" FILES ${SRC_GUI})
 
 FILE(GLOB_RECURSE children RELATIVE ${SharedSourceDir} ${SharedSourceDir}/*)
 FOREACH(child ${children})

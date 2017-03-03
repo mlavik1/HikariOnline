@@ -17,9 +17,10 @@
 #include "Core/Engine/client.h"
 #include "Core/Controller/ingame_controller.h"
 #include "Core/Object/function.h"
-
 #include "MyGUI/MyGUI.h"
 #include "MyGUI/MyGUI_OgrePlatform.h"
+#include "GUI/game_hud.h"
+#include "Core/Managers/window_manager.h"
 
 int main(int args, char** argv)
 {
@@ -33,6 +34,7 @@ int main(int args, char** argv)
 	Ogre::ResourceGroupManager::getSingleton().addResourceLocation("TerrainTest.zip", "Zip");
 	Ogre::ResourceGroupManager::getSingleton().addResourceLocation("MyGUIMedia.zip", "Zip");
 	Ogre::ResourceGroupManager::getSingleton().addResourceLocation("Skybox2.zip", "Zip");
+	Ogre::ResourceGroupManager::getSingleton().addResourceLocation("Layouts.zip", "Zip");
 	Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
 	Hikari::GameInstance* gameInstance = gameEngine->CreateGameInstance();
@@ -75,8 +77,9 @@ int main(int args, char** argv)
 
 	gameInstance->GetClient()->GetInGameController()->SetControlledCharacter(actor);
 
-
-
+	Hikari::GameHUD* gameHUD = (Hikari::GameHUD*)gameInstance->GetWindowManager()->ShowWindow(Hikari::GameHUD::GetStaticClass());
+	//gameHUD->ShowWindow();
+	/*
 	MyGUI::Gui* mGUI = gameInstance->GetGameWindow()->GetMyGUI();
 	
 	MyGUI::ButtonPtr button = mGUI->createWidget<MyGUI::Button>("Button", 10, 10, 300, 26, MyGUI::Align::Default, "Main");
@@ -84,7 +87,9 @@ int main(int args, char** argv)
 
 	MyGUI::WindowPtr guiWIndow = mGUI->createWidget<MyGUI::Window>("Button", 100, 100, 300, 300, MyGUI::Align::Default, "Main");
 	guiWIndow->setAlign(MyGUI::Align::Bottom);
-
+	guiWIndow->setProperty("Movable", "true");
+	*/
+	
 
 	while (1)
 	{

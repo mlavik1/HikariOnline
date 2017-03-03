@@ -77,7 +77,7 @@ namespace Hikari
 	}
 
 
-	Class* Class::GetChildClassByName(const char* arg_name, bool arg_fullname)
+	Class* Class::GetChildClassByName(const char* arg_name, bool arg_fullname) const
 	{
 		for (Class* childClass : mChildClasses)
 		{

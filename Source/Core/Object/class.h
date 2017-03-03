@@ -81,7 +81,7 @@ namespace Hikari
 		* @param arg_name				The name of the class to search for.
 		* @param arg_fullname			Use full name (with namespace) when comparing class names.
 		*/
-		Class* GetChildClassByName(const char* arg_name, bool arg_fullname);
+		Class* GetChildClassByName(const char* arg_name, bool arg_fullname) const;
 
 		Function* GetFunctionByName(const char* arg_name);
 

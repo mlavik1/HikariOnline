@@ -7,6 +7,7 @@ namespace Hikari
 	class World;
 	class InputManager;
 	class TickManager;
+	class WindowManager;
 	class GameWindow;
 	class Client;
 
@@ -38,6 +39,11 @@ namespace Hikari
 			return mInputManager;
 		}
 
+		inline WindowManager* GetWindowManager()
+		{
+			return mWindowManager;
+		}
+
 #ifdef HIKARI_CLIENT
 		inline Client* GetClient()
 		{
@@ -51,6 +57,7 @@ namespace Hikari
 		World* mWorld;
 		TickManager* mTickManager;
 		InputManager* mInputManager;
+		WindowManager* mWindowManager;
 		float mLastTime = 0.0f;
 
 #ifdef HIKARI_CLIENT
