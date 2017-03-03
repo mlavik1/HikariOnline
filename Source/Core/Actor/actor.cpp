@@ -4,8 +4,11 @@
 #include "Core/Component/component.h"
 #include "Core/Managers/tick_manager.h"
 #include "Core/Engine/game_instance.h"
+#include "Core/Object/function.h"
 
 IMPLEMENT_CLASS(Hikari::Actor)
+
+REGISTER_CLASSPROPERTIES(Hikari::Actor)
 
 namespace Hikari
 {
@@ -16,6 +19,14 @@ namespace Hikari
 		mWorld = arg_world;
 		mSceneNode = mWorld->GetSceneManager()->getRootSceneNode()->createChildSceneNode(mObjectName);
 		mWorld->AddActor(this);
+
+
+		CALL_FUNCTION(this, RPCTest, 2, 3.0f)
+		//void(Hikari::Object::*tmpFuncPtr)(FunctionArgContainer) = (void(Hikari::Object::*)(FunctionArgContainer))(&Actor::call_RPCTest);
+		//Function func("test", tmpFuncPtr);
+		//FunctionArgContainer args = getargs_RPCTest(2, 3.0f);
+		//Object* thisObj = (Object*)this;
+		//thisObj->CallFunction(&func, args);
 	}
 
 	const Ogre::Vector3& Actor::GetPosition() const
@@ -91,7 +102,9 @@ namespace Hikari
 
 	void Actor::Rotate(const Ogre::Vector3& arg_axis, float arg_degrees)
 	{
-		mSceneNode->rotate(arg_axis, Ogre::Radian(Ogre::Degree(arg_degrees).valueRadians()));
+		// TEMP: todo - see if ogre has a local rotate-function. If not, make one.
+		Ogre::Vector3 axis = mSceneNode->getOrientation().Inverse() * arg_axis;
+		mSceneNode->rotate(axis, Ogre::Radian(Ogre::Degree(arg_degrees).valueRadians()));
 	}
 	
 
