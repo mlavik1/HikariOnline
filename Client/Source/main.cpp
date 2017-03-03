@@ -30,11 +30,12 @@ int main(int args, char** argv)
 	gameEngine->Initialise();
 
 	// TEMP - todo :  NOTE: must come before MyGUI::OGrePlatform is initialised...
-	Ogre::ResourceGroupManager::getSingleton().addResourceLocation("OgreExport.zip", "Zip");
-	Ogre::ResourceGroupManager::getSingleton().addResourceLocation("TerrainTest.zip", "Zip");
-	Ogre::ResourceGroupManager::getSingleton().addResourceLocation("MyGUIMedia.zip", "Zip");
-	Ogre::ResourceGroupManager::getSingleton().addResourceLocation("Skybox2.zip", "Zip");
-	Ogre::ResourceGroupManager::getSingleton().addResourceLocation("Layouts.zip", "Zip");
+	Ogre::ResourceGroupManager::getSingleton().addResourceLocation("Data/OgreExport.zip", "Zip");
+	Ogre::ResourceGroupManager::getSingleton().addResourceLocation("Data/TerrainTest.zip", "Zip");
+	Ogre::ResourceGroupManager::getSingleton().addResourceLocation("Data/MyGUIMedia.zip", "Zip");
+	Ogre::ResourceGroupManager::getSingleton().addResourceLocation("Data/Skybox2.zip", "Zip");
+	//Ogre::ResourceGroupManager::getSingleton().addResourceLocation("Layouts.zip", "Zip");
+	Ogre::ResourceGroupManager::getSingleton().addResourceLocation("Resources/GUI/Layouts", "FileSystem", "GUILayouts");
 	Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
 	Hikari::GameInstance* gameInstance = gameEngine->CreateGameInstance();

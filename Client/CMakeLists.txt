@@ -123,8 +123,42 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 
 
-IF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+# ----- Resources ------------------------------------------------------------
+file(GLOB_RECURSE AddonFiles ../Resources/*.*)
+foreach(AddonFile ${AddonFiles})
+	get_filename_component(IN_DIR ${AddonFile} DIRECTORY)
+	#message(${IN_DIR})
+	string(REGEX REPLACE "${CMAKE_CURRENT_LIST_DIR}" "" IN_DIR ${IN_DIR})
+	set (OUT_DIR ${IN_DIR})
+	string(REGEX REPLACE "/../" "/" OUT_DIR ${IN_DIR})
+	#message(${IN_DIR})
+	
+	file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}${OUT_DIR})
+	add_custom_command(TARGET GET Client PRE_BUILD
+			COMMAND ${CMAKE_COMMAND} -E
+			copy ${AddonFile} ${CMAKE_CURRENT_BINARY_DIR}${OUT_DIR}/)
+			#message(${CMAKE_CURRENT_BINARY_DIR}${OUT_DIR})
+endforeach(AddonFile)
 
+# ----- Data -----------------------------------------------------------------
+file(GLOB_RECURSE AddonFiles ../Data/*.*)
+foreach(AddonFile ${AddonFiles})
+	get_filename_component(IN_DIR ${AddonFile} DIRECTORY)
+	#message(${IN_DIR})
+	string(REGEX REPLACE "${CMAKE_CURRENT_LIST_DIR}" "" IN_DIR ${IN_DIR})
+	set (OUT_DIR ${IN_DIR})
+	string(REGEX REPLACE "/../" "/" OUT_DIR ${IN_DIR})
+	#message(${IN_DIR})
+	
+	file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}${OUT_DIR})
+	add_custom_command(TARGET GET Client PRE_BUILD
+			COMMAND ${CMAKE_COMMAND} -E
+			copy ${AddonFile} ${CMAKE_CURRENT_BINARY_DIR}${OUT_DIR}/)
+			#message(${CMAKE_CURRENT_BINARY_DIR}${OUT_DIR})
+endforeach(AddonFile)
+
+# ----- DLL ------------------------------------------------------------------
+IF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 	if (${CMAKE_GENERATOR} MATCHES "Visual Studio 14")
 		 set (DLL_TO_DBG ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Debug)
 		 set (DLL_TO_RELEASE ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Release)
