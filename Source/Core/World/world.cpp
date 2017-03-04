@@ -48,7 +48,7 @@ namespace Hikari
 				const int maxGridX = mWorldSizeX * mGridUnitSize;
 				const int maxGridZ = mWorldSizeZ * mGridUnitSize;
 
-				for (size_t i_index = 0; i_index < numIndices - 3; i_index++)
+				for (size_t i_index = 0; i_index < numIndices - 3; i_index += 3)
 				{
 					int minX = maxGridX + 1;
 					int maxX = -1;

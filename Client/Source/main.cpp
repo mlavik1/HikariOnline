@@ -34,6 +34,7 @@ int main(int args, char** argv)
 	Ogre::ResourceGroupManager::getSingleton().addResourceLocation("Data/TerrainTest.zip", "Zip");
 	Ogre::ResourceGroupManager::getSingleton().addResourceLocation("Data/MyGUIMedia.zip", "Zip");
 	Ogre::ResourceGroupManager::getSingleton().addResourceLocation("Data/Skybox2.zip", "Zip");
+	Ogre::ResourceGroupManager::getSingleton().addResourceLocation("Data/Terrain1.zip", "Zip");
 	//Ogre::ResourceGroupManager::getSingleton().addResourceLocation("Layouts.zip", "Zip");
 	Ogre::ResourceGroupManager::getSingleton().addResourceLocation("Resources/GUI/Layouts", "FileSystem", "GUILayouts");
 	Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
@@ -60,12 +61,13 @@ int main(int args, char** argv)
 	lightComp->Initialise();
 
 	Hikari::PlayerCharacter* landscapeTest = new Hikari::PlayerCharacter(gameInstance->GetWorld());
-	landscapeTest->SetScale(Ogre::Vector3(0.6f, 0.3f, 0.6f));
+	//landscapeTest->SetScale(Ogre::Vector3(0.6f, 0.3f, 0.6f));
+	landscapeTest->SetScale(Ogre::Vector3(100,100,100));
 	landscapeTest->Rotate(Ogre::Vector3(1.0f, 0.0f, 0.0f), 270.0f);
 	landscapeTest->SetPosition(Ogre::Vector3(130.0f, 0.0f, 130.0f));
 	landscapeTest->Initialise();
 	Hikari::MeshComponent* landscapeComp = landscapeTest->AddComponent<Hikari::MeshComponent>();
-	landscapeComp->SetMesh("ID3.mesh");
+	landscapeComp->SetMesh("Plane.mesh");
 	landscapeComp->Initialise();
 	Hikari::TerrainComponent* terrainComp = landscapeTest->AddComponent<Hikari::TerrainComponent>();
 	terrainComp->Initialise();
