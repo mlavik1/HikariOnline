@@ -16,11 +16,11 @@ namespace Hikari
 		mMovementMode = MovementMode::Walking;
 
 		MovementModeSettings defaultMovementModeSettings;
-		defaultMovementModeSettings.Acceleration = 50.0f;
-		defaultMovementModeSettings.MaxSpeed = 15.0f;
-		SetMovementModeSettings(MovementMode::Walking, defaultMovementModeSettings);
 		defaultMovementModeSettings.Acceleration = 8.0f;
-		defaultMovementModeSettings.MaxSpeed = 20.0f;
+		defaultMovementModeSettings.MaxSpeed = 2.0f;
+		SetMovementModeSettings(MovementMode::Walking, defaultMovementModeSettings);
+		defaultMovementModeSettings.Acceleration = 1.2f;
+		defaultMovementModeSettings.MaxSpeed = 2.5f;
 		SetMovementModeSettings(MovementMode::Flying, defaultMovementModeSettings);
 		SetMovementModeSettings(MovementMode::None, MovementModeSettings());
 	}

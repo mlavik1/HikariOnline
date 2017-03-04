@@ -11,23 +11,31 @@ namespace Hikari
 	void GameHUD::ShowWindow()
 	{
 		BaseWindow::ShowWindow();
-
+		
 		LoadLayout(mGameHUDLayout);
 		LoadLayout(mGameChatLayout);
-
+		
 		mChatInputBox = mGameInstance->GetGameWindow()->GetMyGUI()->findWidget<MyGUI::EditBox>("ChatInput");
 		mChatMessageBox = mGameInstance->GetGameWindow()->GetMyGUI()->findWidget<MyGUI::EditBox>("ChatMessages");
-		
+		mSubmitButton = mGameInstance->GetGameWindow()->GetMyGUI()->findWidget<MyGUI::Button>("SubmitButton");
+
 		__Assert(mChatInputBox != nullptr);
 		__Assert(mChatMessageBox != nullptr);
+		__Assert(mSubmitButton != nullptr);
 		
-
 		mChatInputBox->eventKeyButtonPressed += MyGUI::newDelegate(this, &GameHUD::notify_ChatInputBoxInput);
+		mSubmitButton->eventMouseButtonClick += MyGUI::newDelegate(this, &GameHUD::notify_SubmitButtonClicked);
 	}
 
 	void GameHUD::CloseWindow()
 	{
 		BaseWindow::CloseWindow();
+	}
+
+	void GameHUD::notify_SubmitButtonClicked(MyGUI::Widget* _sender)
+	{
+		AddChatMessage((std::string("You: ") + std::string(mChatInputBox->getCaption())).c_str());
+		mChatInputBox->setCaption("");
 	}
 
 	void GameHUD::notify_ChatInputBoxInput(MyGUI::Widget* _sender, MyGUI::KeyCode _key, MyGUI::Char _char)

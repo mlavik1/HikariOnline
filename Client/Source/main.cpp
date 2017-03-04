@@ -49,7 +49,7 @@ int main(int args, char** argv)
 	
 	Hikari::PlayerCharacter* actor = new Hikari::PlayerCharacter(gameInstance->GetWorld());
 	actor->Initialise();
-	actor->SetScale(Ogre::Vector3(10, 10, 10));
+	actor->SetScale(Ogre::Vector3(1, 1, 1));
 	actor->SetPosition(Ogre::Vector3(130.0f, 2.0f, 130.0f));
 
 	Hikari::MeshComponent* meshComp = actor->AddComponent<Hikari::MeshComponent>();

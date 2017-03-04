@@ -18,7 +18,7 @@ namespace Hikari
 #endif
 
 		mMainCamera = arg_gameinstance->GetWorld()->GetSceneManager()->createCamera("DefaultCamera");
-		mMainCamera->setNearClipDistance(5);
+		mMainCamera->setNearClipDistance(0.01);
 		Ogre::Viewport* viewport = GetRenderWindow()->addViewport(mMainCamera);
 		viewport->setBackgroundColour(Ogre::ColourValue(0.0f, 0.0f, 1.0f));
 		

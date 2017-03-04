@@ -13,6 +13,7 @@ namespace Hikari
 		const char* mGameChatLayout = "GameChat.layout";
 		MyGUI::EditBox* mChatInputBox = nullptr;
 		MyGUI::EditBox* mChatMessageBox = nullptr;
+		MyGUI::Button* mSubmitButton = nullptr;
 
 	public:
 		virtual void ShowWindow() override;
@@ -21,6 +22,7 @@ namespace Hikari
 		void AddChatMessage(const char* arg_message);
 
 	private:
+		void notify_SubmitButtonClicked(MyGUI::Widget* _sender);
 		void notify_ChatInputBoxInput(MyGUI::Widget* _sender, MyGUI::KeyCode _key, MyGUI::Char _char);
 	};
 }
