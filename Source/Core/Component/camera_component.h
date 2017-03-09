@@ -15,6 +15,9 @@ namespace Hikari
 		virtual void Initialise() override;
 		virtual void Tick(float arg_deltatime) override;
 
+		Ogre::Vector2 AbsToRelScreenPos(Ogre::Vector2 arg_absolutePosition);
+		Ogre::Ray ScreenPosToWorldRay(Ogre::Vector2 arg_screenpos);
+
 	protected:
 		Ogre::Camera* mCamera;
 	};

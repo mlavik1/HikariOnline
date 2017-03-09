@@ -68,11 +68,11 @@ namespace Hikari
 	{
 		mKeyUpMap.clear();
 		mKeyDownMap.clear();
+		mMouseReleaseStates = 0;
 		mMouseMove = Ogre::Vector2::ZERO;
 
 		mMouseInputObject->capture();
 		mKeyboardInputObject->capture();
-		mMouseReleaseStates = 0;
 	}
 
 

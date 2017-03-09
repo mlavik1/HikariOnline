@@ -15,14 +15,21 @@ namespace Hikari
 		LoadLayout(mGameHUDLayout);
 		LoadLayout(mGameChatLayout);
 		
+		mChatWindow = mGameInstance->GetGameWindow()->GetMyGUI()->findWidget<MyGUI::Window>("ChatWindow");
 		mChatInputBox = mGameInstance->GetGameWindow()->GetMyGUI()->findWidget<MyGUI::EditBox>("ChatInput");
 		mChatMessageBox = mGameInstance->GetGameWindow()->GetMyGUI()->findWidget<MyGUI::EditBox>("ChatMessages");
 		mSubmitButton = mGameInstance->GetGameWindow()->GetMyGUI()->findWidget<MyGUI::Button>("SubmitButton");
-
+		
+		__Assert(mChatInputBox != nullptr);
 		__Assert(mChatInputBox != nullptr);
 		__Assert(mChatMessageBox != nullptr);
 		__Assert(mSubmitButton != nullptr);
-		
+
+		//mChatWindow->setAlpha(0.1f);
+		//mChatMessageBox->setAlpha(1.0f);
+		//mChatMessageBox->setColour(MyGUI::Colour(1.0f, 1.0f, 1.0f, 0.01f));
+		//mChatMessageBox->setInheritsAlpha(false);
+
 		mChatInputBox->eventKeyButtonPressed += MyGUI::newDelegate(this, &GameHUD::notify_ChatInputBoxInput);
 		mSubmitButton->eventMouseButtonClick += MyGUI::newDelegate(this, &GameHUD::notify_SubmitButtonClicked);
 	}

@@ -28,4 +28,15 @@ namespace Hikari
 		mCamera->setPosition(parentPos);
 		mCamera->lookAt(parentPos + mParent->GetForwardVectorAbsolute() * 10.0f);
 	}
+
+	Ogre::Vector2 CameraComponent::AbsToRelScreenPos(Ogre::Vector2 arg_absolutePosition)
+	{
+		const GameWindow* gameWindow = mWorld->GetGameInstance()->GetGameWindow();
+		return arg_absolutePosition / Ogre::Vector2(gameWindow->GetWidth(), gameWindow->GetHeight());
+	}
+
+	Ogre::Ray CameraComponent::ScreenPosToWorldRay(Ogre::Vector2 arg_screenpos)
+	{
+		return mCamera->getCameraToViewportRay(arg_screenpos.x, arg_screenpos.y);
+	}
 }

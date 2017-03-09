@@ -8,13 +8,15 @@
 #include "Core/Component/mesh_component.h"
 #include "Core/Managers/input_manager.h"
 #include "Core/Component/camera_component.h"
+#include "Core/Misc/geometry_queries.h"
+#include "Core/Debug/debug_graphics.h"
 
 namespace Hikari
 {
 	InGameController::InGameController(Client* arg_client)
 		: ClientController(arg_client)
 	{
-
+		
 	}
 
 	void InGameController::Tick(float arg_deltatime)
@@ -79,7 +81,7 @@ namespace Hikari
 				mControlledCharacter->GetMovementComponent()->AddInput(mControlledCharacter->GetUpVector());
 				bIsMoving = true;
 			}
-			else
+			else if(mTargetPoint == Ogre::Vector3::ZERO)
 			{
 				mControlledCharacter->GetMovementComponent()->SetVelocity(Ogre::Vector3::ZERO);
 			}
@@ -100,7 +102,27 @@ namespace Hikari
 				}
 			}
 
-		}
+			if (inputManager->GetMouseReleased(0))
+			{
+				const Ogre::Vector2& mousePos = inputManager->GetMousePosition();
+				Ogre::Vector2 mouseRelativePos = mCameraComponent->AbsToRelScreenPos(mousePos);
+				Ogre::Ray mouseRay = mCameraComponent->ScreenPosToWorldRay(mouseRelativePos);
+				Ogre::Vector3 terrainPos;
+				bool bHit = GeometryQueries::TraceTerrain(gameInstance->GetWorld(), mouseRay.getOrigin(), mouseRay.getOrigin() + mouseRay.getDirection() * 500.0f, 0.5f, 0.01f, &terrainPos);
+				if (bHit)
+				{
+					mTargetPoint = terrainPos;
+					std::vector<Ogre::Vector3> points;
+					points.push_back(terrainPos);
+					DebugGraphics::DrawDebugPoints(gameInstance->GetWorld(), points, 15.0f, Ogre::ColourValue::Red, 10.0f);
+				}
+			}
+			if (mTargetPoint != Ogre::Vector3::ZERO)
+			{
+				Ogre::Vector3 dir = mTargetPoint - mControlledCharacter->GetPositionAbsolute();
+				mControlledCharacter->GetMovementComponent()->AddInput(dir);
+			}
+		} // if (mControlledCharacter != nullptr)
 	}
 
 	void InGameController::SetControlledCharacter(PlayerCharacter* arg_character)
@@ -113,7 +135,7 @@ namespace Hikari
 		mCameraAttachPoint = new Hikari::Actor(gameInstance->GetWorld());
 		mCameraActor->SetPosition(Ogre::Vector3(0.0f, 0.0f, -7.0f));
 		mCameraActor->Rotate(Ogre::Vector3::UNIT_X, 0.0f);
-		Hikari::CameraComponent* camComp = mCameraActor->AddComponent<Hikari::CameraComponent>();
+		mCameraComponent = mCameraActor->AddComponent<Hikari::CameraComponent>();
 
 		mCameraActor->SetParent(mCameraAttachPoint);
 
@@ -123,6 +145,6 @@ namespace Hikari
 		MeshComponent* meshComp = mControlledCharacter->GetComponentOfType<MeshComponent>();
 		meshComp->SetActiveAnimation("idle");
 		
-		camComp->Initialise();
+		mCameraComponent->Initialise();
 	}
 }

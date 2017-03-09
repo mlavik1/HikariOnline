@@ -11,6 +11,7 @@ namespace Hikari
 	private:
 		const char* mGameHUDLayout = "GameHUD.layout";
 		const char* mGameChatLayout = "GameChat.layout";
+		MyGUI::Window* mChatWindow = nullptr;
 		MyGUI::EditBox* mChatInputBox = nullptr;
 		MyGUI::EditBox* mChatMessageBox = nullptr;
 		MyGUI::Button* mSubmitButton = nullptr;
