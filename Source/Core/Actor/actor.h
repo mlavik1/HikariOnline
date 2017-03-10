@@ -42,6 +42,7 @@ namespace Hikari
 		void SetPosition(const Ogre::Vector3& arg_position);
 		void SetScale(const Ogre::Vector3& arg_scale);
 		void Rotate(const Ogre::Vector3& arg_axis, float arg_degrees);
+		void LookAt(const Ogre::Vector3& arg_target);
 
 		void SetParent(Actor* arg_parent);
 

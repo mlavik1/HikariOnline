@@ -53,15 +53,6 @@ namespace Hikari
 
 			bool bIsMoving = false;
 
-			if (gameInstance->GetInputManager()->GetKeyDown("1"))
-			{
-				meshComp->SetActiveAnimation("idle");
-			}
-			else if (gameInstance->GetInputManager()->GetKeyDown("2"))
-			{
-				meshComp->SetActiveAnimation("walk");
-			}
-
 			if (gameInstance->GetInputManager()->GetKey("d"))
 			{
 				mControlledCharacter->Rotate(Ogre::Vector3::UNIT_Y, -85.0f * arg_deltatime);
@@ -81,7 +72,11 @@ namespace Hikari
 				mControlledCharacter->GetMovementComponent()->AddInput(mControlledCharacter->GetUpVector());
 				bIsMoving = true;
 			}
-			else if(mTargetPoint == Ogre::Vector3::ZERO)
+			else if (mTargetPoint != Ogre::Vector3::ZERO)
+			{
+				bIsMoving = true;
+			}
+			else 
 			{
 				mControlledCharacter->GetMovementComponent()->SetVelocity(Ogre::Vector3::ZERO);
 			}
@@ -102,6 +97,7 @@ namespace Hikari
 				}
 			}
 
+			// Set new target point?
 			if (inputManager->GetMouseReleased(0))
 			{
 				const Ogre::Vector2& mousePos = inputManager->GetMousePosition();
@@ -112,11 +108,18 @@ namespace Hikari
 				if (bHit)
 				{
 					mTargetPoint = terrainPos;
+
+					Ogre::Vector3 lookatTarget = mTargetPoint;
+					lookatTarget.y = mControlledCharacter->GetPositionAbsolute().y;
+					mControlledCharacter->LookAt(lookatTarget);
+
 					std::vector<Ogre::Vector3> points;
 					points.push_back(terrainPos);
 					DebugGraphics::DrawDebugPoints(gameInstance->GetWorld(), points, 15.0f, Ogre::ColourValue::Red, 10.0f);
 				}
 			}
+
+			// Move towards target point
 			if (mTargetPoint != Ogre::Vector3::ZERO)
 			{
 				Ogre::Vector3 dir = mTargetPoint - mControlledCharacter->GetPositionAbsolute();

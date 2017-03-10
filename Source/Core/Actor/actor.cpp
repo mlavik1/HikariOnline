@@ -107,6 +107,10 @@ namespace Hikari
 		mSceneNode->rotate(axis, Ogre::Radian(Ogre::Degree(arg_degrees).valueRadians()));
 	}
 	
+	void Actor::LookAt(const Ogre::Vector3& arg_target)
+	{
+		mSceneNode->lookAt(arg_target, Ogre::Node::TransformSpace::TS_WORLD, Ogre::Vector3::UNIT_Z);
+	}
 
 	void Actor::SetParent(Actor* arg_parent)
 	{
