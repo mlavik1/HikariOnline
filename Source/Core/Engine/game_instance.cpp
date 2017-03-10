@@ -23,12 +23,16 @@ namespace Hikari
 		Ogre::SceneManager* sceneManager = mGameEngine->GetOgreRoot()->createSceneManager(Ogre::ST_GENERIC);
 		mWorld = new World(this, sceneManager);
 
-		mGameWindow = new GameWindow(this);
 		mTickManager = new TickManager();
-		mInputManager = new InputManager(this);
-	
+		
+#ifdef HIKARI_CLIENT
+		mGameWindow = new GameWindow(this);
+#else
+		GameEngine::Instance()->GetOgreRoot()->initialise(true, "Hikari")->setHidden(true); // because some things fail if we don't have a window
+#endif
 
 #ifdef HIKARI_CLIENT
+		mInputManager = new InputManager(this);
 		mWindowManager = new WindowManager(this);
 		mClient = new Client(this);
 #endif
@@ -43,8 +47,10 @@ namespace Hikari
 
 	void GameInstance::Tick()
 	{
+#ifdef HIKARI_CLIENT
 		Ogre::WindowEventUtilities::messagePump();
 		mInputManager->CaptureInput();
+#endif
 		float currentTime = TimeManager::Instance()->GetTimeSeconds();
 		float deltaTime = currentTime - mLastTime;
 		

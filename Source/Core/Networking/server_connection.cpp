@@ -1,145 +1,67 @@
 #include "server_connection.h"
-#include <assert.h>
-#include <iostream>
 
 namespace Hikari
 {
-	ServerConnection::ServerConnection(int max_clients)
+	ServerConnection::ServerConnection()
 	{
-		mMaxClients = max_clients;
-
-		for (int i = 0; i < max_clients; i++)
-		{
-			mClients[i] = 0;
-			mClientIsFree[i] = true;
-		}
-
-		mSocketSet = SDLNet_AllocSocketSet(max_clients);
+		mSocketSet = SDLNet_AllocSocketSet(1);
 	}
 
 	ServerConnection::~ServerConnection()
 	{
-		SDLNet_TCP_Close(mClients[0]);
+		SDLNet_TCP_Close(mServerSocket);
 	}
 
 	void ServerConnection::FetchNewMessages()
 	{
-
-		TCPsocket new_tcpsock;
-
-		new_tcpsock = SDLNet_TCP_Accept(getServerSocket());
-		if (new_tcpsock)
+		if (SDLNet_CheckSockets(mSocketSet, 0) > 0 && SDLNet_SocketReady(mServerSocket))
 		{
-			if (!new_tcpsock) {
-				std::cout << "server_connection.cpp: error on accepting incoming client connection: " << SDLNet_GetError() << std::endl;
-			}
-			else {
-				IPaddress *ip = SDLNet_TCP_GetPeerAddress(new_tcpsock);
-
-
-				int iFreeClient;
-				for (iFreeClient = 1; iFreeClient < mMaxClients; iFreeClient++)
-					if (mClientIsFree[iFreeClient])
-						break;
-				if (iFreeClient >= mMaxClients)
-				{
-					std::cout << "Error: Too many clients!!" << std::endl;
-					goto FetchMessages;
-				}
-
-				mClients[iFreeClient] = new_tcpsock;
-				mClientIsFree[iFreeClient] = false;
-
-				SDLNet_TCP_AddSocket(mSocketSet, new_tcpsock);
-
-				if (mClientConnectedCallback)
-					mClientConnectedCallback(iFreeClient);
-			}
-		}
-
-
-	FetchMessages:
-		for (int i = 1; i < mMaxClients; i++)
-		{
-			if (SDLNet_CheckSockets(mSocketSet, 0) > 0 && SDLNet_SocketReady(mClients[i]))
+			char text[BUFFER_SIZE];
+			int bytesReceived = SDLNet_TCP_Recv(mServerSocket, text, BUFFER_SIZE);
+			if (bytesReceived > 0)
 			{
-				char text[BUFFER_SIZE];
-				int bytesReceived = SDLNet_TCP_Recv(mClients[i], text, 100);
-				if (bytesReceived > 0)
-				{
-					if (mMessageCallback)
-						mMessageCallback(i, text, bytesReceived);
-				}
-				else
-				{
-					SDLNet_TCP_Close(mClients[i]);
-					mClientIsFree[i] = true;
-					if (mClientDisconnectedCallback)
-						mClientDisconnectedCallback(i);
-				}
+				if (mMessageCallback)
+					mMessageCallback(text, bytesReceived);
+			}
+			else
+			{
+				if (mServerDisconnectedCallback)
+					mServerDisconnectedCallback();
 			}
 		}
 	}
 
-	bool ServerConnection::Connect(int port)
+	void ServerConnection::SendNetworkMessage(const char * arg_message)
 	{
-		setHost("");
+		TcpConnection::sendMessage(mServerSocket, arg_message);
+	}
+
+	void ServerConnection::SendNetworkMessage(const char * arg_message, int arg_length)
+	{
+		TcpConnection::sendMessage(mServerSocket, arg_message, arg_length);
+	}
+
+	bool ServerConnection::Connect(const char *arg_host, int port)
+	{
+		setHost(arg_host);
 
 		IPaddress ip;
 		if (!getHostIPAddress(ip, port))
 			return false;
 
+		mServerSocket = SDLNet_TCP_Open(&ip);
 
-		// Client #0 = server
-		mClients[0] = SDLNet_TCP_Open(&ip);
-		mClientIsFree[0] = false;
-
-		if (!mClients[0])
+		if (!mServerSocket)
 		{
-			std::cout << "failed to connect to server" << std::endl;
 			return false;
 		}
 
 		// Add server socket to socket set
-		SDLNet_TCP_AddSocket(mSocketSet, mClients[0]);
+		SDLNet_TCP_AddSocket(mSocketSet, mServerSocket);
 
 		SetConnected(true);
 
 		return true;
-	}
-
-	void ServerConnection::SendMessage(int socket_index, const char * message)
-	{
-		TcpConnection::sendMessage(mClients[socket_index], message);
-	}
-
-	void ServerConnection::SendMessage(int socket_index, const char * message, int arg_length)
-	{
-		TcpConnection::sendMessage(mClients[socket_index], message, arg_length);
-	}
-
-	void ServerConnection::SendMessageToAll(const char * message)
-	{
-		for (int i = 1; i < mMaxClients; i++)
-		{
-			if (!mClientIsFree[i])
-				sendMessage(mClients[i], message);
-		}
-	}
-
-	void ServerConnection::SendMessageToAll(const char * message, int arg_length)
-	{
-		for (int i = 1; i < mMaxClients; i++)
-		{
-			if (!mClientIsFree[i])
-				sendMessage(mClients[i], message, arg_length);
-		}
-	}
-
-	std::string ServerConnection::GetSocketIPAddress(int socket_index)
-	{
-		IPaddress *ip = SDLNet_TCP_GetPeerAddress(mClients[socket_index]);
-		return std::string(IPToString(ip));
 	}
 
 }

@@ -112,6 +112,7 @@ namespace Hikari
 					Ogre::Vector3 lookatTarget = mTargetPoint;
 					lookatTarget.y = mControlledCharacter->GetPositionAbsolute().y;
 					mControlledCharacter->LookAt(lookatTarget);
+					mControlledCharacter->GetMovementComponent()->SetVelocity(Ogre::Vector3::ZERO);
 
 					std::vector<Ogre::Vector3> points;
 					points.push_back(terrainPos);

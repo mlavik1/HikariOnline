@@ -8,20 +8,31 @@ namespace Hikari
 	class ClientConnection : public TcpConnection
 	{
 	private:
-		TCPsocket mServerSocket;
+		TCPsocket mClients[9000];
+		bool mClientIsFree[9000];
+		int mMaxClients;
 
-		std::function<void(const char*, int)> mMessageCallback;
-		//void(*mMessageCallback)(const char*);
-		void(*mServerDisconnectedCallback)() = 0;
+		// Callbacks:
+		std::function<void(int, const char*, int)> mMessageCallback;
+		std::function<void(int)> mClientConnectedCallback;
+		std::function<void(int)> mClientDisconnectedCallback;
+
+		inline TCPsocket getServerSocket() { return mClients[0]; }
 
 	public:
-		ClientConnection();
+		ClientConnection(int max_clients);
 		~ClientConnection();
-		virtual void FetchNewMessages() override;
-		void SendMessage(const char *arg_message);
-		void SendMessage(const char *arg_message, int arg_length);
-		bool Connect(const char *arg_host, int port);
 
+		bool Connect(int port);
+		void SendNetworkMessage(int socket_index, const char *message);
+		void SendNetworkMessage(int socket_index, const char *message, int arg_length);
+		void SendNetworkMessageToAll(const char *message);
+		void SendNetworkMessageToAll(const char *message, int arg_length);
+
+		std::string GetSocketIPAddress(int socket_index);
+
+		// Virtual functions:
+		virtual void FetchNewMessages() override;
 
 
 		// Callback modifiers
@@ -31,9 +42,17 @@ namespace Hikari
 			mMessageCallback = arg_func;
 		}
 
-		inline void SetServerDisconnectedCallback(void(*arg_func)())
+		template<typename Functor>
+		inline void SetClientConnectedCallback(Functor arg_func)
 		{
-			mServerDisconnectedCallback = arg_func;
+			mClientConnectedCallback = arg_func;
 		}
+
+		template<typename Functor>
+		inline void SetClientDisconnectedCallback(Functor arg_func)
+		{
+			mClientDisconnectedCallback = arg_func;
+		}
+
 	};
 }

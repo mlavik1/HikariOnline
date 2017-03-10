@@ -37,7 +37,7 @@ namespace Hikari
 		inline size_t			GetTotalLength() const { return GetMessageLength() + sizeof(msgprefix_t) + sizeof(msgtype_t) + sizeof(msglen_t) + sizeof(msgcount_t); }
 
 		std::string		GetMessage() const;
-		std::string		GetStringRepresentation(int arg_part);
+		std::string		GetStringRepresentation(int arg_part = 0) const;
 		bool			GetIsValid() const;
 
 		void			SetMessage(std::string arg_message);

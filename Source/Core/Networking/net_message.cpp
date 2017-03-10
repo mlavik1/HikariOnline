@@ -93,26 +93,26 @@ namespace Hikari
 		return oss.str();
 	}
 
-	std::string NetMessage::GetStringRepresentation(int arg_part)
+	std::string NetMessage::GetStringRepresentation(int arg_part) const
 	{
 		__AssertComment(mMessageParts.size() == mNumMessageParts, "Message part vector has been modified without updating count");
 		__AssertComment(arg_part < mMessageParts.size(), "Out of bounds");
 
 		std::ostringstream ss;
 
-		char * chararr = const_cast<char *>(reinterpret_cast<const char *>(&NetMessagePrefix));
+		const char * chararr = const_cast<char *>(reinterpret_cast<const char *>(&NetMessagePrefix));
 		for (std::size_t i = 0; i != sizeof(msgprefix_t); ++i)
 			ss << chararr[i];
 
-		chararr = reinterpret_cast<char *>(&mMessageType);
+		chararr = reinterpret_cast<const char *>(&mMessageType);
 		for (std::size_t i = 0; i != sizeof(msgtype_t); ++i)
 			ss << chararr[i];
 
-		chararr = reinterpret_cast<char *>(&mMessageLength);
+		chararr = reinterpret_cast<const char *>(&mMessageLength);
 		for (std::size_t i = 0; i != sizeof(msglen_t); ++i)
 			ss << chararr[i];
 
-		chararr = reinterpret_cast<char *>(&mNumMessageParts);
+		chararr = reinterpret_cast<const char *>(&mNumMessageParts);
 		for (std::size_t i = 0; i != sizeof(msgcount_t); ++i)
 			ss << chararr[i];
 

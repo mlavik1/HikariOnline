@@ -39,4 +39,6 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 # project
 add_subdirectory(Client)
+add_subdirectory(GameServer)
+add_subdirectory(WorldServer)
 
