@@ -24,6 +24,7 @@ namespace Hikari
 	private:
 		ObjectFlagRegister mObjectFlags;
 		ObjectRefHandle* mObjectRefHandle;
+		NetworkGUID mNetworkGUID;
 	
 	protected:
 		std::string mObjectName;
@@ -41,6 +42,7 @@ namespace Hikari
 		virtual void OnDestroy() {}; // TODO: call this on all objects marked for pending destroy
 		
 		inline ObjectRefHandle*  GetRefHandle() { return mObjectRefHandle; }
+		inline NetworkGUID GetNetworkGUID() { return mNetworkGUID; }
 
 		std::string GetMemoryHash() const;
 

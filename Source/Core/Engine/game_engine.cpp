@@ -5,6 +5,8 @@
 #include "Core/Debug/debug.h"
 #include "Core/Debug/st_assert.h"
 #include "Core/Window/game_window.h"
+#include <sdl2/SDL.h>
+#include <sdl2/SDL_net.h>
 
 namespace Hikari
 {
@@ -23,11 +25,16 @@ namespace Hikari
 		{
 			delete gameInstance;
 		}
+		SDLNet_Quit();
 	}
 
 	void GameEngine::Initialise()
 	{
 		LOG_INFO() << "Initialising game engine";
+
+		SDL_Init(SDL_INIT_EVERYTHING);
+		SDLNet_Init();
+
 		mOgreRoot = new Ogre::Root("plugins_d.cfg");
 		__Assert(mOgreRoot->showConfigDialog());
 

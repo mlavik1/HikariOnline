@@ -24,6 +24,7 @@ namespace Hikari
 	public:
 		std::string mIPAddress;
 		int mClientID;
+		std::string mAccountName;
 	};
 
 	class GameServer

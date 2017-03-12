@@ -7,8 +7,7 @@ int main(int args, char* argv)
 {
 	LOG_INFO() << "Starting World Server";
 
-
-	SDL_Init(SDL_INIT_EVERYTHING);
+	//SDL_Init(SDL_INIT_EVERYTHING);
 
 	Hikari::WorldServer* worldServer = new Hikari::WorldServer();
 

@@ -8,14 +8,30 @@ namespace Hikari
 	class InputManager;
 	class TickManager;
 	class WindowManager;
+	class NetworkManager;
 	class GameWindow;
 	class Client;
 
 	class GameInstance
 	{
+	private:
+		GameEngine* mGameEngine;
+		GameWindow* mGameWindow;
+		World* mWorld;
+		TickManager* mTickManager;
+		InputManager* mInputManager;
+		WindowManager* mWindowManager;
+		NetworkManager* mNetworkManager;
+		float mLastTime = 0.0f;
+#ifdef HIKARI_CLIENT
+		Client* mClient;
+#endif
+
 	public:
 		GameInstance(GameEngine* arg_engine);
 		~GameInstance();
+
+		void Tick();
 
 		inline World* GetWorld()
 		{
@@ -26,8 +42,6 @@ namespace Hikari
 		{
 			return mGameWindow;
 		}
-
-		void Tick();
 
 		inline TickManager* GetTickManager()
 		{
@@ -44,6 +58,11 @@ namespace Hikari
 			return mWindowManager;
 		}
 
+		inline NetworkManager* GetNetworkManager()
+		{
+			return mNetworkManager;
+		}
+
 #ifdef HIKARI_CLIENT
 		inline Client* GetClient()
 		{
@@ -51,19 +70,7 @@ namespace Hikari
 		}
 #endif
 
-	private:
-		GameEngine* mGameEngine;
-		GameWindow* mGameWindow;
-		World* mWorld;
-		TickManager* mTickManager;
-		InputManager* mInputManager;
-		WindowManager* mWindowManager;
-		float mLastTime = 0.0f;
-
-#ifdef HIKARI_CLIENT
-		Client* mClient;
-#endif
 	};
 }
 
-#endif
+#endif // #ifndef HIKARI_GAMEINSTANCE_H

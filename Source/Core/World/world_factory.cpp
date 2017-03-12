@@ -3,11 +3,25 @@
 #include "Core/Actor/actor.h"
 #include "Core/Component/mesh_component.h"
 #include "Core/Component/terrain_component.h"
+#include "Core/Component/light_component.h"
 
 namespace Hikari
 {
 	void WorldFactory::SetupGameWorld(World* arg_world)
 	{
+#ifdef HIKARI_CLIENT
+		Hikari::Actor* lightActor = new Hikari::Actor(arg_world);
+		Hikari::LightComponent* lightComp = lightActor->AddComponent<Hikari::LightComponent>();
+		lightComp->Initialise();
+
+		// TODO: load scene from file
+		arg_world->GetSceneManager()->setSkyBox(true, "Skybox2", 15000.0f);
+
+		// TODO: make scene settings
+		arg_world->GetSceneManager()->setAmbientLight(Ogre::ColourValue(0.2f, 0.2f, 0.2f));
+#endif
+
+		// TODO: load scene from file
 		Hikari::Actor* landscapeTest = new Hikari::Actor(arg_world);
 		landscapeTest->SetScale(Ogre::Vector3(100, 100, 100));
 		landscapeTest->Rotate(Ogre::Vector3(1.0f, 0.0f, 0.0f), 270.0f);

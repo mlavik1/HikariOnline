@@ -9,6 +9,7 @@
 #include "Core/Managers/time_manager.h"
 #include "Core/Engine/client.h"
 #include "Core/Managers/window_manager.h"
+#include "Core/Managers/network_manager.h"
 
 namespace Hikari
 {
@@ -25,6 +26,8 @@ namespace Hikari
 
 		mTickManager = new TickManager();
 		
+		mNetworkManager = new NetworkManager();
+
 #ifdef HIKARI_CLIENT
 		mGameWindow = new GameWindow(this);
 #else

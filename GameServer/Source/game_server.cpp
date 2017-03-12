@@ -61,6 +61,7 @@ namespace Hikari
 	void GameServer::Update()
 	{
 		mWorldServerConnection->FetchNewMessages();
+		mClientConnection->FetchNewMessages();
 
 		for (ClientNetMessage& clientNetMessage : mIncomingWorldServerMessages)
 		{
@@ -95,9 +96,10 @@ namespace Hikari
 			case NetMessageType::EstablishConnection:
 				ClientConnectionData clientConn;
 				clientConn.mClientID = clientID;
-				clientConn.mIPAddress = mWorldServerConnection->GetSocketIPAddress(clientID);
+				clientConn.mIPAddress = mClientConnection->GetSocketIPAddress(clientID);
+				clientConn.mAccountName = netMessage.GetMessage();
 				mConnectedClients.push_back(clientConn);
-				LOG_INFO() << "Established connection with client: " << clientConn.mIPAddress;
+				LOG_INFO() << "Established connection with client: " << clientConn.mAccountName << " " << clientConn.mIPAddress;
 				NetMessage msgAck(NetMessageType::ConnectionEstablishedAck, "");
 				mOutgoingClientMessages.push_back(ClientNetMessage(clientID, msgAck));
 				break;

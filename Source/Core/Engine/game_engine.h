@@ -16,6 +16,8 @@ namespace Hikari
 
 	protected:
 		GameEngine();
+
+	public:
 		~GameEngine();
 
 	public:

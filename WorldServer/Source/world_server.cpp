@@ -8,8 +8,6 @@ namespace Hikari
 {
 	WorldServer::WorldServer()
 	{
-		SDLNet_Init();
-
 		mGameServerConnection = new Hikari::ServerConnection();
 		mClientConnection = new Hikari::ClientConnection(1000);
 	}
@@ -21,7 +19,7 @@ namespace Hikari
 		delete(mGameServerConnection);
 		delete(mClientConnection);
 
-		SDLNet_Quit();
+		delete(mGameEngine);
 	}
 
 	void WorldServer::Initialise()
