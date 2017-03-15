@@ -13,6 +13,8 @@
 
 namespace Hikari
 {
+	class NetMessage;
+
 	class TcpConnection
 	{
 	protected:
@@ -20,8 +22,7 @@ namespace Hikari
 		std::string mHost;
 		bool mConnected;
 
-		void sendMessage(TCPsocket &socket, const char *arg_message);
-		void sendMessage(TCPsocket &socket, const char *arg_message, int arg_length);
+		void sendMessage(TCPsocket &socket, const NetMessage* arg_message);
 		void setHost(const char *arg_host);
 		bool getHostIPAddress(IPaddress &out, int port);
 

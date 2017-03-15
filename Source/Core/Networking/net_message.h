@@ -33,11 +33,12 @@ namespace Hikari
 		inline msglen_t			GetMessageLength() const { return mMessageLength; }
 		inline size_t			GetTotalLength() const { return GetMessageLength() + sizeof(msgprefix_t) + sizeof(msgtype_t) + sizeof(msglen_t); }
 
-		const char*		GetMessage() const;
+		const char*		GetMessageData() const;
 		std::string		GetStringRepresentation() const;
 		bool			GetIsValid() const;
 
-		void			SetMessage(const char* arg_message, size_t arg_length);
+		void			SetMessageData(const char* arg_message, size_t arg_length);
+		void			SetMessageHeader(const char* arg_message);
 
 	};
 }

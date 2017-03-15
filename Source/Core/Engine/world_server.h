@@ -6,18 +6,33 @@
 #include "Core/Networking/net_message.h"
 #include <vector>
 #include "Core/Engine/game_engine.h"
+#include <tuple>
 
 namespace Hikari
 {
+	typedef std::tuple<int, NetMessage> ClientNetMessage;
+
+	class ClientConnectionData
+	{
+	public:
+		std::string mIPAddress;
+		int mClientID;
+		std::string mAccountName;
+	};
+
 	class WorldServer
 	{
 	private:
 		Hikari::ServerConnection* mGameServerConnection;
 		Hikari::ClientConnection* mClientConnection;
 
+		std::vector<NetMessage> mIncomingGameServerMessages;
+		std::vector<ClientNetMessage> mIncomingClientMessages;
+
 		std::vector<NetMessage> mOutgoingGameServerMessages;
-		GameEngine* mGameEngine;
-		GameInstance* mGameInstance;
+		std::vector<ClientNetMessage> mOutgoingClientMessages;
+
+		std::vector<ClientConnectionData> mConnectedClients;
 
 	public:
 		WorldServer();
@@ -25,7 +40,6 @@ namespace Hikari
 
 		void Initialise();
 		bool ConnectToGameServer();
-		void SetReady();
 		void Update();
 	};
 }

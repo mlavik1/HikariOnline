@@ -2,6 +2,7 @@
 #include "Core/Debug/st_assert.h"
 #include "Core/Controller/client_controller.h"
 #include "Core/Controller/ingame_controller.h"
+#include "Core/Networking/net_message_data.h"
 
 namespace Hikari
 {
@@ -73,24 +74,24 @@ namespace Hikari
 
 	void Client::ConnectToWorldServer(const char* arg_ip)
 	{
+		LOG_INFO() << "Connecting to WorldServer: " << arg_ip;
 		if (mWorldServerConnection != nullptr)
 		{
 			mWorldServerConnection->Close();
 			delete(mWorldServerConnection);
 		}
 		mWorldServerConnection = new ServerConnection();
-
 		mWorldServerConnection->Connect(arg_ip, PORT_WORLDSERVER_CLIENT);
-
-		NetMessage* connMessage = new NetMessage(NetMessageType::EstablishConnection, mAccountName.c_str());
-		mOutgoingWorldServerMessages.push_back(connMessage);
 
 		mGameServerConnection->SetMessageCallback([&](const char* arg_message, int arg_bytes) -> void
 		{
 			LOG_INFO() << "Received message from world server";
 			NetMessage* incomingMessage = new NetMessage(arg_message);
-			mIncomingGameServerMessages.push_back(incomingMessage);
+			mIncomingWorldServerMessages.push_back(incomingMessage);
 		});
+
+		NetMessage* connMessage = new NetMessage(NetMessageType::EstablishConnection, mAccountName.c_str());
+		mOutgoingWorldServerMessages.push_back(connMessage);
 	}
 
 	void Client::SendOutgoingNetworkMessages()
@@ -99,20 +100,22 @@ namespace Hikari
 		{
 			for (NetMessage* message : mOutgoingGameServerMessages)
 			{
-				mGameServerConnection->SendNetworkMessage(message->GetStringRepresentation().c_str(), message->GetTotalLength());
+				mGameServerConnection->SendNetworkMessage(message);
+				delete(message);
 			}
+			mOutgoingGameServerMessages.clear();
 		}
 
 		if (mWorldServerConnection != nullptr && mWorldServerConnection->IsConnected())
 		{
 			for (NetMessage* message : mOutgoingWorldServerMessages)
 			{
-				mWorldServerConnection->SendNetworkMessage(message->GetStringRepresentation().c_str(), message->GetTotalLength());
+				mWorldServerConnection->SendNetworkMessage(message);
+				delete(message);
 			}
-		}
-
-		mOutgoingGameServerMessages.clear();
-		mOutgoingWorldServerMessages.clear();
+			mOutgoingWorldServerMessages.clear();
+		}	
+		
 	}
 
 	void Client::FetchIncomingNetworkMessages()
@@ -137,9 +140,18 @@ namespace Hikari
 				const NetMessageType& messageType = message->GetMessageType();
 				switch (messageType)
 				{
-
+				case NetMessageType::WorldServerListUpdate:
+					NetMessageData::WorldServerList serverList = *reinterpret_cast<const NetMessageData::WorldServerList*>(message->GetMessageData());
+					int numWorldServers = serverList.NumServers;
+					if (numWorldServers > 0)
+					{
+						ConnectToWorldServer(serverList.ServerInfos[0].IPAddress);
+					}
+					break;
 				}
+				delete(message);
 			}
+			mIncomingGameServerMessages.clear();
 		}
 
 		if (mWorldServerConnection != nullptr && mWorldServerConnection->IsConnected())
@@ -149,9 +161,11 @@ namespace Hikari
 				const NetMessageType& messageType = message->GetMessageType();
 				switch (messageType)
 				{
-
+				
 				}
+				delete(message);
 			}
+			mIncomingWorldServerMessages.clear();
 		}
 	}
 

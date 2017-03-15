@@ -24,10 +24,8 @@ namespace Hikari
 		~ClientConnection();
 
 		bool Connect(int port);
-		void SendNetworkMessage(int socket_index, const char *message);
-		void SendNetworkMessage(int socket_index, const char *message, int arg_length);
-		void SendNetworkMessageToAll(const char *message);
-		void SendNetworkMessageToAll(const char *message, int arg_length);
+		void SendNetworkMessage(int socket_index, const NetMessage* message);
+		void SendNetworkMessageToAll(const NetMessage* message);
 
 		std::string GetSocketIPAddress(int socket_index);
 

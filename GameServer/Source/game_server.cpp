@@ -1,12 +1,14 @@
 #include "game_server.h"
 #include <sdl2/SDL_net.h>
+#include "Core/Networking/net_message_data.h"
+#include <algorithm>
 
 namespace Hikari
 {
 	GameServer::GameServer()
 	{
 		SDLNet_Init();
-
+		
 		mWorldServerConnection = new Hikari::ClientConnection(50);
 		mClientConnection = new Hikari::ClientConnection(8000);
 
@@ -68,7 +70,7 @@ namespace Hikari
 			const int& clientID = std::get<0>(clientNetMessage);
 			const NetMessage& netMessage = std::get<1>(clientNetMessage);
 
-			LOG_INFO() << "message: " << netMessage.GetMessage();
+			LOG_INFO() << "message: " << netMessage.GetMessageData();
 
 			switch (netMessage.GetMessageType())
 			{
@@ -89,7 +91,7 @@ namespace Hikari
 			const int& clientID = std::get<0>(clientNetMessage);
 			const NetMessage& netMessage = std::get<1>(clientNetMessage);
 
-			LOG_INFO() << "message: " << netMessage.GetMessage();
+			LOG_INFO() << "message: " << netMessage.GetMessageData();
 
 			switch (netMessage.GetMessageType())
 			{
@@ -97,11 +99,24 @@ namespace Hikari
 				ClientConnectionData clientConn;
 				clientConn.mClientID = clientID;
 				clientConn.mIPAddress = mClientConnection->GetSocketIPAddress(clientID);
-				clientConn.mAccountName = netMessage.GetMessage();
+				clientConn.mAccountName = netMessage.GetMessageData();
 				mConnectedClients.push_back(clientConn);
 				LOG_INFO() << "Established connection with client: " << clientConn.mAccountName << " " << clientConn.mIPAddress;
 				NetMessage msgAck(NetMessageType::ConnectionEstablishedAck, "");
 				mOutgoingClientMessages.push_back(ClientNetMessage(clientID, msgAck));
+
+				NetMessageData::WorldServerList serverListData;
+				serverListData.NumServers = mConnectedWorldServers.size();
+				for (int i = 0; i < mConnectedWorldServers.size(); i++)
+				{
+					NetMessageData::WorldServerInfo serverInfo;
+					std::string currServerName = "ServerNameTest"; // TODO
+					std::memcpy(serverInfo.ServerName, currServerName.c_str(), std::min((size_t)32, currServerName.size() + 1));
+					std::memcpy(serverInfo.IPAddress, mConnectedWorldServers[i].mIPAddress.c_str(), std::min((size_t)16, mConnectedWorldServers[i].mIPAddress.size() + 1));
+					serverListData.ServerInfos[i] = serverInfo;
+				}
+				NetMessage serverListMsg(NetMessageType::WorldServerListUpdate, sizeof(NetMessageData::WorldServerList), reinterpret_cast<char*>(&serverListData));
+				mOutgoingClientMessages.push_back(ClientNetMessage(clientID, serverListMsg));
 				break;
 			}
 		}
@@ -110,22 +125,20 @@ namespace Hikari
 		{
 			const int& clientID = std::get<0>(outMessage);
 			const NetMessage& netMessage = std::get<1>(outMessage);
-			std::string msgStr = netMessage.GetStringRepresentation();
-			mWorldServerConnection->SendNetworkMessage(clientID, msgStr.c_str(), msgStr.length());
+			mWorldServerConnection->SendNetworkMessage(clientID, &netMessage);
 		}
 
 		for (ClientNetMessage& outMessage : mOutgoingClientMessages)
 		{
 			const int& clientID = std::get<0>(outMessage);
 			const NetMessage& netMessage = std::get<1>(outMessage);
-			std::string msgStr = netMessage.GetStringRepresentation();
 			if (clientID == -1)
 			{
-				mClientConnection->SendNetworkMessageToAll(msgStr.c_str(), msgStr.length());
+				mClientConnection->SendNetworkMessageToAll(&netMessage);
 			}
 			else
 			{
-				mClientConnection->SendNetworkMessage(clientID, msgStr.c_str(), msgStr.length());
+				mClientConnection->SendNetworkMessage(clientID, &netMessage);
 			}
 		}
 

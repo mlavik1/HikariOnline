@@ -19,24 +19,24 @@ namespace Hikari
 			NetMessage(NetMessageType::Ignored, 0, "");
 			return;
 		}
-		mMessageType = (NetMessageType)*(reinterpret_cast<msgtype_t*>((char*)arg_message + sizeof(msgprefix_t)));
-		mMessageLength = *(reinterpret_cast<msglen_t*>((char*)arg_message + sizeof(msgprefix_t) + sizeof(msgtype_t)));
+		SetMessageHeader(arg_message);
+		// TODO: Do not copy so much! D:
 		std::string msg = std::string((char*)arg_message + sizeof(msgprefix_t) + sizeof(msgtype_t) + sizeof(msglen_t), mMessageLength);
-		SetMessage(msg.c_str(), msg.size());
+		SetMessageData(msg.c_str(), msg.size());
 	}
 
 	NetMessage::NetMessage(NetMessageType arg_type, msglen_t arg_length, const char* arg_message)
 	{
 		mMessageType = arg_type;
 		mMessageLength = arg_length;
-		SetMessage(arg_message, mMessageLength);
+		SetMessageData(arg_message, mMessageLength);
 	}
 
 	NetMessage::NetMessage(NetMessageType arg_type, std::string arg_message)
 	{
 		mMessageType = arg_type;
 		mMessageLength = arg_message.size();
-		SetMessage(arg_message.c_str(), arg_message.size());
+		SetMessageData(arg_message.c_str(), arg_message.size());
 	}
 
 	NetMessage::~NetMessage()
@@ -48,13 +48,13 @@ namespace Hikari
 		return true; // TODO
 	}
 
-	void NetMessage::SetMessage(const char* arg_message, size_t arg_length)
+	void NetMessage::SetMessageData(const char* arg_message, size_t arg_length)
 	{
 		mMessageData = new char[arg_length];
 		memcpy(mMessageData, arg_message, arg_length);
 	}
 
-	const char*	NetMessage::GetMessage() const
+	const char*	NetMessage::GetMessageData() const
 	{
 		return mMessageData;
 	}
@@ -85,9 +85,14 @@ namespace Hikari
 		return ss.str();
 	}
 
+	void NetMessage::SetMessageHeader(const char* arg_message)
+	{
+		mMessageType = (NetMessageType)*(reinterpret_cast<msgtype_t*>((char*)arg_message + sizeof(msgprefix_t)));
+		mMessageLength = *(reinterpret_cast<msglen_t*>((char*)arg_message + sizeof(msgprefix_t) + sizeof(msgtype_t)));
+	}
 
 	NetMessage NetMessage::operator=(NetMessage &arg_other)
 	{
-		return NetMessage(arg_other.GetMessageType(), arg_other.GetMessageLength(), arg_other.GetMessage());
+		return NetMessage(arg_other.GetMessageType(), arg_other.GetMessageLength(), arg_other.GetMessageData());
 	}
 }

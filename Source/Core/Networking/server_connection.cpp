@@ -1,4 +1,6 @@
 #include "server_connection.h"
+#include "net_message.h"
+#include "Core/Debug/st_assert.h"
 
 namespace Hikari
 {
@@ -14,14 +16,25 @@ namespace Hikari
 
 	void ServerConnection::FetchNewMessages()
 	{
-		if (SDLNet_CheckSockets(mSocketSet, 0) > 0 && SDLNet_SocketReady(mServerSocket))
+		while (SDLNet_CheckSockets(mSocketSet, 0) > 0 && SDLNet_SocketReady(mServerSocket))
 		{
-			char text[BUFFER_SIZE];
+			char textBuffer[BUFFER_SIZE];
+			char* text = textBuffer;
 			int bytesReceived = SDLNet_TCP_Recv(mServerSocket, text, BUFFER_SIZE);
 			if (bytesReceived > 0)
 			{
-				if (mMessageCallback)
-					mMessageCallback(text, bytesReceived);
+				int bytesLeft = bytesReceived;
+				NetMessage netMsg;
+				while (bytesLeft > 0)
+				{
+					netMsg.SetMessageHeader(text);
+					const size_t& msgLength = netMsg.GetTotalLength();
+					bytesLeft -= msgLength;
+					__Assert(bytesReceived >= 0);
+					if (mMessageCallback)
+						mMessageCallback(text, bytesReceived);
+					text += msgLength;
+				}
 			}
 			else
 			{
@@ -31,14 +44,9 @@ namespace Hikari
 		}
 	}
 
-	void ServerConnection::SendNetworkMessage(const char * arg_message)
+	void ServerConnection::SendNetworkMessage(const NetMessage* arg_message)
 	{
 		TcpConnection::sendMessage(mServerSocket, arg_message);
-	}
-
-	void ServerConnection::SendNetworkMessage(const char * arg_message, int arg_length)
-	{
-		TcpConnection::sendMessage(mServerSocket, arg_message, arg_length);
 	}
 
 	bool ServerConnection::Connect(const char *arg_host, int port)

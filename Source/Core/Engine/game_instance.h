@@ -11,6 +11,7 @@ namespace Hikari
 	class NetworkManager;
 	class GameWindow;
 	class Client;
+	class WorldServer;
 
 	class GameInstance
 	{
@@ -25,6 +26,9 @@ namespace Hikari
 		float mLastTime = 0.0f;
 #ifdef HIKARI_CLIENT
 		Client* mClient;
+#endif
+#ifdef HIKARI_WORLDSERVER
+		WorldServer* mWorldServer;
 #endif
 
 	public:
@@ -67,6 +71,12 @@ namespace Hikari
 		inline Client* GetClient()
 		{
 			return mClient;
+		}
+#endif
+#ifdef HIKARI_WORLDSERVER
+		inline WorldServer* GetWorldServer()
+		{
+			return mWorldServer;
 		}
 #endif
 

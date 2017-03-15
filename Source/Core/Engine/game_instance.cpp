@@ -10,6 +10,7 @@
 #include "Core/Engine/client.h"
 #include "Core/Managers/window_manager.h"
 #include "Core/Managers/network_manager.h"
+#include "Core/Engine/world_server.h"
 
 namespace Hikari
 {
@@ -39,6 +40,9 @@ namespace Hikari
 		mWindowManager = new WindowManager(this);
 		mClient = new Client(this);
 #endif
+#ifdef HIKARI_WORLDSERVER
+		mWorldServer = new WorldServer();
+#endif
 	}
 
 	GameInstance::~GameInstance()
@@ -60,6 +64,10 @@ namespace Hikari
 #ifdef HIKARI_CLIENT
 		mClient->TickClient(deltaTime);
 #endif
+#ifdef HIKARI_WORLDSERVER
+		mWorldServer->Update();
+#endif
+		
 		mTickManager->Tick(deltaTime);
 
 		mLastTime = currentTime;

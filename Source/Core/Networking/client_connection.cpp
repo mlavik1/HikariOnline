@@ -1,6 +1,8 @@
 #include "client_connection.h"
 #include <assert.h>
 #include <iostream>
+#include "net_message.h"
+#include "Core/Debug/st_assert.h"
 
 namespace Hikari
 {
@@ -61,12 +63,23 @@ namespace Hikari
 		{
 			if (SDLNet_CheckSockets(mSocketSet, 0) > 0 && SDLNet_SocketReady(mClients[i]))
 			{
-				char text[BUFFER_SIZE];
+				char textBuffer[BUFFER_SIZE];
+				char* text = textBuffer;
 				int bytesReceived = SDLNet_TCP_Recv(mClients[i], text, 100);
 				if (bytesReceived > 0)
 				{
-					if (mMessageCallback)
-						mMessageCallback(i, text, bytesReceived);
+					NetMessage netMsg;
+					int bytesLeft = bytesReceived;
+					while (bytesLeft > 0)
+					{
+						netMsg.SetMessageHeader(text);
+						const int& msgLen = netMsg.GetTotalLength();
+						bytesLeft -= msgLen;
+						__Assert(bytesLeft >= 0);
+						if (mMessageCallback)
+							mMessageCallback(i, text, bytesReceived);
+						text += msgLen;
+					}
 				}
 				else
 				{
@@ -106,31 +119,17 @@ namespace Hikari
 		return true;
 	}
 
-	void ClientConnection::SendNetworkMessage(int socket_index, const char * message)
+	void ClientConnection::SendNetworkMessage(int socket_index, const NetMessage* message)
 	{
 		TcpConnection::sendMessage(mClients[socket_index], message);
 	}
 
-	void ClientConnection::SendNetworkMessage(int socket_index, const char * message, int arg_length)
-	{
-		TcpConnection::sendMessage(mClients[socket_index], message, arg_length);
-	}
-
-	void ClientConnection::SendNetworkMessageToAll(const char * message)
+	void ClientConnection::SendNetworkMessageToAll(const NetMessage* message)
 	{
 		for (int i = 1; i < mMaxClients; i++)
 		{
 			if (!mClientIsFree[i])
 				sendMessage(mClients[i], message);
-		}
-	}
-
-	void ClientConnection::SendNetworkMessageToAll(const char * message, int arg_length)
-	{
-		for (int i = 1; i < mMaxClients; i++)
-		{
-			if (!mClientIsFree[i])
-				sendMessage(mClients[i], message, arg_length);
 		}
 	}
 

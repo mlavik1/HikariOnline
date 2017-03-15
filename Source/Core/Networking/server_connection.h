@@ -18,8 +18,7 @@ namespace Hikari
 		ServerConnection();
 		~ServerConnection();
 		virtual void FetchNewMessages() override;
-		void SendNetworkMessage(const char *arg_message);
-		void SendNetworkMessage(const char *arg_message, int arg_length);
+		void SendNetworkMessage(const NetMessage* arg_message);
 		bool Connect(const char *arg_host, int port);
 
 

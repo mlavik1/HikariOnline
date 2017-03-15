@@ -1,4 +1,5 @@
 #include "tcp_connection.h"
+#include "net_message.h"
 
 namespace Hikari
 {
@@ -49,14 +50,9 @@ namespace Hikari
 	}
 
 
-	void TcpConnection::sendMessage(TCPsocket &socket, const char *arg_message)
+	void TcpConnection::sendMessage(TCPsocket &socket, const NetMessage* arg_message)
 	{
-		sendMessage(socket, arg_message, strlen(arg_message) + 1);
-	}
-
-	void TcpConnection::sendMessage(TCPsocket &socket, const char *arg_message, int length)
-	{
-		int bytesSent = SDLNet_TCP_Send(socket, arg_message, length);
+		int bytesSent = SDLNet_TCP_Send(socket, arg_message->GetStringRepresentation().c_str(), arg_message->GetTotalLength());
 	}
 
 	bool TcpConnection::IsConnected()
