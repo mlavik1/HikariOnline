@@ -9,19 +9,19 @@ IMPLEMENT_CLASS(Hikari::GameObject)
 
 namespace Hikari
 {
-	GameObject::GameObject()
+	GameObject::GameObject(GameInstance* arg_gameinstance)
 	{
-
+		mGameInstance = arg_gameinstance;
 	}
 
-	GameObject* GameObject::CreateGameObject(Class* arg_class, World* arg_world)
+	GameObject* GameObject::CreateGameObject(Class* arg_class, GameInstance* arg_gameinstance)
 	{
 		__Assert(arg_class->IsA(GameObject::GetStaticClass()));
-		__Assert(arg_world);
+		__Assert(arg_gameinstance);
 
 		GameObject* gameObject = static_cast<GameObject*>(arg_class->CreateInstance());
 		gameObject->InitialiseObject(ObjectInitialiserParams()); // todo
-		gameObject->mWorld = arg_world;
+		gameObject->mGameInstance = arg_gameinstance;
 		return gameObject;
 	}
 
@@ -43,11 +43,11 @@ namespace Hikari
 
 	TickManager* GameObject::GetTickManager()
 	{
-		return mWorld->GetGameInstance()->GetTickManager();
+		return mGameInstance->GetTickManager();
 	}
 
 	InputManager* GameObject::GetInputManager()
 	{
-		return mWorld->GetGameInstance()->GetInputManager();
+		return mGameInstance->GetInputManager();
 	}
 }

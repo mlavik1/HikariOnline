@@ -13,6 +13,7 @@ REGISTER_CLASSPROPERTIES(Hikari::Actor)
 namespace Hikari
 {
 	Actor::Actor(Hikari::World* arg_world)
+		: GameObject(arg_world->GetGameInstance())
 	{
 		__Assert(arg_world != nullptr);
 		mParent = nullptr;

@@ -9,6 +9,9 @@ namespace Hikari
 	{
 		SDLNet_Init();
 		
+		mNetworkManager = new NetworkManager();
+		mGameServerNetworkController = new GameServerNetworkController();
+
 		mWorldServerConnection = new Hikari::ClientConnection(50);
 		mClientConnection = new Hikari::ClientConnection(8000);
 
@@ -100,23 +103,7 @@ namespace Hikari
 				clientConn.mClientID = clientID;
 				clientConn.mIPAddress = mClientConnection->GetSocketIPAddress(clientID);
 				clientConn.mAccountName = netMessage.GetMessageData();
-				mConnectedClients.push_back(clientConn);
-				LOG_INFO() << "Established connection with client: " << clientConn.mAccountName << " " << clientConn.mIPAddress;
-				NetMessage msgAck(NetMessageType::ConnectionEstablishedAck, "");
-				mOutgoingClientMessages.push_back(ClientNetMessage(clientID, msgAck));
-
-				NetMessageData::WorldServerList serverListData;
-				serverListData.NumServers = mConnectedWorldServers.size();
-				for (int i = 0; i < mConnectedWorldServers.size(); i++)
-				{
-					NetMessageData::WorldServerInfo serverInfo;
-					std::string currServerName = "ServerNameTest"; // TODO
-					std::memcpy(serverInfo.ServerName, currServerName.c_str(), std::min((size_t)32, currServerName.size() + 1));
-					std::memcpy(serverInfo.IPAddress, mConnectedWorldServers[i].mIPAddress.c_str(), std::min((size_t)16, mConnectedWorldServers[i].mIPAddress.size() + 1));
-					serverListData.ServerInfos[i] = serverInfo;
-				}
-				NetMessage serverListMsg(NetMessageType::WorldServerListUpdate, sizeof(NetMessageData::WorldServerList), reinterpret_cast<char*>(&serverListData));
-				mOutgoingClientMessages.push_back(ClientNetMessage(clientID, serverListMsg));
+				EstablishConnectionWithClient(clientConn);
 				break;
 			}
 		}
@@ -147,4 +134,27 @@ namespace Hikari
 		mOutgoingWorldServerMessages.clear();
 		mOutgoingClientMessages.clear();
 	}
+
+	void GameServer::EstablishConnectionWithClient(const ClientConnectionData& arg_clientconndata)
+	{
+		mConnectedClients.push_back(arg_clientconndata);
+		LOG_INFO() << "Established connection with client: " << arg_clientconndata.mAccountName << " " << arg_clientconndata.mIPAddress;
+		NetMessage msgAck(NetMessageType::ConnectionEstablishedAck, "");
+		mOutgoingClientMessages.push_back(ClientNetMessage(arg_clientconndata.mClientID, msgAck));
+
+		// Send WorldServer-list to client
+		NetMessageData::WorldServerList serverListData;
+		serverListData.NumServers = mConnectedWorldServers.size();
+		for (int i = 0; i < mConnectedWorldServers.size(); i++)
+		{
+			NetMessageData::WorldServerInfo serverInfo;
+			std::string currServerName = "ServerNameTest"; // TODO
+			std::memcpy(serverInfo.ServerName, currServerName.c_str(), std::min((size_t)32, currServerName.size() + 1));
+			std::memcpy(serverInfo.IPAddress, mConnectedWorldServers[i].mIPAddress.c_str(), std::min((size_t)16, mConnectedWorldServers[i].mIPAddress.size() + 1));
+			serverListData.ServerInfos[i] = serverInfo;
+		}
+		NetMessage serverListMsg(NetMessageType::WorldServerListUpdate, sizeof(NetMessageData::WorldServerList), reinterpret_cast<char*>(&serverListData));
+		mOutgoingClientMessages.push_back(ClientNetMessage(arg_clientconndata.mClientID, serverListMsg));
+	}
+
 }

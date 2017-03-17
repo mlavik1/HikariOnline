@@ -12,12 +12,14 @@ namespace Hikari
 {
 	class World;
 	class Component;
+	class GameInstance;
 
 	class Actor : public GameObject, public Tickable
 	{
 		DEFINE_CLASS(Hikari::Actor, Hikari::GameObject)
 
 	protected:
+		Hikari::World* mWorld;
 		Ogre::SceneNode* mSceneNode;
 		std::vector<Component*> mComponents;
 		Hikari::Actor* mParent;
@@ -68,7 +70,8 @@ END_REGISTER_CLASSPROPERTIES(Hikari::Actor)
 		{
 			__AssertComment((std::is_base_of<Component, T>::value), "Must be subclass of Component");
 			
-			T* newComp = static_cast<T*>(GameObject::CreateGameObject<T>(this->mWorld));
+			T* newComp = static_cast<T*>(GameObject::CreateGameObject<T>(this->mGameInstance));
+			newComp->mGameInstance = this->mGameInstance;
 			newComp->mWorld = this->mWorld;
 			newComp->mParent = this;
 			mComponents.push_back(newComp);

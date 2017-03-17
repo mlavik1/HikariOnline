@@ -35,8 +35,10 @@ namespace Hikari
 		SDL_Init(SDL_INIT_EVERYTHING);
 		SDLNet_Init();
 
+#if defined(HIKARI_CLIENT) || defined(HIKARI_WORLDSERVER)
 		mOgreRoot = new Ogre::Root("plugins_d.cfg");
 		__Assert(mOgreRoot->showConfigDialog());
+#endif
 
 		TimeManager::Create();
 	}

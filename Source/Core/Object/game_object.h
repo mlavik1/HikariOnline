@@ -6,7 +6,7 @@
 
 namespace Hikari
 {
-	class World;
+	class GameInstance;
 	class TickManager;
 	class InputManager;
 
@@ -15,18 +15,18 @@ namespace Hikari
 		DEFINE_CLASS(Hikari::GameObject, Hikari::Object)
 
 	protected:
-		World* mWorld;
+		GameInstance* mGameInstance;
 
 	public:
-		GameObject();
+		GameObject(GameInstance* arg_gameinstance);
 
-		static GameObject* CreateGameObject(Class* arg_class, World* arg_world);
+		static GameObject* CreateGameObject(Class* arg_class, GameInstance* arg_gameinstance);
 
 		template<typename T>
-		static T* CreateGameObject(World* arg_world)
+		static T* CreateGameObject(GameInstance* arg_gameinstance)
 		{
 			__AssertComment((std::is_base_of<GameObject, T>::value), "Must be subclass of GameObject");
-			return static_cast<T*>(CreateGameObject(T::GetStaticClass(), arg_world));
+			return static_cast<T*>(CreateGameObject(T::GetStaticClass(), arg_gameinstance));
 		}
 
 		virtual void Initialise();

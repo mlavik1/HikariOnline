@@ -9,6 +9,8 @@ namespace Hikari
 	{
 		DEFINE_CLASS(Hikari::NetworkController, Hikari::Object)
 
+	public:
+		NetworkController();
 	};
 }
 

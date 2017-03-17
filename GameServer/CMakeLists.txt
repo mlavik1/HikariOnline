@@ -5,12 +5,8 @@ add_definitions(-DHIKARI_GAMESERVER)
 
 # Gather c++ files
 file(GLOB_RECURSE SRC_FILES 
-	../Source/Core/Object/*.h
-	../Source/Core/Object/*.cpp
-	../Source/Core/Debug/*.h
-	../Source/Core/Debug/*.cpp
-	../Source/Core/Networking/*.h
-	../Source/Core/Networking/*.cpp
+	../Source/*.h
+	../Source/*.cpp
 	Source/*.cpp
 	Source/*.h
 )
@@ -21,6 +17,10 @@ file(GLOB_RECURSE SRC_OBJECT
     "${SharedSourceDir}/Core/Object/*.cpp"
     "${SharedSourceDir}/Core/Object/*.h"
 )
+file(GLOB_RECURSE SRC_ENGINE
+    "${SharedSourceDir}/Core/Engine/*.cpp"
+    "${SharedSourceDir}/Core/Engine/*.h"
+)
 file(GLOB_RECURSE SRC_DEBUG
     "${SharedSourceDir}/Core/Debug/*.cpp"
     "${SharedSourceDir}/Core/Debug/*.h"
@@ -28,6 +28,10 @@ file(GLOB_RECURSE SRC_DEBUG
 file(GLOB_RECURSE SRC_NETWORKING
     "${SharedSourceDir}/Core/Networking/*.cpp"
     "${SharedSourceDir}/Core/Networking/*.h"
+)
+file(GLOB_RECURSE SRC_CONTROLLER
+    "${SharedSourceDir}/Core/Controller/*.cpp"
+    "${SharedSourceDir}/Core/Controller/*.h"
 )
 file(GLOB_RECURSE SRC_GAMESERVER
     "Source/*.cpp"
@@ -37,6 +41,8 @@ file(GLOB_RECURSE SRC_GAMESERVER
 source_group("Core\\Object" FILES ${SRC_OBJECT})
 source_group("Core\\Debug" FILES ${SRC_DEBUG})
 source_group("Core\\Networking" FILES ${SRC_NETWORKING})
+source_group("Core\\Controller" FILES ${SRC_CONTROLLER})
+source_group("Core\\Engine" FILES ${SRC_ENGINE})
 source_group("GameServer" FILES ${SRC_GAMESERVER})
 
 include_directories ("../Dependencies/Include/SDL2")

@@ -29,6 +29,7 @@ namespace Hikari
 
 	protected:
 		Actor* mParent;
+		World* mWorld;
 	};
 }
 

@@ -5,7 +5,7 @@
 #include "Core/Object/class.h"
 #include "Core/Object/function.h"
 
-typedef uint32_t NetworkGUID;
+typedef uint32_t NetGUID;
 typedef uint32_t ObjectFlagRegister;
 
 enum class ObjectFlag

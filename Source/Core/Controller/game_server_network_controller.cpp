@@ -3,4 +3,9 @@
 namespace Hikari
 {
 	IMPLEMENT_CLASS(Hikari::GameServerNetworkController)
+
+	GameServerNetworkController::GameServerNetworkController()
+	{
+
+	}
 }

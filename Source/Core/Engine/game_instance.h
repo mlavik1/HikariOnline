@@ -12,6 +12,7 @@ namespace Hikari
 	class GameWindow;
 	class Client;
 	class WorldServer;
+	class GameServer;
 
 	class GameInstance
 	{
@@ -29,6 +30,9 @@ namespace Hikari
 #endif
 #ifdef HIKARI_WORLDSERVER
 		WorldServer* mWorldServer;
+#endif
+#ifdef HIKARI_GAMESERVER
+		GameServer* mGameServer;
 #endif
 
 	public:
@@ -77,6 +81,12 @@ namespace Hikari
 		inline WorldServer* GetWorldServer()
 		{
 			return mWorldServer;
+		}
+#endif
+#ifdef HIKARI_GAMESERVER
+		inline GameServer* GetGameServer()
+		{
+			return mGameServer;
 		}
 #endif
 

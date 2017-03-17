@@ -7,6 +7,8 @@
 #include <vector>
 #include <tuple>
 #include <string>
+#include "Core/Managers/network_manager.h"
+#include "Core/Controller/game_server_network_controller.h"
 
 namespace Hikari
 {
@@ -19,16 +21,16 @@ namespace Hikari
 		int mClientID;
 	};
 
-	class ClientConnectionData
-	{
-	public:
-		std::string mIPAddress;
-		int mClientID;
-		std::string mAccountName;
-	};
-
 	class GameServer
 	{
+		class ClientConnectionData
+		{
+		public:
+			std::string mIPAddress;
+			int mClientID;
+			std::string mAccountName;
+		};
+
 	private:
 		Hikari::ClientConnection* mWorldServerConnection;
 		Hikari::ClientConnection* mClientConnection;
@@ -41,12 +43,17 @@ namespace Hikari
 		std::vector<ClientNetMessage> mOutgoingWorldServerMessages;
 		std::vector<ClientNetMessage> mOutgoingClientMessages;
 
+		NetworkManager* mNetworkManager;
+		GameServerNetworkController* mGameServerNetworkController;
+
 	public:
 		GameServer();
 		~GameServer();
 
 		void Initialise();
 		void Update();
+
+		void EstablishConnectionWithClient(const ClientConnectionData& arg_clientconndata);
 	};
 }
 

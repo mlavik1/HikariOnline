@@ -9,6 +9,8 @@ namespace Hikari
 	{
 		DEFINE_CLASS(Hikari::GameServerNetworkController, Hikari::NetworkController)
 
+	public:
+		GameServerNetworkController();
 	};
 }
 
