@@ -13,15 +13,31 @@ namespace Hikari
 		size_t mSize;
 
 		FunctionArgContainer()
+			: mData(nullptr)
 		{
+		}
 
+		FunctionArgContainer(const FunctionArgContainer& arg_other)
+		{
+			mSize = arg_other.mSize;
+			if (arg_other.mData != nullptr)
+			{
+				mData = new char[mSize];
+				memcpy(mData, arg_other.mData, mSize);
+			}
+		}
+
+		~FunctionArgContainer()
+		{
+			if (mData)
+				delete mData;
 		}
 
 		template <typename T1>
 		void TemplateConstruct(T1 t1)
 		{
 			mSize = sizeof(T1);
-			mData = new char(mSize);
+			mData = new char[mSize];
 			*((T1*)mData) = t1;
 		}
 
@@ -29,7 +45,7 @@ namespace Hikari
 		void TemplateConstruct(T1 t1, T2 t2)
 		{
 			mSize = sizeof(T1) + sizeof(T2);
-			mData = new char(mSize);
+			mData = new char[mSize];
 			*((T1*)mData) = t1;
 			*((T2*)(mData + sizeof(T1))) = t2;
 		}
@@ -38,7 +54,7 @@ namespace Hikari
 		void TemplateConstruct(T1 t1, T2 t2, T3 t3)
 		{
 			mSize = sizeof(T1) + sizeof(T2) + sizeof(T3);
-			mData = new char(mSize);
+			mData = new char[mSize];
 			*((T1*)mData) = t1;
 			*((T2*)(mData + sizeof(T1))) = t2;
 			*((T3*)(mData + sizeof(T1) + sizeof(T2))) = t3;

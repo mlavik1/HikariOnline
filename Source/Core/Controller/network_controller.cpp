@@ -4,7 +4,8 @@ namespace Hikari
 {
 	IMPLEMENT_CLASS(Hikari::NetworkController)
 
-	NetworkController::NetworkController()
+	NetworkController::NetworkController(GameInstance* arg_gameinstance)
+		:GameObject(arg_gameinstance)
 	{
 
 	}

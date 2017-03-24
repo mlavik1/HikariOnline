@@ -5,6 +5,8 @@
 #include "Core/Networking/net_message.h"
 #include <vector>
 #include <string>
+#include "Core/Controller/game_server_network_controller.h"
+#include "Core/Controller/client_network_controller.h"
 
 namespace Hikari
 {
@@ -25,6 +27,8 @@ namespace Hikari
 		std::vector<NetMessage*> mIncomingGameServerMessages;
 		std::vector<NetMessage*> mIncomingWorldServerMessages;
 		std::string mAccountName;
+		GameServerNetworkController* mGameServerNetworkController;
+		ClientNetworkController* mClientNetworkController;
 
 	public:
 		Client(GameInstance* arg_gameinstance);
@@ -37,8 +41,14 @@ namespace Hikari
 		void FetchIncomingNetworkMessages();
 		void HandleIncomingNetworkMessages();
 
+		void SendMessageToGameServer(NetMessage* arg_message);
+		void SendMessageToWorldServer(NetMessage* arg_message);
+
 		InGameController* GetInGameController();
 		GameInstance* GetGameInstance();
+		
+		GameServerNetworkController* GetGameServerNetworkController();
+		ClientNetworkController* GetClientNetworkController();
 	};
 }
 

@@ -50,4 +50,10 @@ namespace Hikari
 	{
 		return mGameInstance->GetInputManager();
 	}
+
+	GameInstance* GameObject::GetGameInstance()
+	{
+		return mGameInstance;
+	}
+
 }

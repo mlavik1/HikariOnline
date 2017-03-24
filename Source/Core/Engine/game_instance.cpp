@@ -10,8 +10,12 @@
 #include "Core/Engine/client.h"
 #include "Core/Managers/window_manager.h"
 #include "Core/Managers/network_manager.h"
+#ifdef HIKARI_WORLDSERVER
 #include "Core/Engine/world_server.h"
+#endif
+#ifdef HIKARI_GAMESERVER
 #include "Core/Engine/game_server.h"
+#endif
 
 namespace Hikari
 {
@@ -49,7 +53,7 @@ namespace Hikari
 		mWorldServer = new WorldServer();
 #endif
 #ifdef HIKARI_GAMESERVER
-		mGameServer = new GameServer();
+		mGameServer = new GameServer(this);
 #endif
 	}
 

@@ -3,6 +3,9 @@
 #include "Core/Controller/client_controller.h"
 #include "Core/Controller/ingame_controller.h"
 #include "Core/Networking/net_message_data.h"
+#include "game_instance.h"
+#include "Core/Managers/network_manager.h"
+#include "Core/Networking/rpc.h"
 
 namespace Hikari
 {
@@ -10,6 +13,8 @@ namespace Hikari
 	{
 		__Assert(arg_gameinstance != nullptr);
 		mGameInstance = arg_gameinstance;
+		mGameServerNetworkController = nullptr;
+		mClientNetworkController = nullptr;
 
 		// TEMP!  this should happen hafter joining game
 		mInGameController = new InGameController(this);
@@ -61,7 +66,7 @@ namespace Hikari
 
 		mGameServerConnection->Connect(arg_ip, PORT_GAMESERVER_CLIENT);
 
-		NetMessage* connMessage = new NetMessage(NetMessageType::EstablishConnection, mAccountName.c_str());
+		NetMessage* connMessage = new NetMessage(NetMessageType::EstablishConnection, mAccountName);
 		mOutgoingGameServerMessages.push_back(connMessage);
 
 		mGameServerConnection->SetMessageCallback([&](const char* arg_message, int arg_bytes) -> void
@@ -142,11 +147,23 @@ namespace Hikari
 				{
 				case NetMessageType::WorldServerListUpdate:
 					NetMessageData::WorldServerList serverList = *reinterpret_cast<const NetMessageData::WorldServerList*>(message->GetMessageData());
-					int numWorldServers = serverList.NumServers;
-					if (numWorldServers > 0)
+					if (serverList.NumServers > 0)
 					{
 						ConnectToWorldServer(serverList.ServerInfos[0].IPAddress);
 					}
+					break;
+				case NetMessageType::ClientInitGameServerConnection:
+					NetMessageData::ClientGameServerConnectionData initGSNetMgr = *reinterpret_cast<const NetMessageData::ClientGameServerConnectionData*>(message->GetMessageData());
+					LOG_INFO() << "Creating GameServerNetworkController, with GUID: " << (int)initGSNetMgr.GameServerNetworkControllerNetGUID;
+					mGameServerNetworkController = new GameServerNetworkController(mGameInstance);
+					mGameServerNetworkController->SetNetGUID(initGSNetMgr.GameServerNetworkControllerNetGUID);
+					mGameInstance->GetNetworkManager()->RegisterObject(mGameServerNetworkController);
+					LOG_INFO() << "Creating ClientNetworkController, with GUID: " << (int)initGSNetMgr.ClientNetworkControllerNetGUID;
+					mClientNetworkController = new ClientNetworkController(mGameInstance);
+					mClientNetworkController->SetNetGUID(initGSNetMgr.ClientNetworkControllerNetGUID);
+					mGameInstance->GetNetworkManager()->RegisterObject(mClientNetworkController);
+
+					GameServerCall(mGameServerNetworkController, TestFunction, 2, 5.0f);
 					break;
 				}
 				delete(message);
@@ -169,6 +186,17 @@ namespace Hikari
 		}
 	}
 
+	void Client::SendMessageToGameServer(NetMessage* arg_message)
+	{
+		mOutgoingGameServerMessages.push_back(arg_message);
+	}
+
+	void Client::SendMessageToWorldServer(NetMessage* arg_message)
+	{
+		mOutgoingWorldServerMessages.push_back(arg_message);
+	}
+
+
 	InGameController* Client::GetInGameController()
 	{
 		return mInGameController;
@@ -177,5 +205,15 @@ namespace Hikari
 	GameInstance* Client::GetGameInstance()
 	{
 		return mGameInstance;
+	}
+
+	GameServerNetworkController* Client::GetGameServerNetworkController()
+	{
+		return mGameServerNetworkController;
+	}
+
+	ClientNetworkController* Client::GetClientNetworkController()
+	{
+		return mClientNetworkController;
 	}
 }

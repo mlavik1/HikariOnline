@@ -9,10 +9,14 @@
 #include <string>
 #include "Core/Managers/network_manager.h"
 #include "Core/Controller/game_server_network_controller.h"
+#include "Core/Controller/client_network_controller.h"
+#include <unordered_map>
 
 namespace Hikari
 {
 	typedef std::tuple<int, NetMessage> ClientNetMessage;
+
+	class GameInstance;
 
 	class WorldServerConnectionData
 	{
@@ -32,6 +36,7 @@ namespace Hikari
 		};
 
 	private:
+		GameInstance* mGameInstance;
 		Hikari::ClientConnection* mWorldServerConnection;
 		Hikari::ClientConnection* mClientConnection;
 		std::vector<WorldServerConnectionData> mConnectedWorldServers;
@@ -43,17 +48,20 @@ namespace Hikari
 		std::vector<ClientNetMessage> mOutgoingWorldServerMessages;
 		std::vector<ClientNetMessage> mOutgoingClientMessages;
 
-		NetworkManager* mNetworkManager;
 		GameServerNetworkController* mGameServerNetworkController;
 
+		std::unordered_map<int, ClientNetworkController*> mClientNetworkControllers;
+
 	public:
-		GameServer();
+		GameServer(GameInstance* arg_gameinstance);
 		~GameServer();
 
 		void Initialise();
 		void Update();
 
 		void EstablishConnectionWithClient(const ClientConnectionData& arg_clientconndata);
+
+		ClientNetworkController* GetClientNetworkController(int arg_clientid);
 	};
 }
 

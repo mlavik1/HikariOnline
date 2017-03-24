@@ -23,10 +23,12 @@ namespace Hikari
 
 	public:
 		NetMessage();
+		NetMessage(NetMessageType arg_type);
 		NetMessage(const char* arg_message);
 		NetMessage(NetMessageType arg_type, msglen_t arg_length, const char* arg_message);
 		NetMessage(NetMessageType arg_type, std::string arg_message);
 		~NetMessage();
+		NetMessage(const NetMessage& arg_other);
 		NetMessage				operator=(NetMessage &arg_other);
 
 		inline NetMessageType	GetMessageType() const { return mMessageType; }
@@ -38,6 +40,7 @@ namespace Hikari
 		bool			GetIsValid() const;
 
 		void			SetMessageData(const char* arg_message, size_t arg_length);
+		void			SetMessageDataPtr(char* arg_ptr, msglen_t arg_bytes);
 		void			SetMessageHeader(const char* arg_message);
 
 	};

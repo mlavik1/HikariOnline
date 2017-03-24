@@ -23,6 +23,13 @@ namespace Hikari
 			WorldServerInfo ServerInfos[9];
 		};
 
+		class ClientGameServerConnectionData
+		{
+		public:
+			uint32_t GameServerNetworkControllerNetGUID;
+			uint32_t ClientNetworkControllerNetGUID;
+		};
+
 	}
 }
 

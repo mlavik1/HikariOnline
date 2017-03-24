@@ -1,16 +1,19 @@
+#ifdef HIKARI_GAMESERVER
 #include "game_server.h"
 #include <sdl2/SDL_net.h>
 #include "Core/Networking/net_message_data.h"
 #include <algorithm>
+#include "game_instance.h"
+#include "Core/Networking/rpc.h"
 
 namespace Hikari
 {
-	GameServer::GameServer()
+	GameServer::GameServer(GameInstance* arg_gameinstance)
 	{
+		mGameInstance = arg_gameinstance;
 		SDLNet_Init();
 		
-		mNetworkManager = new NetworkManager();
-		mGameServerNetworkController = new GameServerNetworkController();
+		mGameServerNetworkController = new GameServerNetworkController(mGameInstance);
 
 		mWorldServerConnection = new Hikari::ClientConnection(50);
 		mClientConnection = new Hikari::ClientConnection(8000);
@@ -31,6 +34,9 @@ namespace Hikari
 
 	void GameServer::Initialise()
 	{
+		mGameInstance->GetNetworkManager()->GenerateNetGUID(mGameServerNetworkController);
+		mGameInstance->GetNetworkManager()->RegisterObject(mGameServerNetworkController);
+		
 		std::string myIP = GetLocalhostIP();
 		LOG_INFO() << "My IP: " << myIP;
 
@@ -73,7 +79,9 @@ namespace Hikari
 			const int& clientID = std::get<0>(clientNetMessage);
 			const NetMessage& netMessage = std::get<1>(clientNetMessage);
 
-			LOG_INFO() << "message: " << netMessage.GetMessageData();
+			const char* messageData = netMessage.GetMessageData();
+			if(messageData != nullptr)
+				LOG_INFO() << "message: " << netMessage.GetMessageData();
 
 			switch (netMessage.GetMessageType())
 			{
@@ -99,11 +107,16 @@ namespace Hikari
 			switch (netMessage.GetMessageType())
 			{
 			case NetMessageType::EstablishConnection:
+			{
 				ClientConnectionData clientConn;
 				clientConn.mClientID = clientID;
 				clientConn.mIPAddress = mClientConnection->GetSocketIPAddress(clientID);
 				clientConn.mAccountName = netMessage.GetMessageData();
 				EstablishConnectionWithClient(clientConn);
+				break;
+			}
+			case NetMessageType::RPC:
+				RPCCaller::HandleIncomingRPC(&netMessage, mGameInstance);
 				break;
 			}
 		}
@@ -138,6 +151,11 @@ namespace Hikari
 	void GameServer::EstablishConnectionWithClient(const ClientConnectionData& arg_clientconndata)
 	{
 		mConnectedClients.push_back(arg_clientconndata);
+		ClientNetworkController* clientNetworkController = new ClientNetworkController(mGameInstance);
+		mGameInstance->GetNetworkManager()->GenerateNetGUID(clientNetworkController);
+		mGameInstance->GetNetworkManager()->RegisterObject(clientNetworkController);
+		mClientNetworkControllers[arg_clientconndata.mClientID] = clientNetworkController;
+
 		LOG_INFO() << "Established connection with client: " << arg_clientconndata.mAccountName << " " << arg_clientconndata.mIPAddress;
 		NetMessage msgAck(NetMessageType::ConnectionEstablishedAck, "");
 		mOutgoingClientMessages.push_back(ClientNetMessage(arg_clientconndata.mClientID, msgAck));
@@ -155,6 +173,21 @@ namespace Hikari
 		}
 		NetMessage serverListMsg(NetMessageType::WorldServerListUpdate, sizeof(NetMessageData::WorldServerList), reinterpret_cast<char*>(&serverListData));
 		mOutgoingClientMessages.push_back(ClientNetMessage(arg_clientconndata.mClientID, serverListMsg));
+
+		// Tell client to initialise GameServerNetworkController, and set its GUID
+		NetMessageData::ClientGameServerConnectionData initGSNetController;
+		initGSNetController.GameServerNetworkControllerNetGUID = mGameServerNetworkController->GetNetGUID();
+		initGSNetController.ClientNetworkControllerNetGUID = clientNetworkController->GetNetGUID();
+		NetMessage initGSNetControllerMsg(NetMessageType::ClientInitGameServerConnection, sizeof(NetMessageData::ClientGameServerConnectionData), reinterpret_cast<char*>(&initGSNetController));
+		mOutgoingClientMessages.push_back(ClientNetMessage(arg_clientconndata.mClientID, initGSNetControllerMsg));
+	}
+
+
+	ClientNetworkController* GameServer::GetClientNetworkController(int arg_clientid)
+	{
+		return mClientNetworkControllers[arg_clientid];
 	}
 
 }
+
+#endif

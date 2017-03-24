@@ -34,7 +34,7 @@ namespace Hikari
 		virtual void OnStart();
 		virtual void OnStop();
 
-
+		GameInstance* GetGameInstance();
 		TickManager* GetTickManager();
 		InputManager* GetInputManager();
 

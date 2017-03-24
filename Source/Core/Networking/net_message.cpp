@@ -6,9 +6,14 @@
 namespace Hikari
 {
 	NetMessage::NetMessage()
-		: mMessageType(NetMessageType::Ignored), mMessageLength(0)
+		: mMessageData(nullptr)
 	{
-		
+
+	}
+
+	NetMessage::NetMessage(NetMessageType arg_type)
+		: mMessageType(arg_type), mMessageLength(0)
+	{
 	}
 
 	NetMessage::NetMessage(const char* arg_message)
@@ -41,6 +46,21 @@ namespace Hikari
 
 	NetMessage::~NetMessage()
 	{
+		if (mMessageData != nullptr)
+		{
+			delete mMessageData;
+		}
+	}
+
+	NetMessage::NetMessage(const NetMessage& arg_other)
+		: mMessageType(arg_other.mMessageType), mMessageLength(arg_other.mMessageLength)
+	{
+		SetMessageData(arg_other.mMessageData, arg_other.mMessageLength);
+	}
+
+	NetMessage NetMessage::operator=(NetMessage &arg_other)
+	{
+		return NetMessage(arg_other.GetMessageType(), arg_other.GetMessageLength(), arg_other.GetMessageData());
 	}
 
 	bool NetMessage::GetIsValid() const
@@ -50,8 +70,21 @@ namespace Hikari
 
 	void NetMessage::SetMessageData(const char* arg_message, size_t arg_length)
 	{
-		mMessageData = new char[arg_length];
-		memcpy(mMessageData, arg_message, arg_length);
+		if (arg_length > 0)
+		{
+			mMessageData = new char[arg_length];
+			memcpy(mMessageData, arg_message, arg_length);
+		}
+		else
+		{
+			mMessageData = nullptr;
+		}
+	}
+
+	void NetMessage::SetMessageDataPtr(char* arg_ptr, msglen_t arg_bytes)
+	{
+		mMessageData = arg_ptr;
+		mMessageLength = arg_bytes;
 	}
 
 	const char*	NetMessage::GetMessageData() const
@@ -91,8 +124,4 @@ namespace Hikari
 		mMessageLength = *(reinterpret_cast<msglen_t*>((char*)arg_message + sizeof(msgprefix_t) + sizeof(msgtype_t)));
 	}
 
-	NetMessage NetMessage::operator=(NetMessage &arg_other)
-	{
-		return NetMessage(arg_other.GetMessageType(), arg_other.GetMessageLength(), arg_other.GetMessageData());
-	}
 }

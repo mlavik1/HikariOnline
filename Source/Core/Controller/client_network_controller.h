@@ -9,6 +9,7 @@ namespace Hikari
 	{
 		DEFINE_CLASS(Hikari::ClientNetworkController, Hikari::NetworkController)
 
+			ClientNetworkController(GameInstance* arg_gameinstance);
 	};
 }
 

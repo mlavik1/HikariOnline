@@ -11,8 +11,12 @@ namespace Hikari
 	class NetworkManager;
 	class GameWindow;
 	class Client;
+#ifdef HIKARI_WORLDSERVER
 	class WorldServer;
+#endif
+#ifdef HIKARI_GAMESERVER
 	class GameServer;
+#endif
 
 	class GameInstance
 	{
