@@ -107,5 +107,6 @@ namespace Hikari
 		}
 
 		mOutgoingGameServerMessages.clear();
+		mOutgoingClientMessages.clear();
 	}
 }

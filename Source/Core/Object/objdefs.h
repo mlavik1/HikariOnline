@@ -82,10 +82,7 @@ public: \
 	}
 
 #define REGISTER_CLASS_FUNCTION(classname, functionname) \
-	std::string functionName = #functionname; \
-	void(Hikari::Object::*funcPtr)(Hikari::FunctionArgContainer) = (void(Hikari::Object::*)(Hikari::FunctionArgContainer))(&##classname##::call_##functionname##); \
-	Hikari::Function* func = new Hikari::Function(functionName, funcPtr); \
-	myClass->AddMemberFunction(func);
+	myClass->AddMemberFunction(new Hikari::Function(#functionname, (void(Hikari::Object::*)(Hikari::FunctionArgContainer))(&##classname##::call_##functionname##) ));
 
 #define REGISTER_CLASSPROPERTIES(classname) \
 	bool sdfsdfjkjghrghre = ##classname##::RegisterClassProperties();

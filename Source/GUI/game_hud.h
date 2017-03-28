@@ -21,6 +21,7 @@ namespace Hikari
 		virtual void CloseWindow() override;
 
 		void AddChatMessage(const char* arg_message);
+		void SendChatMessage(const char* arg_message);
 
 	private:
 		void notify_SubmitButtonClicked(MyGUI::Widget* _sender);

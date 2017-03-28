@@ -14,7 +14,7 @@
 
 namespace Hikari
 {
-	typedef std::tuple<int, NetMessage> ClientNetMessage;
+	typedef std::tuple<int, NetMessage*> ClientNetMessage;
 
 	class GameInstance;
 
@@ -62,6 +62,11 @@ namespace Hikari
 		void EstablishConnectionWithClient(const ClientConnectionData& arg_clientconndata);
 
 		ClientNetworkController* GetClientNetworkController(int arg_clientid);
+
+		void TESTSendMessageToClient(NetMessage* arg_message);
+		
+		std::vector<ClientConnectionData> GetConnectedClients() { return mConnectedClients; }
+
 	};
 }
 

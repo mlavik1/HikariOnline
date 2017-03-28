@@ -63,9 +63,9 @@ namespace Hikari
 		{
 			if (SDLNet_CheckSockets(mSocketSet, 0) > 0 && SDLNet_SocketReady(mClients[i]))
 			{
-				char textBuffer[BUFFER_SIZE];
+				char textBuffer[BUFFER_SIZE]; // TODO: allocate once only
 				char* text = textBuffer;
-				int bytesReceived = SDLNet_TCP_Recv(mClients[i], text, 100);
+				int bytesReceived = SDLNet_TCP_Recv(mClients[i], text, 1000); // TODO: set max num bytes somewhere
 				if (bytesReceived > 0)
 				{
 					NetMessage netMsg;

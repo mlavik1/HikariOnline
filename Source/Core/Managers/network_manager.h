@@ -21,7 +21,7 @@ namespace Hikari
 #endif
 
 	public:
-		Hikari::Object* GetObject(NetGUID arg_guid);
+		Hikari::Object* GetObjectByGUID(NetGUID arg_guid);
 
 #if defined(HIKARI_GAMESERVER) || defined(HIKARI_WORLDSERVER)
 		void GenerateNetGUID(Hikari::Object* arg_object);

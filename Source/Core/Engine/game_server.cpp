@@ -49,7 +49,7 @@ namespace Hikari
 		{
 			LOG_INFO() << "Received message from world server";
 
-			NetMessage incomingMessage(arg_message);
+			NetMessage* incomingMessage = new NetMessage(arg_message);
 			mIncomingWorldServerMessages.push_back(ClientNetMessage(arg_clientid, incomingMessage));
 		});
 
@@ -63,7 +63,7 @@ namespace Hikari
 		{
 			LOG_INFO() << "Received message from client";
 
-			NetMessage incomingMessage(arg_message);
+			NetMessage* incomingMessage = new NetMessage(arg_message);
 			mIncomingClientMessages.push_back(ClientNetMessage(arg_clientid, incomingMessage));
 		});
 
@@ -77,13 +77,13 @@ namespace Hikari
 		for (ClientNetMessage& clientNetMessage : mIncomingWorldServerMessages)
 		{
 			const int& clientID = std::get<0>(clientNetMessage);
-			const NetMessage& netMessage = std::get<1>(clientNetMessage);
+			const NetMessage* netMessage = std::get<1>(clientNetMessage);
 
-			const char* messageData = netMessage.GetMessageData();
+			const char* messageData = netMessage->GetMessageData();
 			if(messageData != nullptr)
-				LOG_INFO() << "message: " << netMessage.GetMessageData();
+				LOG_INFO() << "message: " << netMessage->GetMessageData();
 
-			switch (netMessage.GetMessageType())
+			switch (netMessage->GetMessageType())
 			{
 			case NetMessageType::EstablishConnection:
 				WorldServerConnectionData worldServer;
@@ -91,7 +91,7 @@ namespace Hikari
 				worldServer.mIPAddress = mWorldServerConnection->GetSocketIPAddress(clientID);
 				mConnectedWorldServers.push_back(worldServer);
 				LOG_INFO() << "Established connection with World Server: " << worldServer.mIPAddress;
-				NetMessage msgAck(NetMessageType::ConnectionEstablishedAck, "");
+				NetMessage* msgAck = new NetMessage(NetMessageType::ConnectionEstablishedAck, "");
 				mOutgoingWorldServerMessages.push_back(ClientNetMessage(clientID, msgAck));
 				break;
 			}
@@ -100,23 +100,23 @@ namespace Hikari
 		for (ClientNetMessage& clientNetMessage : mIncomingClientMessages)
 		{
 			const int& clientID = std::get<0>(clientNetMessage);
-			const NetMessage& netMessage = std::get<1>(clientNetMessage);
+			const NetMessage* netMessage = std::get<1>(clientNetMessage);
 
-			LOG_INFO() << "message: " << netMessage.GetMessageData();
+			LOG_INFO() << "message: " << netMessage->GetMessageData();
 
-			switch (netMessage.GetMessageType())
+			switch (netMessage->GetMessageType())
 			{
 			case NetMessageType::EstablishConnection:
 			{
 				ClientConnectionData clientConn;
 				clientConn.mClientID = clientID;
 				clientConn.mIPAddress = mClientConnection->GetSocketIPAddress(clientID);
-				clientConn.mAccountName = netMessage.GetMessageData();
+				clientConn.mAccountName = netMessage->GetMessageData();
 				EstablishConnectionWithClient(clientConn);
 				break;
 			}
 			case NetMessageType::RPC:
-				RPCCaller::HandleIncomingRPC(&netMessage, mGameInstance);
+				RPCCaller::HandleIncomingRPC(netMessage, mGameInstance);
 				break;
 			}
 		}
@@ -124,21 +124,21 @@ namespace Hikari
 		for (ClientNetMessage& outMessage : mOutgoingWorldServerMessages)
 		{
 			const int& clientID = std::get<0>(outMessage);
-			const NetMessage& netMessage = std::get<1>(outMessage);
-			mWorldServerConnection->SendNetworkMessage(clientID, &netMessage);
+			const NetMessage* netMessage = std::get<1>(outMessage);
+			mWorldServerConnection->SendNetworkMessage(clientID, netMessage);
 		}
 
 		for (ClientNetMessage& outMessage : mOutgoingClientMessages)
 		{
 			const int& clientID = std::get<0>(outMessage);
-			const NetMessage& netMessage = std::get<1>(outMessage);
+			const NetMessage* netMessage = std::get<1>(outMessage);
 			if (clientID == -1)
 			{
-				mClientConnection->SendNetworkMessageToAll(&netMessage);
+				mClientConnection->SendNetworkMessageToAll(netMessage);
 			}
 			else
 			{
-				mClientConnection->SendNetworkMessage(clientID, &netMessage);
+				mClientConnection->SendNetworkMessage(clientID, netMessage);
 			}
 		}
 
@@ -157,7 +157,7 @@ namespace Hikari
 		mClientNetworkControllers[arg_clientconndata.mClientID] = clientNetworkController;
 
 		LOG_INFO() << "Established connection with client: " << arg_clientconndata.mAccountName << " " << arg_clientconndata.mIPAddress;
-		NetMessage msgAck(NetMessageType::ConnectionEstablishedAck, "");
+		NetMessage* msgAck = new NetMessage(NetMessageType::ConnectionEstablishedAck, "");
 		mOutgoingClientMessages.push_back(ClientNetMessage(arg_clientconndata.mClientID, msgAck));
 
 		// Send WorldServer-list to client
@@ -171,14 +171,14 @@ namespace Hikari
 			std::memcpy(serverInfo.IPAddress, mConnectedWorldServers[i].mIPAddress.c_str(), std::min((size_t)16, mConnectedWorldServers[i].mIPAddress.size() + 1));
 			serverListData.ServerInfos[i] = serverInfo;
 		}
-		NetMessage serverListMsg(NetMessageType::WorldServerListUpdate, sizeof(NetMessageData::WorldServerList), reinterpret_cast<char*>(&serverListData));
+		NetMessage* serverListMsg = new NetMessage(NetMessageType::WorldServerListUpdate, sizeof(NetMessageData::WorldServerList), reinterpret_cast<char*>(&serverListData));
 		mOutgoingClientMessages.push_back(ClientNetMessage(arg_clientconndata.mClientID, serverListMsg));
 
 		// Tell client to initialise GameServerNetworkController, and set its GUID
 		NetMessageData::ClientGameServerConnectionData initGSNetController;
 		initGSNetController.GameServerNetworkControllerNetGUID = mGameServerNetworkController->GetNetGUID();
 		initGSNetController.ClientNetworkControllerNetGUID = clientNetworkController->GetNetGUID();
-		NetMessage initGSNetControllerMsg(NetMessageType::ClientInitGameServerConnection, sizeof(NetMessageData::ClientGameServerConnectionData), reinterpret_cast<char*>(&initGSNetController));
+		NetMessage *initGSNetControllerMsg = new NetMessage(NetMessageType::ClientInitGameServerConnection, sizeof(NetMessageData::ClientGameServerConnectionData), reinterpret_cast<char*>(&initGSNetController));
 		mOutgoingClientMessages.push_back(ClientNetMessage(arg_clientconndata.mClientID, initGSNetControllerMsg));
 	}
 
@@ -186,6 +186,12 @@ namespace Hikari
 	ClientNetworkController* GameServer::GetClientNetworkController(int arg_clientid)
 	{
 		return mClientNetworkControllers[arg_clientid];
+	}
+
+	void GameServer::TESTSendMessageToClient(NetMessage* arg_message)
+	{
+		if(mConnectedClients.size() > 0)
+			mOutgoingClientMessages.push_back(ClientNetMessage(mConnectedClients[0].mClientID, arg_message));
 	}
 
 }

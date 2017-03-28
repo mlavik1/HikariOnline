@@ -32,6 +32,7 @@ namespace Hikari
 			window = static_cast<BaseWindow*>(arg_class->CreateInstance());
 			window->InitialiseObject(ObjectInitialiserParams()); // todo
 			window->SetGameInstance(mGameInstance);
+			mWindows[arg_class] = window;
 		}
 		return window;
 	}

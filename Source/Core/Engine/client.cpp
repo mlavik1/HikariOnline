@@ -6,6 +6,7 @@
 #include "game_instance.h"
 #include "Core/Managers/network_manager.h"
 #include "Core/Networking/rpc.h"
+#include "Core/Networking/rpc.h"
 
 namespace Hikari
 {
@@ -88,7 +89,7 @@ namespace Hikari
 		mWorldServerConnection = new ServerConnection();
 		mWorldServerConnection->Connect(arg_ip, PORT_WORLDSERVER_CLIENT);
 
-		mGameServerConnection->SetMessageCallback([&](const char* arg_message, int arg_bytes) -> void
+		mWorldServerConnection->SetMessageCallback([&](const char* arg_message, int arg_bytes) -> void
 		{
 			LOG_INFO() << "Received message from world server";
 			NetMessage* incomingMessage = new NetMessage(arg_message);
@@ -164,6 +165,9 @@ namespace Hikari
 					mGameInstance->GetNetworkManager()->RegisterObject(mClientNetworkController);
 
 					GameServerCall(mGameServerNetworkController, TestFunction, 2, 5.0f);
+					break;
+				case NetMessageType::RPC:
+					RPCCaller::HandleIncomingRPC(message, mGameInstance);
 					break;
 				}
 				delete(message);

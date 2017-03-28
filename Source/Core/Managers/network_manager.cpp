@@ -2,7 +2,7 @@
 
 namespace Hikari
 {
-	Hikari::Object* NetworkManager::GetObject(NetGUID arg_guid)
+	Hikari::Object* NetworkManager::GetObjectByGUID(NetGUID arg_guid)
 	{
 		auto objIter = mNetworkObjects.find(arg_guid);
 		Hikari::Object* obj = (objIter != mNetworkObjects.end()) ? (*objIter).second : nullptr;

@@ -2,6 +2,10 @@
 #include "Core/Engine/game_instance.h"
 #include "Core/Window/game_window.h"
 #include "Core/Debug/st_assert.h"
+#include "Core/Networking/rpc.h"
+#include "Core/Networking/net_message_data.h"
+#include "Core/Controller/game_server_network_controller.h"
+#include "Core/Engine/client.h"
 
 IMPLEMENT_CLASS(Hikari::GameHUD)
 
@@ -41,7 +45,7 @@ namespace Hikari
 
 	void GameHUD::notify_SubmitButtonClicked(MyGUI::Widget* _sender)
 	{
-		AddChatMessage((std::string("You: ") + std::string(mChatInputBox->getCaption())).c_str());
+		SendChatMessage((std::string("You: ") + std::string(mChatInputBox->getCaption())).c_str());
 		mChatInputBox->setCaption("");
 	}
 
@@ -52,7 +56,7 @@ namespace Hikari
 		{
 			case MyGUI::KeyCode::Return:
 			case MyGUI::KeyCode::NumpadEnter:
-				AddChatMessage((std::string("You: ") + std::string(mChatInputBox->getCaption())).c_str());
+				SendChatMessage((std::string("You: ") + std::string(mChatInputBox->getCaption())).c_str());
 				mChatInputBox->setCaption("");
 				break;
 			case MyGUI::KeyCode::LeftShift:
@@ -70,4 +74,14 @@ namespace Hikari
 		mChatMessageBox->setCaption(mChatMessageBox->getCaption() + "\n" + arg_message);
 
 	}
+
+	void GameHUD::SendChatMessage(const char* arg_message)
+	{
+		AddChatMessage(arg_message);
+#ifdef HIKARI_CLIENT // TODO: don't include GUI source folder in server projects
+		NetMessageData::ChatMessage chatMessage(arg_message);
+		GameServerCall(mGameInstance->GetClient()->GetGameServerNetworkController(), ServerSendMessage, chatMessage);
+#endif
+	}
+
 }
