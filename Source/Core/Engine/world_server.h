@@ -10,7 +10,7 @@
 
 namespace Hikari
 {
-	typedef std::tuple<int, NetMessage> ClientNetMessage;
+	typedef std::tuple<int, NetMessage*> ClientNetMessage;
 
 	class ClientConnectionData
 	{
@@ -26,13 +26,15 @@ namespace Hikari
 		Hikari::ServerConnection* mGameServerConnection;
 		Hikari::ClientConnection* mClientConnection;
 
-		std::vector<NetMessage> mIncomingGameServerMessages;
+		std::vector<ClientConnectionData> mConnectedClients;
+
+		std::vector<NetMessage*> mIncomingGameServerMessages;
 		std::vector<ClientNetMessage> mIncomingClientMessages;
 
-		std::vector<NetMessage> mOutgoingGameServerMessages;
+		std::vector<NetMessage*> mOutgoingGameServerMessages;
 		std::vector<ClientNetMessage> mOutgoingClientMessages;
 
-		std::vector<ClientConnectionData> mConnectedClients;
+		std::unordered_set<NetMessage*> mPendingDeleteNetMessages;
 
 	public:
 		WorldServer();
@@ -41,6 +43,11 @@ namespace Hikari
 		void Initialise();
 		bool ConnectToGameServer();
 		void Update();
+
+		void SendMessageToClient(int arg_clientid, NetMessage* arg_message);
+		void SendMessageToAllClients(NetMessage* arg_message);
+
+		void SendMessageToGameServer(int arg_serverid, NetMessage* arg_message);
 	};
 }
 

@@ -92,9 +92,10 @@ namespace Hikari
 				mConnectedWorldServers.push_back(worldServer);
 				LOG_INFO() << "Established connection with World Server: " << worldServer.mIPAddress;
 				NetMessage* msgAck = new NetMessage(NetMessageType::ConnectionEstablishedAck, "");
-				mOutgoingWorldServerMessages.push_back(ClientNetMessage(clientID, msgAck));
+				SendMessageToWorldServer(clientID, msgAck);
 				break;
 			}
+			delete(netMessage);
 		}
 
 		for (ClientNetMessage& clientNetMessage : mIncomingClientMessages)
@@ -119,6 +120,7 @@ namespace Hikari
 				RPCCaller::HandleIncomingRPC(netMessage, mGameInstance);
 				break;
 			}
+			delete(netMessage);
 		}
 
 		for (ClientNetMessage& outMessage : mOutgoingWorldServerMessages)
@@ -142,15 +144,22 @@ namespace Hikari
 			}
 		}
 
+		// Delete all NetMessage instances. Multiple client messages may reference the same NetMessage.
+		for (NetMessage* msg : mPendingDeleteNetMessages)
+		{
+			delete(msg);
+		}
+
 		mIncomingWorldServerMessages.clear();
 		mIncomingClientMessages.clear();
 		mOutgoingWorldServerMessages.clear();
 		mOutgoingClientMessages.clear();
+		mPendingDeleteNetMessages.clear();
 	}
 
 	void GameServer::EstablishConnectionWithClient(const ClientConnectionData& arg_clientconndata)
 	{
-		mConnectedClients.push_back(arg_clientconndata);
+		mConnectedClients[arg_clientconndata.mClientID] = arg_clientconndata;
 		ClientNetworkController* clientNetworkController = new ClientNetworkController(mGameInstance);
 		mGameInstance->GetNetworkManager()->GenerateNetGUID(clientNetworkController);
 		mGameInstance->GetNetworkManager()->RegisterObject(clientNetworkController);
@@ -181,17 +190,45 @@ namespace Hikari
 		NetMessage *initGSNetControllerMsg = new NetMessage(NetMessageType::ClientInitGameServerConnection, sizeof(NetMessageData::ClientGameServerConnectionData), reinterpret_cast<char*>(&initGSNetController));
 		mOutgoingClientMessages.push_back(ClientNetMessage(arg_clientconndata.mClientID, initGSNetControllerMsg));
 	}
-
+	
+	const std::unordered_map<int, Hikari::GameServer::ClientConnectionData>& GameServer::GetConnectedClients()
+	{
+		return mConnectedClients;
+	}
+	
+	const Hikari::GameServer::ClientConnectionData* GameServer::GetClientConnectionData(int arg_clientid)
+	{
+		auto connData = mConnectedClients.find(arg_clientid);
+		if (connData != mConnectedClients.end())
+			return &connData->second;
+		else
+			return nullptr;
+	}
 
 	ClientNetworkController* GameServer::GetClientNetworkController(int arg_clientid)
 	{
 		return mClientNetworkControllers[arg_clientid];
 	}
 
-	void GameServer::TESTSendMessageToClient(NetMessage* arg_message)
+	void GameServer::SendMessageToClient(int arg_clientid, NetMessage* arg_message)
 	{
-		if(mConnectedClients.size() > 0)
-			mOutgoingClientMessages.push_back(ClientNetMessage(mConnectedClients[0].mClientID, arg_message));
+		mOutgoingClientMessages.push_back(ClientNetMessage(arg_clientid, arg_message));
+		mPendingDeleteNetMessages.insert(arg_message);
+	}
+
+	void GameServer::SendMessageToAllClients(NetMessage* arg_message)
+	{
+		for (auto client : mConnectedClients)
+		{
+			mOutgoingClientMessages.push_back(ClientNetMessage(client.second.mClientID, arg_message));
+		}
+		mPendingDeleteNetMessages.insert(arg_message);
+	}
+
+	void GameServer::SendMessageToWorldServer(int arg_serverid, NetMessage* arg_message)
+	{
+		mOutgoingWorldServerMessages.push_back(ClientNetMessage(arg_serverid, arg_message));
+		mPendingDeleteNetMessages.insert(arg_message);
 	}
 
 }

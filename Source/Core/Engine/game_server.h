@@ -11,6 +11,7 @@
 #include "Core/Controller/game_server_network_controller.h"
 #include "Core/Controller/client_network_controller.h"
 #include <unordered_map>
+#include <unordered_set>
 
 namespace Hikari
 {
@@ -40,7 +41,7 @@ namespace Hikari
 		Hikari::ClientConnection* mWorldServerConnection;
 		Hikari::ClientConnection* mClientConnection;
 		std::vector<WorldServerConnectionData> mConnectedWorldServers;
-		std::vector<ClientConnectionData> mConnectedClients;
+		std::unordered_map<int, ClientConnectionData> mConnectedClients;
 
 		std::vector<ClientNetMessage> mIncomingWorldServerMessages;
 		std::vector<ClientNetMessage> mIncomingClientMessages;
@@ -52,6 +53,9 @@ namespace Hikari
 
 		std::unordered_map<int, ClientNetworkController*> mClientNetworkControllers;
 
+		std::unordered_set<NetMessage*> mPendingDeleteNetMessages;
+
+
 	public:
 		GameServer(GameInstance* arg_gameinstance);
 		~GameServer();
@@ -61,11 +65,15 @@ namespace Hikari
 
 		void EstablishConnectionWithClient(const ClientConnectionData& arg_clientconndata);
 
+		const std::unordered_map<int, ClientConnectionData>& GetConnectedClients();
+		const ClientConnectionData* GetClientConnectionData(int arg_clientid);
+
 		ClientNetworkController* GetClientNetworkController(int arg_clientid);
 
-		void TESTSendMessageToClient(NetMessage* arg_message);
-		
-		std::vector<ClientConnectionData> GetConnectedClients() { return mConnectedClients; }
+		void SendMessageToClient(int arg_clientid, NetMessage* arg_message);
+		void SendMessageToAllClients(NetMessage* arg_message);
+
+		void SendMessageToWorldServer(int arg_serverid, NetMessage* arg_message);
 
 	};
 }

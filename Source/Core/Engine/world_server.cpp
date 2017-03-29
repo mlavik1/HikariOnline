@@ -31,7 +31,7 @@ namespace Hikari
 		{
 			LOG_INFO() << "Received message from client";
 
-			NetMessage incomingMessage(arg_message);
+			NetMessage* incomingMessage = new NetMessage(arg_message);
 			mIncomingClientMessages.push_back(ClientNetMessage(arg_clientid, incomingMessage));
 		});
 
@@ -39,7 +39,7 @@ namespace Hikari
 		{
 			LOG_INFO() << "Received message from game server";
 
-			NetMessage incomingMessage(arg_message);
+			NetMessage* incomingMessage = new NetMessage(arg_message);
 			mIncomingGameServerMessages.push_back(incomingMessage);
 		});
 	}
@@ -50,7 +50,7 @@ namespace Hikari
 
 		if (bConnected)
 		{
-			NetMessage connMessage(NetMessageType::EstablishConnection, "");
+			NetMessage* connMessage = new NetMessage(NetMessageType::EstablishConnection, "");
 			mOutgoingGameServerMessages.push_back(connMessage);
 		}
 		return bConnected;
@@ -67,19 +67,19 @@ namespace Hikari
 			mClientConnection->FetchNewMessages();
 		}
 
-		for (NetMessage& outMessage : mOutgoingGameServerMessages)
+		for (NetMessage* outMessage : mOutgoingGameServerMessages)
 		{
-			mGameServerConnection->SendNetworkMessage(&outMessage);
+			mGameServerConnection->SendNetworkMessage(outMessage);
 		}
 		for (ClientNetMessage& outMessage : mOutgoingClientMessages)
 		{
-			mClientConnection->SendNetworkMessage(std::get<0>(outMessage), &std::get<1>(outMessage));
+			mClientConnection->SendNetworkMessage(std::get<0>(outMessage), std::get<1>(outMessage));
 		}
 
 
-		for (NetMessage& netMessage: mIncomingGameServerMessages)
+		for (NetMessage* netMessage: mIncomingGameServerMessages)
 		{
-			const NetMessageType& messageType = netMessage.GetMessageType();
+			const NetMessageType& messageType = netMessage->GetMessageType();
 			switch (messageType)
 			{
 
@@ -88,25 +88,54 @@ namespace Hikari
 
 		for (ClientNetMessage& message : mIncomingClientMessages)
 		{
-			const NetMessage& netMessage = std::get<1>(message);
+			const NetMessage* netMessage = std::get<1>(message);
 			int clientID = std::get<0>(message);
-			const NetMessageType& messageType = netMessage.GetMessageType();
+			const NetMessageType& messageType = netMessage->GetMessageType();
 			switch (messageType)
 			{
 				case NetMessageType::EstablishConnection:
-					std::string clientAccountName = netMessage.GetMessageData();
+					std::string clientAccountName = netMessage->GetMessageData();
 					ClientConnectionData clientConnData;
 					clientConnData.mAccountName = clientAccountName;
 					clientConnData.mClientID = clientID;
 					clientConnData.mIPAddress = mClientConnection->GetSocketIPAddress(clientID);
 					mConnectedClients.push_back(clientConnData);
-					NetMessage msgAck(NetMessageType::ConnectionEstablishedAck, "");
+					NetMessage* msgAck = new NetMessage(NetMessageType::ConnectionEstablishedAck, "");
 					mOutgoingClientMessages.push_back(ClientNetMessage(clientID, msgAck));
 				break;
 			}
 		}
 
+		// Delete all received/sent NetMessage instances. Multiple client messages may reference the same NetMessage.
+		for (NetMessage* msg : mPendingDeleteNetMessages)
+		{
+			delete(msg);
+		}
+
 		mOutgoingGameServerMessages.clear();
 		mOutgoingClientMessages.clear();
+		mPendingDeleteNetMessages.clear();
 	}
+
+	void WorldServer::SendMessageToClient(int arg_clientid, NetMessage* arg_message)
+	{
+		mOutgoingClientMessages.push_back(ClientNetMessage(arg_clientid, arg_message));
+		mPendingDeleteNetMessages.insert(arg_message);
+	}
+
+	void WorldServer::SendMessageToAllClients(NetMessage* arg_message)
+	{
+		for (auto client : mConnectedClients)
+		{
+			mOutgoingClientMessages.push_back(ClientNetMessage(client.mClientID, arg_message));
+		}
+		mPendingDeleteNetMessages.insert(arg_message);
+	}
+
+	void WorldServer::SendMessageToGameServer(int arg_serverid, NetMessage* arg_message)
+	{
+		mOutgoingGameServerMessages.push_back(arg_message);
+		mPendingDeleteNetMessages.insert(arg_message);
+	}
+
 }

@@ -40,7 +40,7 @@ namespace Hikari
 		// Send message
 #ifdef HIKARI_GAMESERVER
 		GameServer* gameServer = arg_object->GetGameInstance()->GetGameServer();
-		gameServer->TESTSendMessageToClient(rpcMessage); // TEMP TEST
+		gameServer->SendMessageToClient(arg_clientid, rpcMessage);
 #endif
 	}
 

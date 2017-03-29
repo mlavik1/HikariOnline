@@ -45,7 +45,7 @@ namespace Hikari
 
 	void GameHUD::notify_SubmitButtonClicked(MyGUI::Widget* _sender)
 	{
-		SendChatMessage((std::string("You: ") + std::string(mChatInputBox->getCaption())).c_str());
+		SendChatMessage(std::string(mChatInputBox->getCaption()).c_str());
 		mChatInputBox->setCaption("");
 	}
 
@@ -56,7 +56,7 @@ namespace Hikari
 		{
 			case MyGUI::KeyCode::Return:
 			case MyGUI::KeyCode::NumpadEnter:
-				SendChatMessage((std::string("You: ") + std::string(mChatInputBox->getCaption())).c_str());
+				SendChatMessage(std::string(mChatInputBox->getCaption()).c_str());
 				mChatInputBox->setCaption("");
 				break;
 			case MyGUI::KeyCode::LeftShift:
@@ -77,7 +77,7 @@ namespace Hikari
 
 	void GameHUD::SendChatMessage(const char* arg_message)
 	{
-		AddChatMessage(arg_message);
+		AddChatMessage(((std::string("You: ") + std::string(arg_message)).c_str()));
 #ifdef HIKARI_CLIENT // TODO: don't include GUI source folder in server projects
 		NetMessageData::ChatMessage chatMessage(arg_message);
 		GameServerCall(mGameInstance->GetClient()->GetGameServerNetworkController(), ServerSendMessage, chatMessage);

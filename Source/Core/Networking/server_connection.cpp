@@ -18,7 +18,6 @@ namespace Hikari
 	{
 		while (SDLNet_CheckSockets(mSocketSet, 0) > 0 && SDLNet_SocketReady(mServerSocket))
 		{
-			char textBuffer[BUFFER_SIZE];
 			char* text = textBuffer;
 			int bytesReceived = SDLNet_TCP_Recv(mServerSocket, text, BUFFER_SIZE);
 			if (bytesReceived > 0)

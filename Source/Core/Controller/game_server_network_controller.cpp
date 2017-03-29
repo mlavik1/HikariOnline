@@ -35,7 +35,7 @@ namespace Hikari
 		auto clientList = mGameInstance->GetGameServer()->GetConnectedClients();
 		for (auto client : clientList)
 		{
-			ClientCall(client.mClientID, this, ClientSendMessage, arg_message);
+			ClientCall(client.second.mClientID, this, ClientSendMessage, arg_message);
 		}
 #endif
 	}

@@ -13,6 +13,7 @@ namespace Hikari
 		std::function<void(const char*, int)> mMessageCallback;
 		//void(*mMessageCallback)(const char*);
 		void(*mServerDisconnectedCallback)() = 0;
+		char textBuffer[BUFFER_SIZE]; // buffer used when receiving data
 
 	public:
 		ServerConnection();

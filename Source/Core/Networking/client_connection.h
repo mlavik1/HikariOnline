@@ -11,6 +11,7 @@ namespace Hikari
 		TCPsocket mClients[9000];
 		bool mClientIsFree[9000];
 		int mMaxClients;
+		char textBuffer[BUFFER_SIZE]; // buffer used when receiving data
 
 		// Callbacks:
 		std::function<void(int, const char*, int)> mMessageCallback;
