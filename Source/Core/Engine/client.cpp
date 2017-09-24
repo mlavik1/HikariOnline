@@ -146,29 +146,33 @@ namespace Hikari
 				const NetMessageType& messageType = message->GetMessageType();
 				switch (messageType)
 				{
-				case NetMessageType::WorldServerListUpdate:
-					NetMessageData::WorldServerList serverList = *reinterpret_cast<const NetMessageData::WorldServerList*>(message->GetMessageData());
-					if (serverList.NumServers > 0)
+					case NetMessageType::WorldServerListUpdate:
 					{
-						ConnectToWorldServer(serverList.ServerInfos[0].IPAddress);
+						NetMessageData::WorldServerList serverList = *reinterpret_cast<const NetMessageData::WorldServerList*>(message->GetMessageData());
+						if (serverList.NumServers > 0)
+						{
+							ConnectToWorldServer(serverList.ServerInfos[0].IPAddress);
+						}
+						break;
 					}
-					break;
-				case NetMessageType::ClientInitGameServerConnection:
-					NetMessageData::ClientGameServerConnectionData initGSNetMgr = *reinterpret_cast<const NetMessageData::ClientGameServerConnectionData*>(message->GetMessageData());
-					LOG_INFO() << "Creating GameServerNetworkController, with GUID: " << (int)initGSNetMgr.GameServerNetworkControllerNetGUID;
-					mGameServerNetworkController = new GameServerNetworkController(mGameInstance);
-					mGameServerNetworkController->SetNetGUID(initGSNetMgr.GameServerNetworkControllerNetGUID);
-					mGameInstance->GetNetworkManager()->RegisterObject(mGameServerNetworkController);
-					LOG_INFO() << "Creating ClientNetworkController, with GUID: " << (int)initGSNetMgr.ClientNetworkControllerNetGUID;
-					mClientNetworkController = new ClientNetworkController(mGameInstance);
-					mClientNetworkController->SetNetGUID(initGSNetMgr.ClientNetworkControllerNetGUID);
-					mGameInstance->GetNetworkManager()->RegisterObject(mClientNetworkController);
-
-					GameServerCall(mGameServerNetworkController, TestFunction, 2, 5.0f);
-					break;
-				case NetMessageType::RPC:
-					RPCCaller::HandleIncomingRPC(message, mGameInstance);
-					break;
+					case NetMessageType::ClientInitGameServerConnection:
+					{
+						NetMessageData::ClientGameServerConnectionData initGSNetMgr = *reinterpret_cast<const NetMessageData::ClientGameServerConnectionData*>(message->GetMessageData());
+						LOG_INFO() << "Creating GameServerNetworkController, with GUID: " << (int)initGSNetMgr.GameServerNetworkControllerNetGUID;
+						mGameServerNetworkController = new GameServerNetworkController(mGameInstance);
+						mGameServerNetworkController->SetNetGUID(initGSNetMgr.GameServerNetworkControllerNetGUID);
+						mGameInstance->GetNetworkManager()->RegisterObject(mGameServerNetworkController);
+						LOG_INFO() << "Creating ClientNetworkController, with GUID: " << (int)initGSNetMgr.ClientNetworkControllerNetGUID;
+						mClientNetworkController = new ClientNetworkController(mGameInstance);
+						mClientNetworkController->SetNetGUID(initGSNetMgr.ClientNetworkControllerNetGUID);
+						mGameInstance->GetNetworkManager()->RegisterObject(mClientNetworkController);
+						break;
+					}
+					case NetMessageType::RPC:
+					{
+						RPCCaller::HandleIncomingRPC(message, mGameInstance);
+						break;
+					}
 				}
 				delete(message);
 			}

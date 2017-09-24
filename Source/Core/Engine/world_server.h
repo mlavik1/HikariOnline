@@ -36,6 +36,8 @@ namespace Hikari
 
 		std::unordered_set<NetMessage*> mPendingDeleteNetMessages;
 
+		void handleIncomingClientConnectionRequest(const ClientConnectionData& arg_conndata);
+
 	public:
 		WorldServer();
 		~WorldServer();

@@ -8,8 +8,6 @@
 
 IMPLEMENT_CLASS(Hikari::Actor)
 
-REGISTER_CLASSPROPERTIES(Hikari::Actor)
-
 namespace Hikari
 {
 	Actor::Actor(Hikari::World* arg_world)
@@ -20,14 +18,6 @@ namespace Hikari
 		mWorld = arg_world;
 		mSceneNode = mWorld->GetSceneManager()->getRootSceneNode()->createChildSceneNode(mObjectName);
 		mWorld->AddActor(this);
-
-
-		CALL_FUNCTION(this, RPCTest, 2, 3.0f)
-		//void(Hikari::Object::*tmpFuncPtr)(FunctionArgContainer) = (void(Hikari::Object::*)(FunctionArgContainer))(&Actor::call_RPCTest);
-		//Function func("test", tmpFuncPtr);
-		//FunctionArgContainer args = getargs_RPCTest(2, 3.0f);
-		//Object* thisObj = (Object*)this;
-		//thisObj->CallFunction(&func, args);
 	}
 
 	const Ogre::Vector3& Actor::GetPosition() const

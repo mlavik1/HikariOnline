@@ -48,18 +48,6 @@ namespace Hikari
 
 		void SetParent(Actor* arg_parent);
 
-		void RPCTest(int a, float b)
-		{
-			std::cout << "value1: " << a << "   value2: " << b << std::endl;
-		}
-
-
-DEFINE_FUNCTION(RPCTest, int, float)
-
-BEGIN_REGISTER_CLASSPROPERTIES(Hikari::Actor)
-REGISTER_CLASS_FUNCTION(Hikari::Actor, RPCTest)
-END_REGISTER_CLASSPROPERTIES(Hikari::Actor)
-
 		inline Ogre::SceneNode* GetSceneNode()
 		{
 			return mSceneNode;

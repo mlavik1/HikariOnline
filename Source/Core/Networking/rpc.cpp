@@ -42,6 +42,10 @@ namespace Hikari
 		GameServer* gameServer = arg_object->GetGameInstance()->GetGameServer();
 		gameServer->SendMessageToClient(arg_clientid, rpcMessage);
 #endif
+#ifdef HIKARI_WORLDSERVER
+		WorldServer* worldServer = arg_object->GetGameInstance()->GetWorldServer();
+		worldServer->SendMessageToClient(arg_clientid, rpcMessage);
+#endif
 	}
 
 	void RPCCaller::HandleIncomingRPC(const NetMessage* arg_message, GameInstance* arg_gameinstance)

@@ -17,14 +17,7 @@ namespace Hikari
 	GameServerNetworkController::GameServerNetworkController(GameInstance* arg_gameinstance)
 		:NetworkController(arg_gameinstance)
 	{
-		//CALL_FUNCTION(this, TestFunction, 2, 3.0f);
-	}
 
-	void GameServerNetworkController::TestFunction(int a, float b)
-	{
-		LOG_INFO() << "Called TestFunction";
-		LOG_INFO() << a;
-		LOG_INFO() << b;
 	}
 
 	void GameServerNetworkController::ServerSendMessage(NetMessageData::ChatMessage arg_message)

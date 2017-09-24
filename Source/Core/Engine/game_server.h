@@ -9,6 +9,7 @@
 #include <string>
 #include "Core/Managers/network_manager.h"
 #include "Core/Controller/game_server_network_controller.h"
+#include "Core/Controller/world_server_network_controller.h"
 #include "Core/Controller/client_network_controller.h"
 #include <unordered_map>
 #include <unordered_set>
@@ -51,10 +52,13 @@ namespace Hikari
 
 		GameServerNetworkController* mGameServerNetworkController;
 
+		std::unordered_map<int, WorldServerNetworkController*> mWorldServerNetworkControllers;
 		std::unordered_map<int, ClientNetworkController*> mClientNetworkControllers;
 
 		std::unordered_set<NetMessage*> mPendingDeleteNetMessages;
 
+		void establishConnectionWithWorldServer(const WorldServerConnectionData& arg_conndata);
+		void establishConnectionWithClient(const ClientConnectionData& arg_clientconndata);
 
 	public:
 		GameServer(GameInstance* arg_gameinstance);
@@ -62,8 +66,6 @@ namespace Hikari
 
 		void Initialise();
 		void Update();
-
-		void EstablishConnectionWithClient(const ClientConnectionData& arg_clientconndata);
 
 		const std::unordered_map<int, ClientConnectionData>& GetConnectedClients();
 		const ClientConnectionData* GetClientConnectionData(int arg_clientid);

@@ -99,9 +99,7 @@ namespace Hikari
 					clientConnData.mAccountName = clientAccountName;
 					clientConnData.mClientID = clientID;
 					clientConnData.mIPAddress = mClientConnection->GetSocketIPAddress(clientID);
-					mConnectedClients.push_back(clientConnData);
-					NetMessage* msgAck = new NetMessage(NetMessageType::ConnectionEstablishedAck, "");
-					mOutgoingClientMessages.push_back(ClientNetMessage(clientID, msgAck));
+					handleIncomingClientConnectionRequest(clientConnData);
 				break;
 			}
 		}
@@ -136,6 +134,16 @@ namespace Hikari
 	{
 		mOutgoingGameServerMessages.push_back(arg_message);
 		mPendingDeleteNetMessages.insert(arg_message);
+	}
+
+
+
+
+	void WorldServer::handleIncomingClientConnectionRequest(const ClientConnectionData& arg_conndata)
+	{
+		mConnectedClients.push_back(arg_conndata);
+		NetMessage* msgAck = new NetMessage(NetMessageType::ConnectionEstablishedAck, "");
+		mOutgoingClientMessages.push_back(ClientNetMessage(arg_conndata.mClientID, msgAck));
 	}
 
 }
