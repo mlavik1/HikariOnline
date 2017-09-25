@@ -2,12 +2,11 @@
 
 #include "Core/Engine/game_engine.h"
 #include "Core/Debug/st_assert.h"
-#include "Core/Engine/game_instance.h"
 #include "Core/World/world.h"
 
 namespace Hikari
 {
-	GameWindow::GameWindow(GameInstance* arg_gameinstance)
+	GameWindow::GameWindow()
 	{
 		mRenderWindow = GameEngine::Instance()->GetOgreRoot()->initialise(true, "Hikari");
 		//mRenderWindow->setFullscreen(false, 1024, 768);
@@ -17,14 +16,14 @@ namespace Hikari
 		__Assert(IsWindow(mHWND));
 #endif
 
-		mMainCamera = arg_gameinstance->GetWorld()->GetSceneManager()->createCamera("DefaultCamera");
+		mMainCamera = GameEngine::Instance()->GetWorld()->GetSceneManager()->createCamera("DefaultCamera");
 		mMainCamera->setNearClipDistance(0.01);
 		Ogre::Viewport* viewport = GetRenderWindow()->addViewport(mMainCamera);
 		viewport->setBackgroundColour(Ogre::ColourValue(0.0f, 0.0f, 1.0f));
 		
 		MyGUI::OgrePlatform* mPlatform;
 		mPlatform = new MyGUI::OgrePlatform();
-		mPlatform->initialise(mRenderWindow, arg_gameinstance->GetWorld()->GetSceneManager());
+		mPlatform->initialise(mRenderWindow, GameEngine::Instance()->GetWorld()->GetSceneManager());
 		mMyGUI = new MyGUI::Gui();
 		mMyGUI->initialise();
 	}

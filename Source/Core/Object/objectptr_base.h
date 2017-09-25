@@ -1,27 +1,26 @@
-#ifndef HIKARI_OBJECTPTR_H
-#define HIKARI_OBJECTPTR_H
+#ifndef HIKARI_OBJECTPTRBASE_H
+#define HIKARI_OBJECTPTRBASE_H
 
 /*=============================================================================================
-Reference-counted pointer to a Hikari::Object.
-When the object is destroyed (in any way), this will return nullptr.
+Base class for object pointers.
 
 ==============================================================================================*/
 #include "objectrefhandle.h"
-#include "objectptr_base.h"
 
 namespace Hikari
 {
+	class Object;
+
 	template <class T>
-	class ObjectPtr : public ObjectPtrBase<T>
+	class ObjectPtrBase
 	{
+	protected:
+		ObjectRefHandle* mRefHandle;
+
 	public:
-		ObjectPtr();
-		ObjectPtr(Object* arg_object);
-		ObjectPtr(const ObjectPtr<T>& arg_other);
-		~ObjectPtr();
+		inline Object* GetObjectSafe() const { return (mRefHandle != nullptr ? mRefHandle->GetObjectPointer() : nullptr); }
 
-		ObjectPtr<T>& operator=(const ObjectPtr<T>& arg_other);
-
+	public:
 		T* Get() const;
 		T* operator->() const;
 		bool operator==(const ObjectPtrBase<T>& arg_other) const;
@@ -34,6 +33,6 @@ namespace Hikari
 	};
 }
 
-#include "objectptr.cpp"
+#include "objectptr_base.cpp"
 
 #endif

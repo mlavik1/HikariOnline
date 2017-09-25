@@ -18,19 +18,37 @@ namespace Hikari
 	class ObjectRefHandle
 	{
 	private:
+		/** The owning object */
 		Object* mObject;
-		unsigned int mRefCount;
+
+		/** Strong references (used by ObjectPtr) */
+		unsigned int mStrongRefCount;
+
+		/** Weak references (used by WeakObjectPtr) */
+		unsigned int mWeakRefCount;
 
 		void maybeDelete();
 
 	public:
 		ObjectRefHandle(Object* arg_object);
 
-		inline Object* GetObject() const { return mObject; };
+		/** Gets the owning object of the handle */
+		inline Object* GetObjectPointer() const { return mObject; };
 
-		inline void SetObject(Object* arg_object) { mObject = arg_object; }
-		void AddRef();
-		void RemoveRef();
+		/** Sets the owning object of the handle. */
+		void SetObject(Object* arg_object);
+
+		/** Adds a strong reference to the object. */
+		void AddStrongRef();
+
+		/** Removes a strong reference to the object. This might result in object destruction. */
+		void RemoveStrongRef();
+
+		/** Adds a weak reference to the object. Used by WeakObjectPtr. */
+		void AddWeakRef();
+
+		/** Removes a weak reference to the object. Used by WeakObjectPtr. */
+		void RemoveWeakRef();
 	};
 }
 

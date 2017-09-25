@@ -2,7 +2,7 @@
 #include "Core/Actor/player_character.h"
 #include "Core/Debug/st_assert.h"
 #include "Core/Engine/client.h"
-#include "Core/Engine/game_instance.h"
+#include "Core/Engine/game_engine.h"
 #include "Core/World/world.h"
 #include "Core/Component/movement_component.h"
 #include "Core/Component/mesh_component.h"
@@ -25,17 +25,16 @@ namespace Hikari
 
 		if (mControlledCharacter != nullptr)
 		{
-			GameInstance* gameInstance = mClient->GetGameInstance();
 			MeshComponent* meshComp = mControlledCharacter->GetComponentOfType<MeshComponent>();
 
 			// TODO: do this in MovementCOmponent
-			float terrainHeight = gameInstance->GetWorld()->GetTerrainHeight(mControlledCharacter->GetPositionAbsolute().x, mControlledCharacter->GetPositionAbsolute().z);
+			float terrainHeight = GameEngine::Instance()->GetWorld()->GetTerrainHeight(mControlledCharacter->GetPositionAbsolute().x, mControlledCharacter->GetPositionAbsolute().z);
 			mControlledCharacter->SetPosition(Ogre::Vector3(mControlledCharacter->GetPosition().x, terrainHeight, mControlledCharacter->GetPosition().z));
 			
 			// move camera with character
 			mCameraAttachPoint->SetPosition(mControlledCharacter->GetPositionAbsolute());
 
-			Hikari::InputManager* inputManager = gameInstance->GetInputManager();
+			Hikari::InputManager* inputManager = GameEngine::Instance()->GetInputManager();
 
 			bool bRotateWithMouse = inputManager->GetMousePressed(1);
 
@@ -53,21 +52,21 @@ namespace Hikari
 
 			bool bIsMoving = false;
 
-			if (gameInstance->GetInputManager()->GetKey("d"))
+			if (GameEngine::Instance()->GetInputManager()->GetKey("d"))
 			{
 				mControlledCharacter->Rotate(Ogre::Vector3::UNIT_Y, -85.0f * arg_deltatime);
 			}
-			if (gameInstance->GetInputManager()->GetKey("a"))
+			if (GameEngine::Instance()->GetInputManager()->GetKey("a"))
 			{
 				mControlledCharacter->Rotate(Ogre::Vector3::UNIT_Y, 85.0f * arg_deltatime);
 			}
 
-			if (gameInstance->GetInputManager()->GetKey("w"))
+			if (GameEngine::Instance()->GetInputManager()->GetKey("w"))
 			{
 				mControlledCharacter->GetMovementComponent()->AddInput(mControlledCharacter->GetForwardVector());
 				bIsMoving = true;
 			}
-			else if (gameInstance->GetInputManager()->GetKey("s"))
+			else if (GameEngine::Instance()->GetInputManager()->GetKey("s"))
 			{
 				mControlledCharacter->GetMovementComponent()->AddInput(mControlledCharacter->GetUpVector());
 				bIsMoving = true;
@@ -104,7 +103,7 @@ namespace Hikari
 				Ogre::Vector2 mouseRelativePos = mCameraComponent->AbsToRelScreenPos(mousePos);
 				Ogre::Ray mouseRay = mCameraComponent->ScreenPosToWorldRay(mouseRelativePos);
 				Ogre::Vector3 terrainPos;
-				bool bHit = GeometryQueries::TraceTerrain(gameInstance->GetWorld(), mouseRay.getOrigin(), mouseRay.getOrigin() + mouseRay.getDirection() * 500.0f, 0.5f, 0.01f, &terrainPos);
+				bool bHit = GeometryQueries::TraceTerrain(GameEngine::Instance()->GetWorld(), mouseRay.getOrigin(), mouseRay.getOrigin() + mouseRay.getDirection() * 500.0f, 0.5f, 0.01f, &terrainPos);
 				if (bHit)
 				{
 					mTargetPoint = terrainPos;
@@ -116,7 +115,7 @@ namespace Hikari
 
 					std::vector<Ogre::Vector3> points;
 					points.push_back(terrainPos);
-					DebugGraphics::DrawDebugPoints(gameInstance->GetWorld(), points, 15.0f, Ogre::ColourValue::Red, 10.0f);
+					DebugGraphics::DrawDebugPoints(GameEngine::Instance()->GetWorld(), points, 15.0f, Ogre::ColourValue::Red, 10.0f);
 				}
 			}
 
@@ -133,10 +132,8 @@ namespace Hikari
 	{
 		mControlledCharacter = arg_character;
 
-		GameInstance* gameInstance = mClient->GetGameInstance();
-
-		mCameraActor = new Hikari::Actor(gameInstance->GetWorld());
-		mCameraAttachPoint = new Hikari::Actor(gameInstance->GetWorld());
+		mCameraActor = new Hikari::Actor(GameEngine::Instance()->GetWorld());
+		mCameraAttachPoint = new Hikari::Actor(GameEngine::Instance()->GetWorld());
 		mCameraActor->SetPosition(Ogre::Vector3(0.0f, 0.0f, -7.0f));
 		mCameraActor->Rotate(Ogre::Vector3::UNIT_X, 0.0f);
 		mCameraComponent = mCameraActor->AddComponent<Hikari::CameraComponent>();

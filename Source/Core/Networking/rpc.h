@@ -7,15 +7,16 @@ namespace Hikari
 {
 	class GameObject;
 	class NetMessage;
-	class GameInstance;
 
 	class RPCCaller
 	{
 	public:
 		static void RPC_GameServerCall(GameObject* arg_object, const char* arg_function, FunctionArgContainer arg_funcargs);
 		static void RPC_ClientCall(int arg_clientid, GameObject* arg_object, const char* arg_function, FunctionArgContainer arg_funcargs);
+		
+		static void ClientSendMessage(int arg_clientid, NetMessage* arg_message);
 
-		static void HandleIncomingRPC(const NetMessage* arg_message, GameInstance* arg_gameinstance);
+		static void HandleIncomingRPC(const NetMessage* arg_message);
 
 	private:
 		static NetMessage* createNetMessage(const NetGUID& arg_guid, const char* arg_function, const FunctionArgContainer& arg_funcargs);

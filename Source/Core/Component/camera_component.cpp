@@ -3,7 +3,6 @@
 #include "Core/Actor/actor.h"
 #include "Core/World/world.h"
 #include "Core/Engine/game_engine.h"
-#include "Core/Engine/game_instance.h"
 #include "Core/Window/game_window.h"
 
 IMPLEMENT_CLASS(Hikari::CameraComponent)
@@ -19,7 +18,7 @@ namespace Hikari
 	{
 		Hikari::Component::Initialise();
 
-		mCamera = mWorld->GetGameInstance()->GetGameWindow()->GetMainCamera();
+		mCamera = GameEngine::Instance()->GetGameWindow()->GetMainCamera();
 	}
 
 	void CameraComponent::Tick(float arg_deltatime)
@@ -31,7 +30,7 @@ namespace Hikari
 
 	Ogre::Vector2 CameraComponent::AbsToRelScreenPos(Ogre::Vector2 arg_absolutePosition)
 	{
-		const GameWindow* gameWindow = mWorld->GetGameInstance()->GetGameWindow();
+		const GameWindow* gameWindow = GameEngine::Instance()->GetGameWindow();
 		return arg_absolutePosition / Ogre::Vector2(gameWindow->GetWidth(), gameWindow->GetHeight());
 	}
 

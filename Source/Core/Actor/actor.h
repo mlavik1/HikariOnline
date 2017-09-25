@@ -12,7 +12,6 @@ namespace Hikari
 {
 	class World;
 	class Component;
-	class GameInstance;
 
 	class Actor : public GameObject, public Tickable
 	{
@@ -58,8 +57,7 @@ namespace Hikari
 		{
 			__AssertComment((std::is_base_of<Component, T>::value), "Must be subclass of Component");
 			
-			T* newComp = static_cast<T*>(GameObject::CreateGameObject<T>(this->mGameInstance));
-			newComp->mGameInstance = this->mGameInstance;
+			T* newComp = static_cast<T*>(GameObject::CreateGameObject<T>());
 			newComp->mWorld = this->mWorld;
 			newComp->mParent = this;
 			mComponents.push_back(newComp);

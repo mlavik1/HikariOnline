@@ -11,10 +11,10 @@ namespace Hikari
 		DEFINE_CLASS(Hikari::GameServerNetworkController, Hikari::NetworkController)
 
 	public:
-		GameServerNetworkController(GameInstance* arg_gameinstance);
+		GameServerNetworkController();
 
 		void ServerSendMessage(NetMessageData::ChatMessage arg_message);
-		void ClientSendMessage(NetMessageData::ChatMessage arg_message);
+		void ClientSendMessage(NetMessageData::ChatMessage arg_message); // MOVE TO CLIENT NETWORK CONTROLLER !!!
 
 		DEFINE_FUNCTION(ServerSendMessage, NetMessageData::ChatMessage)
 		DEFINE_FUNCTION(ClientSendMessage, NetMessageData::ChatMessage)

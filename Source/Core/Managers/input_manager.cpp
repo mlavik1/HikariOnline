@@ -1,5 +1,4 @@
 #include "input_manager.h"
-#include "Core/Engine/game_instance.h"
 #include "Core/Engine/game_engine.h"
 #include "Core/Window/game_window.h"
 #include <sstream>
@@ -8,16 +7,15 @@
 namespace Hikari
 {
 
-	InputManager::InputManager(GameInstance* arg_gameinstance)
+	InputManager::InputManager()
 	{
-		mGameInstance = arg_gameinstance;
 		mMousePressStates = 0;
 		mMouseReleaseStates = 0;
 
 		OIS::ParamList oisParamList;
 		size_t windowHwnd = 0;
 		std::ostringstream windowHndStr;
-		arg_gameinstance->GetGameWindow()->GetRenderWindow()->getCustomAttribute("WINDOW", &windowHwnd);
+		GameEngine::Instance()->GetGameWindow()->GetRenderWindow()->getCustomAttribute("WINDOW", &windowHwnd);
 		windowHndStr << windowHwnd;
 		oisParamList.insert(std::make_pair(std::string("WINDOW"), windowHndStr.str()));
 		//oisParamList.insert(std::make_pair(std::string("w32_mouse"), std::string("DISCL_FOREGROUND")));
@@ -41,8 +39,8 @@ namespace Hikari
 
 			// TODO: listen to GameWindow::Resize
 			const OIS::MouseState &mouseState = mMouseInputObject->getMouseState();
-			mouseState.width = mGameInstance->GetGameWindow()->GetWidth();
-			mouseState.height = mGameInstance->GetGameWindow()->GetHeight();
+			mouseState.width = GameEngine::Instance()->GetGameWindow()->GetWidth();
+			mouseState.height = GameEngine::Instance()->GetGameWindow()->GetHeight();
 		}
 
 		setupInputMap();

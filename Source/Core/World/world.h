@@ -8,13 +8,10 @@
 
 namespace Hikari
 {
-	class GameInstance;
-
 	class World
 	{
 	private:
 		Ogre::SceneManager* mSceneManager;
-		GameInstance* mGameInstance;
 		std::vector<Actor*> mActors;
 		Terrain* mTerrain;
 		int mWorldSizeX = 1000;
@@ -22,12 +19,7 @@ namespace Hikari
 		float mGridUnitSize = 1.0f;
 
 	public:
-		World(GameInstance* arg_gameinstance, Ogre::SceneManager* arg_scenemanager);
-
-		inline GameInstance* GetGameInstance()
-		{
-			return mGameInstance;
-		}
+		World(Ogre::SceneManager* arg_scenemanager);
 
 		inline Ogre::SceneManager* GetSceneManager()
 		{

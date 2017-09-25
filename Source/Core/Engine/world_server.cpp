@@ -1,8 +1,11 @@
+#ifdef HIKARI_WORLDSERVER
 #include "world_server.h"
 #include "Core/Debug/debug.h"
 #include "Core/World/world_factory.h"
-#include "Core/Engine/game_instance.h"
 #include "Core/World/world.h"
+#include "Core/Controller/client_network_controller.h"
+#include "Core/Engine/game_engine.h"
+#include "Core/Managers/network_manager.h"
 
 namespace Hikari
 {
@@ -125,7 +128,7 @@ namespace Hikari
 	{
 		for (auto client : mConnectedClients)
 		{
-			mOutgoingClientMessages.push_back(ClientNetMessage(client.mClientID, arg_message));
+			mOutgoingClientMessages.push_back(ClientNetMessage(client.second.mClientID, arg_message));
 		}
 		mPendingDeleteNetMessages.insert(arg_message);
 	}
@@ -137,13 +140,27 @@ namespace Hikari
 	}
 
 
+	ClientNetworkController* WorldServer::GetClientNetworkController(int arg_clientid)
+	{
+		return mClientNetworkControllers[arg_clientid];
+	}
+
+
 
 
 	void WorldServer::handleIncomingClientConnectionRequest(const ClientConnectionData& arg_conndata)
 	{
-		mConnectedClients.push_back(arg_conndata);
+		mConnectedClients[arg_conndata.mClientID] = arg_conndata;
+		ClientNetworkController* clientNetworkController = new ClientNetworkController();
+		GameEngine::Instance()->GetNetworkManager()->GenerateNetGUID(clientNetworkController);
+		GameEngine::Instance()->GetNetworkManager()->RegisterObject(clientNetworkController);
+		mClientNetworkControllers[arg_conndata.mClientID] = clientNetworkController;
+
+
 		NetMessage* msgAck = new NetMessage(NetMessageType::ConnectionEstablishedAck, "");
 		mOutgoingClientMessages.push_back(ClientNetMessage(arg_conndata.mClientID, msgAck));
 	}
 
 }
+
+#endif

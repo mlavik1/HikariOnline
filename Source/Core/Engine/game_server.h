@@ -18,8 +18,6 @@ namespace Hikari
 {
 	typedef std::tuple<int, NetMessage*> ClientNetMessage;
 
-	class GameInstance;
-
 	class WorldServerConnectionData
 	{
 	public:
@@ -38,7 +36,6 @@ namespace Hikari
 		};
 
 	private:
-		GameInstance* mGameInstance;
 		Hikari::ClientConnection* mWorldServerConnection;
 		Hikari::ClientConnection* mClientConnection;
 		std::vector<WorldServerConnectionData> mConnectedWorldServers;
@@ -61,7 +58,7 @@ namespace Hikari
 		void establishConnectionWithClient(const ClientConnectionData& arg_clientconndata);
 
 	public:
-		GameServer(GameInstance* arg_gameinstance);
+		GameServer();
 		~GameServer();
 
 		void Initialise();

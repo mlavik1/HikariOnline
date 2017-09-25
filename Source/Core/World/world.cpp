@@ -1,18 +1,16 @@
 #include "world.h"
 
 #include "Core/Debug/st_assert.h"
-#include "Core/Engine/game_instance.h"
+#include "Core/Engine/game_engine.h"
 #include "Core/Component/terrain_component.h"
 #include "Core/Misc/ogre_utils.h"
 #include "Core/Debug/debug_graphics.h"
 
 namespace Hikari
 {
-	World::World(GameInstance* arg_gameinstance, Ogre::SceneManager* arg_scenemanager)
+	World::World(Ogre::SceneManager* arg_scenemanager)
 	{
-		__Assert(arg_gameinstance != nullptr);
 		__Assert(arg_scenemanager != nullptr);
-		mGameInstance = arg_gameinstance;
 		mSceneManager = arg_scenemanager;
 		mTerrain = nullptr;
 	}

@@ -10,14 +10,12 @@
 
 namespace Hikari
 {
-	class GameInstance;
 	class ClientController;
 	class InGameController;
 
 	class Client
 	{
 	protected:
-		GameInstance* mGameInstance;
 		ClientController* mClientController;
 		InGameController* mInGameController; // null, if not in-game
 		ServerConnection* mGameServerConnection;
@@ -31,7 +29,7 @@ namespace Hikari
 		ClientNetworkController* mClientNetworkController;
 
 	public:
-		Client(GameInstance* arg_gameinstance);
+		Client();
 		~Client();
 
 		void TickClient(float arg_deltatime);
@@ -45,8 +43,7 @@ namespace Hikari
 		void SendMessageToWorldServer(NetMessage* arg_message);
 
 		InGameController* GetInGameController();
-		GameInstance* GetGameInstance();
-		
+
 		GameServerNetworkController* GetGameServerNetworkController();
 		ClientNetworkController* GetClientNetworkController();
 	};

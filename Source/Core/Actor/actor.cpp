@@ -1,9 +1,9 @@
 #include "actor.h"
 
+#include "Core/Engine/game_engine.h"
 #include "Core/World/world.h"
 #include "Core/Component/component.h"
 #include "Core/Managers/tick_manager.h"
-#include "Core/Engine/game_instance.h"
 #include "Core/Object/function.h"
 
 IMPLEMENT_CLASS(Hikari::Actor)
@@ -11,7 +11,7 @@ IMPLEMENT_CLASS(Hikari::Actor)
 namespace Hikari
 {
 	Actor::Actor(Hikari::World* arg_world)
-		: GameObject(arg_world->GetGameInstance())
+		: GameObject()
 	{
 		__Assert(arg_world != nullptr);
 		mParent = nullptr;
@@ -139,7 +139,7 @@ namespace Hikari
 	{
 		if (arg_activate)
 		{
-			GetTickManager()->RegisterTickable(this, TickGroup::Actors);
+			GameEngine::Instance()->GetTickManager()->RegisterTickable(this, TickGroup::Actors);
 		}
 		else
 		{

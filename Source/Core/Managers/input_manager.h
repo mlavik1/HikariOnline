@@ -8,15 +8,13 @@
 
 namespace Hikari
 {
-	class GameInstance;
-
 	typedef OIS::KeyCode InputMapKeyCode;
 	typedef unsigned int MouseButtonID;
 
 	class InputManager : public OIS::KeyListener, public OIS::MouseListener, public OIS::JoyStickListener
 	{
 	public:
-		InputManager(GameInstance* arg_gameinstance);
+		InputManager();
 		~InputManager();
 
 		void CaptureInput();
@@ -35,8 +33,6 @@ namespace Hikari
 		OIS::Mouse* GetMouseInputObject() { return mMouseInputObject; }
 
 	private:
-		GameInstance* mGameInstance;
-
 		OIS::InputManager* mInputSystem;
 		OIS::Keyboard* mKeyboardInputObject;
 		OIS::Mouse* mMouseInputObject;

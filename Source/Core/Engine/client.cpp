@@ -3,17 +3,15 @@
 #include "Core/Controller/client_controller.h"
 #include "Core/Controller/ingame_controller.h"
 #include "Core/Networking/net_message_data.h"
-#include "game_instance.h"
 #include "Core/Managers/network_manager.h"
 #include "Core/Networking/rpc.h"
 #include "Core/Networking/rpc.h"
+#include "Core/Engine/game_engine.h"
 
 namespace Hikari
 {
-	Client::Client(GameInstance* arg_gameinstance)
+	Client::Client()
 	{
-		__Assert(arg_gameinstance != nullptr);
-		mGameInstance = arg_gameinstance;
 		mGameServerNetworkController = nullptr;
 		mClientNetworkController = nullptr;
 
@@ -159,18 +157,18 @@ namespace Hikari
 					{
 						NetMessageData::ClientGameServerConnectionData initGSNetMgr = *reinterpret_cast<const NetMessageData::ClientGameServerConnectionData*>(message->GetMessageData());
 						LOG_INFO() << "Creating GameServerNetworkController, with GUID: " << (int)initGSNetMgr.GameServerNetworkControllerNetGUID;
-						mGameServerNetworkController = new GameServerNetworkController(mGameInstance);
+						mGameServerNetworkController = new GameServerNetworkController();
 						mGameServerNetworkController->SetNetGUID(initGSNetMgr.GameServerNetworkControllerNetGUID);
-						mGameInstance->GetNetworkManager()->RegisterObject(mGameServerNetworkController);
+						GameEngine::Instance()->GetNetworkManager()->RegisterObject(mGameServerNetworkController);
 						LOG_INFO() << "Creating ClientNetworkController, with GUID: " << (int)initGSNetMgr.ClientNetworkControllerNetGUID;
-						mClientNetworkController = new ClientNetworkController(mGameInstance);
+						mClientNetworkController = new ClientNetworkController();
 						mClientNetworkController->SetNetGUID(initGSNetMgr.ClientNetworkControllerNetGUID);
-						mGameInstance->GetNetworkManager()->RegisterObject(mClientNetworkController);
+						GameEngine::Instance()->GetNetworkManager()->RegisterObject(mClientNetworkController);
 						break;
 					}
 					case NetMessageType::RPC:
 					{
-						RPCCaller::HandleIncomingRPC(message, mGameInstance);
+						RPCCaller::HandleIncomingRPC(message);
 						break;
 					}
 				}
@@ -208,11 +206,6 @@ namespace Hikari
 	InGameController* Client::GetInGameController()
 	{
 		return mInGameController;
-	}
-
-	GameInstance* Client::GetGameInstance()
-	{
-		return mGameInstance;
 	}
 
 	GameServerNetworkController* Client::GetGameServerNetworkController()

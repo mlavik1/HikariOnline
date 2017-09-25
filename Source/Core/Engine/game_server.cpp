@@ -3,17 +3,16 @@
 #include <sdl2/SDL_net.h>
 #include "Core/Networking/net_message_data.h"
 #include <algorithm>
-#include "game_instance.h"
+#include "game_engine.h"
 #include "Core/Networking/rpc.h"
 
 namespace Hikari
 {
-	GameServer::GameServer(GameInstance* arg_gameinstance)
+	GameServer::GameServer()
 	{
-		mGameInstance = arg_gameinstance;
 		SDLNet_Init();
 		
-		mGameServerNetworkController = new GameServerNetworkController(mGameInstance);
+		mGameServerNetworkController = new GameServerNetworkController();
 
 		mWorldServerConnection = new Hikari::ClientConnection(50);
 		mClientConnection = new Hikari::ClientConnection(8000);
@@ -34,8 +33,8 @@ namespace Hikari
 
 	void GameServer::Initialise()
 	{
-		mGameInstance->GetNetworkManager()->GenerateNetGUID(mGameServerNetworkController);
-		mGameInstance->GetNetworkManager()->RegisterObject(mGameServerNetworkController);
+		GameEngine::Instance()->GetNetworkManager()->GenerateNetGUID(mGameServerNetworkController);
+		GameEngine::Instance()->GetNetworkManager()->RegisterObject(mGameServerNetworkController);
 		
 		std::string myIP = GetLocalhostIP();
 		LOG_INFO() << "My IP: " << myIP;
@@ -115,7 +114,7 @@ namespace Hikari
 				break;
 			}
 			case NetMessageType::RPC:
-				RPCCaller::HandleIncomingRPC(netMessage, mGameInstance);
+				RPCCaller::HandleIncomingRPC(netMessage);
 				break;
 			}
 			delete(netMessage);
@@ -163,9 +162,9 @@ namespace Hikari
 		SendMessageToWorldServer(arg_conndata.mClientID, msgAck);
 
 		// Create WorldServerNetworkController, used for communicating between game server and world server
-		WorldServerNetworkController* worldServerNetworkController = new WorldServerNetworkController(mGameInstance);
-		mGameInstance->GetNetworkManager()->GenerateNetGUID(worldServerNetworkController);
-		mGameInstance->GetNetworkManager()->RegisterObject(worldServerNetworkController);
+		WorldServerNetworkController* worldServerNetworkController = new WorldServerNetworkController();
+		GameEngine::Instance()->GetNetworkManager()->GenerateNetGUID(worldServerNetworkController);
+		GameEngine::Instance()->GetNetworkManager()->RegisterObject(worldServerNetworkController);
 		mWorldServerNetworkControllers[arg_conndata.mClientID] = worldServerNetworkController;
 
 		// Tell world server to initialise GameServerNetworkController, and set its GUID
@@ -179,9 +178,9 @@ namespace Hikari
 	void GameServer::establishConnectionWithClient(const ClientConnectionData& arg_clientconndata)
 	{
 		mConnectedClients[arg_clientconndata.mClientID] = arg_clientconndata;
-		ClientNetworkController* clientNetworkController = new ClientNetworkController(mGameInstance);
-		mGameInstance->GetNetworkManager()->GenerateNetGUID(clientNetworkController);
-		mGameInstance->GetNetworkManager()->RegisterObject(clientNetworkController);
+		ClientNetworkController* clientNetworkController = new ClientNetworkController();
+		GameEngine::Instance()->GetNetworkManager()->GenerateNetGUID(clientNetworkController);
+		GameEngine::Instance()->GetNetworkManager()->RegisterObject(clientNetworkController);
 		mClientNetworkControllers[arg_clientconndata.mClientID] = clientNetworkController;
 
 		LOG_INFO() << "Established connection with client: " << arg_clientconndata.mAccountName << " " << arg_clientconndata.mIPAddress;

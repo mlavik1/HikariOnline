@@ -1,6 +1,5 @@
 #include "Core/Debug/debug.h"
 #include "Core/Engine/game_engine.h"
-#include "Core/Engine/game_instance.h"
 #include "Core/Engine/game_server.h"
 #include <sdl2/SDL.h>
 
@@ -14,14 +13,12 @@ int main(int args, char* argv)
 	SDL_Init(SDL_INIT_EVERYTHING);
 
 	GameEngine* mGameEngine;
-	GameInstance* mGameInstance;
 
 	mGameEngine = GameEngine::Create();
 	mGameEngine->Initialise();
-	mGameInstance = mGameEngine->CreateGameInstance();
 
 
-	Hikari::GameServer* gameServer = mGameInstance->GetGameServer();
+	Hikari::GameServer* gameServer = GameEngine::Instance()->GetGameServer();
 
 	gameServer->Initialise();
 

@@ -7,17 +7,13 @@
 
 namespace Hikari
 {
-	class GameInstance;
-
 	class BaseWindow : public Object
 	{
 		DEFINE_CLASS(Hikari::BaseWindow, Hikari::Object)
 	protected:
-		GameInstance* mGameInstance;
 		MyGUI::WidgetPtr mRootWidget = nullptr;
 
 	public:
-		void SetGameInstance(GameInstance* arg_gameinstance);
 		virtual void ShowWindow();
 		virtual void CloseWindow();
 		void LoadLayout(const char* arg_layout);

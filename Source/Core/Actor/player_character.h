@@ -5,11 +5,19 @@
 
 namespace Hikari
 {
+	struct InitialReplicationData_PlayerCharacter : InitialReplicationData
+	{
+		Ogre::Vector3 Position;
+	};
+
 	class PlayerCharacter : public Hikari::Character
 	{
 		DEFINE_CLASS(Hikari::PlayerCharacter, Hikari::Character)
 	public:
 		PlayerCharacter(Hikari::World* arg_world);
+
+		virtual InitialReplicationData* GetInitialReplicationData() override;
+		virtual void ClientOnInitialReplication(InitialReplicationData* arg_data) override;
 	};
 }
 

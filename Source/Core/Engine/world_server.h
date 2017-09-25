@@ -12,6 +12,8 @@ namespace Hikari
 {
 	typedef std::tuple<int, NetMessage*> ClientNetMessage;
 
+	class ClientNetworkController;
+
 	class ClientConnectionData
 	{
 	public:
@@ -26,7 +28,8 @@ namespace Hikari
 		Hikari::ServerConnection* mGameServerConnection;
 		Hikari::ClientConnection* mClientConnection;
 
-		std::vector<ClientConnectionData> mConnectedClients;
+		std::unordered_map<int, ClientConnectionData> mConnectedClients;
+		std::unordered_map<int, ClientNetworkController*> mClientNetworkControllers;
 
 		std::vector<NetMessage*> mIncomingGameServerMessages;
 		std::vector<ClientNetMessage> mIncomingClientMessages;
@@ -50,6 +53,11 @@ namespace Hikari
 		void SendMessageToAllClients(NetMessage* arg_message);
 
 		void SendMessageToGameServer(int arg_serverid, NetMessage* arg_message);
+
+		std::unordered_map<int, ClientConnectionData> GetConnectedClients() { return mConnectedClients; }
+
+		ClientNetworkController* GetClientNetworkController(int arg_clientid);
+
 	};
 }
 

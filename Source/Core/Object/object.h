@@ -45,6 +45,9 @@ namespace Hikari
 		inline NetGUID GetNetGUID() { return mNetGUID; }
 		inline void SetNetGUID(const NetGUID& arg_guid) { mNetGUID = arg_guid; }
 
+		virtual InitialReplicationData* GetInitialReplicationData() { return nullptr; }
+		virtual void ClientOnInitialReplication(InitialReplicationData* arg_data) {}
+
 		std::string GetMemoryHash() const;
 
 	};

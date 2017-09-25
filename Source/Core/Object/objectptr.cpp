@@ -3,16 +3,16 @@
 
 #include "objectptr.h"
 #include "Core/Debug/st_assert.h"
-#include "Core/Object/object.h"
+#include "object.h"
 #include <type_traits>
 
 namespace Hikari
 {
 	template<typename T>
 	ObjectPtr<T>::ObjectPtr()
-		: mRefHandle(nullptr)
 	{
-		__AssertComment((std::is_base_of<Object, T>::value), "Type of T must be Object or subclass of Object.");
+		this->mRefHandle = nullptr;
+		//__AssertComment((std::is_base_of<Object, T>::value), "Type of T must be Object or subclass of Object.");
 	}
 
 	template<typename T>
@@ -20,59 +20,79 @@ namespace Hikari
 	{
 		__AssertComment((std::is_base_of<Object, T>::value), "Type of T must be Object or subclass of Object.");
 
-		mRefHandle = arg_object->GetRefHandle();
-		mRefHandle->AddRef();
+		this->mRefHandle = arg_object->GetRefHandle();
+		this->mRefHandle->AddStrongRef();
+	}
+
+	template<typename T>
+	ObjectPtr<T>::ObjectPtr(const ObjectPtr<T>& arg_other)
+	{
+		__AssertComment((std::is_base_of<Object, T>::value), "Type of T must be Object or subclass of Object.");
+
+		this->mRefHandle = arg_other.mRefHandle;
+		this->mRefHandle->AddStrongRef();
 	}
 
 	template<typename T>
 	ObjectPtr<T>::~ObjectPtr()
 	{
-		if (mRefHandle != nullptr)
+		if (this->mRefHandle != nullptr)
 		{
-			mRefHandle->RemoveRef();
+			this->mRefHandle->RemoveStrongRef();
 		}
 	}
 
 	template<typename T>
-	T* ObjectPtr<T>::Get()
+	ObjectPtr<T>& ObjectPtr<T>::operator=(const ObjectPtr<T>& arg_other)
 	{
-		return static_cast<T*>(mRefHandle->GetObject());
+		ObjectRefHandle* oldHandle = this->mRefHandle;
+		this->mRefHandle = arg_other.mRefHandle;
+		this->mRefHandle->AddStrongRef();
+		if (oldHandle != nullptr)
+			oldHandle->RemoveStrongRef();
+		return (*this);
+	}
+
+	template<typename T>
+	T* ObjectPtr<T>::Get() const
+	{
+		return static_cast<T*>(this->mRefHandle->GetObjectPointer());
 	}
 
 	template<typename T>
 	T* ObjectPtr<T>::operator->() const
 	{
-		return static_cast<T*>(getObjectSafe());
+		return static_cast<T*>(this->GetObjectSafe());
 	}
 
 	template<typename T>
-	bool ObjectPtr<T>::operator==(const ObjectPtr<T>& arg_other) const
+	bool ObjectPtr<T>::operator==(const ObjectPtrBase<T>& arg_other) const
 	{
-		return getObjectSafe() == arg_other.getObjectSafe();
+		return this->GetObjectSafe() == arg_other.GetObjectSafe();
 	}
 
 	template<typename T>
-	bool ObjectPtr<T>::operator!=(const ObjectPtr<T>& arg_other) const
+	bool ObjectPtr<T>::operator!=(const ObjectPtrBase<T>& arg_other) const
 	{
-		return getObjectSafe() != arg_other.getObjectSafe();
+		return this->GetObjectSafe() != arg_other.GetObjectSafe();
 	}
 
 	template<typename T>
 	bool ObjectPtr<T>::operator==(const T* arg_other) const
 	{
-		return getObjectSafe() == arg_other;
+		return this->GetObjectSafe() == arg_other;
 	}
 
 	template<typename T>
 	bool ObjectPtr<T>::operator!=(const T* arg_other) const
 	{
-		return getObjectSafe() != arg_other;
+		return this->GetObjectSafe() != arg_other;
 	}
 
 	template<typename T>
 	bool ObjectPtr<T>::IsValid() const
 	{
-		return getObjectSafe() != nullptr;
+		return this->GetObjectSafe() != nullptr;
 	}
 
 }

@@ -7,16 +7,14 @@
 
 namespace Hikari
 {
-	class GameInstance;
 	class BaseWindow;
 	class WindowManager
 	{
 	private:
-		GameInstance* mGameInstance;
 		std::unordered_map<Hikari::Class*, BaseWindow*> mWindows;
 
 	public:
-		WindowManager(GameInstance* arg_gameinstance);
+		WindowManager();
 
 		BaseWindow* ShowWindow(Hikari::Class* arg_class);
 		BaseWindow* AddUniqueWindow(Hikari::Class* arg_class);

@@ -10,7 +10,7 @@ namespace Hikari
 		DEFINE_CLASS(Hikari::NetworkController, Hikari::GameObject)
 
 	public:
-		NetworkController(GameInstance* arg_gameinstance);
+		NetworkController();
 	};
 }
 

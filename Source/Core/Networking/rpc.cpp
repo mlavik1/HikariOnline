@@ -1,6 +1,6 @@
 #include "rpc.h"
+#include "Core/Engine/game_engine.h"
 #include "Core/Object/game_object.h"
-#include "Core/Engine/game_instance.h"
 #include "Core/Engine/client.h"
 #include "Core/Managers/network_manager.h"
 #ifdef HIKARI_GAMESERVER
@@ -22,7 +22,7 @@ namespace Hikari
 
 		// Send message
 #ifdef HIKARI_CLIENT
-		Client* client = arg_object->GetGameInstance()->GetClient();
+		Client* client = GameEngine::Instance()->GetClient();
 		client->SendMessageToGameServer(rpcMessage);
 #endif
 
@@ -38,17 +38,22 @@ namespace Hikari
 		NetMessage* rpcMessage = createNetMessage(guid, arg_function, arg_funcargs);
 
 		// Send message
+		ClientSendMessage(arg_clientid, rpcMessage);
+	}
+
+	void RPCCaller::ClientSendMessage(int arg_clientid, NetMessage* arg_message)
+	{
 #ifdef HIKARI_GAMESERVER
-		GameServer* gameServer = arg_object->GetGameInstance()->GetGameServer();
-		gameServer->SendMessageToClient(arg_clientid, rpcMessage);
+		GameServer* gameServer = GameEngine::Instance()->GetGameServer();
+		gameServer->SendMessageToClient(arg_clientid, arg_message);
 #endif
 #ifdef HIKARI_WORLDSERVER
-		WorldServer* worldServer = arg_object->GetGameInstance()->GetWorldServer();
-		worldServer->SendMessageToClient(arg_clientid, rpcMessage);
+		WorldServer* worldServer = GameEngine::Instance()->GetWorldServer();
+		worldServer->SendMessageToClient(arg_clientid, arg_message);
 #endif
 	}
 
-	void RPCCaller::HandleIncomingRPC(const NetMessage* arg_message, GameInstance* arg_gameinstance)
+	void RPCCaller::HandleIncomingRPC(const NetMessage* arg_message)
 	{
 		const char* dataPtr = arg_message->GetMessageData();
 		NetGUID guid = *reinterpret_cast<const NetGUID*>(dataPtr);
@@ -61,7 +66,7 @@ namespace Hikari
 		funcArgs.mData = new char[funcArgs.mSize];
 		memcpy(funcArgs.mData, dataPtr, funcArgs.mSize);
 
-		Hikari::GameObject* obj = static_cast<Hikari::GameObject*>(arg_gameinstance->GetNetworkManager()->GetObjectByGUID(guid));
+		Hikari::GameObject* obj = static_cast<Hikari::GameObject*>(GameEngine::Instance()->GetNetworkManager()->GetObjectByGUID(guid));
 		if (obj != nullptr)
 		{
 			Hikari::Function* func = obj->GetClass()->GetFunctionByName(funcName.c_str());

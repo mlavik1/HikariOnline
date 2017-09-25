@@ -1,5 +1,5 @@
 #include "game_hud.h"
-#include "Core/Engine/game_instance.h"
+#include "Core/Engine/game_engine.h"
 #include "Core/Window/game_window.h"
 #include "Core/Debug/st_assert.h"
 #include "Core/Networking/rpc.h"
@@ -19,10 +19,10 @@ namespace Hikari
 		LoadLayout(mGameHUDLayout);
 		LoadLayout(mGameChatLayout);
 		
-		mChatWindow = mGameInstance->GetGameWindow()->GetMyGUI()->findWidget<MyGUI::Window>("ChatWindow");
-		mChatInputBox = mGameInstance->GetGameWindow()->GetMyGUI()->findWidget<MyGUI::EditBox>("ChatInput");
-		mChatMessageBox = mGameInstance->GetGameWindow()->GetMyGUI()->findWidget<MyGUI::EditBox>("ChatMessages");
-		mSubmitButton = mGameInstance->GetGameWindow()->GetMyGUI()->findWidget<MyGUI::Button>("SubmitButton");
+		mChatWindow = GameEngine::Instance()->GetGameWindow()->GetMyGUI()->findWidget<MyGUI::Window>("ChatWindow");
+		mChatInputBox = GameEngine::Instance()->GetGameWindow()->GetMyGUI()->findWidget<MyGUI::EditBox>("ChatInput");
+		mChatMessageBox = GameEngine::Instance()->GetGameWindow()->GetMyGUI()->findWidget<MyGUI::EditBox>("ChatMessages");
+		mSubmitButton = GameEngine::Instance()->GetGameWindow()->GetMyGUI()->findWidget<MyGUI::Button>("SubmitButton");
 		
 		__Assert(mChatInputBox != nullptr);
 		__Assert(mChatInputBox != nullptr);
@@ -80,7 +80,7 @@ namespace Hikari
 		AddChatMessage(((std::string("You: ") + std::string(arg_message)).c_str()));
 #ifdef HIKARI_CLIENT // TODO: don't include GUI source folder in server projects
 		NetMessageData::ChatMessage chatMessage(arg_message);
-		GameServerCall(mGameInstance->GetClient()->GetGameServerNetworkController(), ServerSendMessage, chatMessage);
+		GameServerCall(GameEngine::Instance()->GetClient()->GetGameServerNetworkController(), ServerSendMessage, chatMessage);
 #endif
 	}
 

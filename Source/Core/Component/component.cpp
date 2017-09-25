@@ -3,6 +3,7 @@
 #include "Core/Debug/st_assert.h"
 #include "Core/World/world.h"
 #include "Core/Managers/tick_manager.h"
+#include "Core/Engine/game_engine.h"
 
 IMPLEMENT_CLASS(Hikari::Component)
 
@@ -38,7 +39,7 @@ namespace Hikari
 	{
 		if (arg_activate)
 		{
-			GetTickManager()->RegisterTickable(this, TickGroup::Components);
+			GameEngine::Instance()->GetTickManager()->RegisterTickable(this, TickGroup::Components);
 		}
 		else
 		{

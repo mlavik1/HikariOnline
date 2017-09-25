@@ -4,8 +4,8 @@ namespace Hikari
 {
 	IMPLEMENT_CLASS(Hikari::WorldServerNetworkController)
 
-	WorldServerNetworkController::WorldServerNetworkController(GameInstance* arg_gameinstance)
-		:NetworkController(arg_gameinstance)
+	WorldServerNetworkController::WorldServerNetworkController()
+		:NetworkController()
 	{
 
 	}

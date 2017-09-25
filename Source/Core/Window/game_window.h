@@ -11,8 +11,6 @@
 
 namespace Hikari
 {
-	class GameInstance;
-
 	class GameWindow
 	{
 	private:
@@ -32,7 +30,7 @@ namespace Hikari
 		Ogre::Viewport* mMainViewport;
 
 	public:
-		GameWindow(GameInstance* arg_gameinstance);
+		GameWindow();
 
 		MyGUI::Gui* GetMyGUI();
 		Ogre::Camera* GetMainCamera();
