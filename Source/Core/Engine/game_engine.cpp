@@ -13,6 +13,7 @@
 #include "Core/Engine/client.h"
 #include "Core/Managers/window_manager.h"
 #include "Core/Managers/network_manager.h"
+#include "Core/Networking/player_manager.h"
 #ifdef HIKARI_WORLDSERVER
 #include "Core/Engine/world_server.h"
 #endif
@@ -60,6 +61,8 @@ namespace Hikari
 		mTickManager = new TickManager();
 
 		mNetworkManager = new NetworkManager();
+
+		mPlayerManager = new PlayerManager();
 
 #ifdef HIKARI_CLIENT
 

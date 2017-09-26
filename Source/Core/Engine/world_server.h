@@ -7,20 +7,13 @@
 #include <vector>
 #include "Core/Engine/game_engine.h"
 #include <tuple>
+#include "Core/Networking/player.h"
 
 namespace Hikari
 {
 	typedef std::tuple<int, NetMessage*> ClientNetMessage;
 
 	class ClientNetworkController;
-
-	class ClientConnectionData
-	{
-	public:
-		std::string mIPAddress;
-		int mClientID;
-		std::string mAccountName;
-	};
 
 	class WorldServer
 	{

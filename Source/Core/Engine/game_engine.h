@@ -13,6 +13,7 @@ namespace Hikari
 	class TickManager;
 	class WindowManager;
 	class NetworkManager;
+	class PlayerManager;
 	class GameWindow;
 	class Client;
 #ifdef HIKARI_WORLDSERVER
@@ -37,6 +38,7 @@ namespace Hikari
 		InputManager* mInputManager;
 		WindowManager* mWindowManager;
 		NetworkManager* mNetworkManager;
+		PlayerManager* mPlayerManager;
 		float mLastTime = 0.0f;
 #ifdef HIKARI_CLIENT
 		Client* mClient;
@@ -92,6 +94,11 @@ namespace Hikari
 		inline NetworkManager* GetNetworkManager()
 		{
 			return mNetworkManager;
+		}
+
+		inline PlayerManager* GetPlayerManager()
+		{
+			return mPlayerManager;
 		}
 
 #ifdef HIKARI_CLIENT

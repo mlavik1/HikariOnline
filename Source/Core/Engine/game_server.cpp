@@ -5,6 +5,7 @@
 #include <algorithm>
 #include "game_engine.h"
 #include "Core/Networking/rpc.h"
+#include "Core/Networking/player_manager.h"
 
 namespace Hikari
 {
@@ -177,11 +178,17 @@ namespace Hikari
 	
 	void GameServer::establishConnectionWithClient(const ClientConnectionData& arg_clientconndata)
 	{
+		// Add client to map of connected clients
 		mConnectedClients[arg_clientconndata.mClientID] = arg_clientconndata;
+
+		// Create ClientNetworkController, for communication with client
 		ClientNetworkController* clientNetworkController = new ClientNetworkController();
 		GameEngine::Instance()->GetNetworkManager()->GenerateNetGUID(clientNetworkController);
 		GameEngine::Instance()->GetNetworkManager()->RegisterObject(clientNetworkController);
 		mClientNetworkControllers[arg_clientconndata.mClientID] = clientNetworkController;
+
+		// Register Player in the PlayerManager
+		GameEngine::Instance()->GetPlayerManager()->AddPlayer(clientNetworkController->GetNetGUID(), arg_clientconndata);
 
 		LOG_INFO() << "Established connection with client: " << arg_clientconndata.mAccountName << " " << arg_clientconndata.mIPAddress;
 		NetMessage* msgAck = new NetMessage(NetMessageType::ConnectionEstablishedAck, "");
@@ -209,12 +216,12 @@ namespace Hikari
 		mOutgoingClientMessages.push_back(ClientNetMessage(arg_clientconndata.mClientID, initGSNetControllerMsg));
 	}
 	
-	const std::unordered_map<int, Hikari::GameServer::ClientConnectionData>& GameServer::GetConnectedClients()
+	const std::unordered_map<int, ClientConnectionData>& GameServer::GetConnectedClients()
 	{
 		return mConnectedClients;
 	}
 	
-	const Hikari::GameServer::ClientConnectionData* GameServer::GetClientConnectionData(int arg_clientid)
+	const ClientConnectionData* GameServer::GetClientConnectionData(int arg_clientid)
 	{
 		auto connData = mConnectedClients.find(arg_clientid);
 		if (connData != mConnectedClients.end())

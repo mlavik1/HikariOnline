@@ -13,6 +13,7 @@
 #include "Core/Controller/client_network_controller.h"
 #include <unordered_map>
 #include <unordered_set>
+#include "Core/Networking/player.h"
 
 namespace Hikari
 {
@@ -27,14 +28,6 @@ namespace Hikari
 
 	class GameServer
 	{
-		class ClientConnectionData
-		{
-		public:
-			std::string mIPAddress;
-			int mClientID;
-			std::string mAccountName;
-		};
-
 	private:
 		Hikari::ClientConnection* mWorldServerConnection;
 		Hikari::ClientConnection* mClientConnection;

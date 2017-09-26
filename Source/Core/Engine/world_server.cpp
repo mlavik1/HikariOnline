@@ -6,6 +6,7 @@
 #include "Core/Controller/client_network_controller.h"
 #include "Core/Engine/game_engine.h"
 #include "Core/Managers/network_manager.h"
+#include "Core/Networking/player_manager.h"
 
 namespace Hikari
 {
@@ -150,12 +151,17 @@ namespace Hikari
 
 	void WorldServer::handleIncomingClientConnectionRequest(const ClientConnectionData& arg_conndata)
 	{
+		// Add client to map of connected clients
 		mConnectedClients[arg_conndata.mClientID] = arg_conndata;
+
+		// Create ClientNetworkController, for communication with client
 		ClientNetworkController* clientNetworkController = new ClientNetworkController();
 		GameEngine::Instance()->GetNetworkManager()->GenerateNetGUID(clientNetworkController);
 		GameEngine::Instance()->GetNetworkManager()->RegisterObject(clientNetworkController);
 		mClientNetworkControllers[arg_conndata.mClientID] = clientNetworkController;
 
+		// Register Player in PlayerManager
+		GameEngine::Instance()->GetPlayerManager()->AddPlayer(clientNetworkController->GetNetGUID(), arg_conndata);
 
 		NetMessage* msgAck = new NetMessage(NetMessageType::ConnectionEstablishedAck, "");
 		mOutgoingClientMessages.push_back(ClientNetMessage(arg_conndata.mClientID, msgAck));
