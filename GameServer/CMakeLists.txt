@@ -33,6 +33,10 @@ file(GLOB_RECURSE SRC_CONTROLLER
     "${SharedSourceDir}/Core/Controller/*.cpp"
     "${SharedSourceDir}/Core/Controller/*.h"
 )
+file(GLOB_RECURSE SRC_SERIALISATION
+    "${SharedSourceDir}/Core/Serialisation/*.cpp"
+    "${SharedSourceDir}/Core/Serialisation/*.h"
+)
 file(GLOB_RECURSE SRC_GAMESERVER
     "Source/*.cpp"
     "Source/*.h"
@@ -43,6 +47,7 @@ source_group("Core\\Debug" FILES ${SRC_DEBUG})
 source_group("Core\\Networking" FILES ${SRC_NETWORKING})
 source_group("Core\\Controller" FILES ${SRC_CONTROLLER})
 source_group("Core\\Engine" FILES ${SRC_ENGINE})
+source_group("Core\\Serialisation" FILES ${SRC_SERIALISATION})
 source_group("GameServer" FILES ${SRC_GAMESERVER})
 
 include_directories ("../Dependencies/Include/SDL2")

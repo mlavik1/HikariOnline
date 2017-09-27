@@ -60,11 +60,13 @@ namespace Hikari
 		dataPtr += sizeof(NetGUID);
 		std::string funcName(dataPtr);
 		dataPtr += funcName.size() + 1;
-		FunctionArgContainer funcArgs;
-		funcArgs.mSize = *reinterpret_cast<const size_t*>(dataPtr);
+		
+		size_t argsSize = *reinterpret_cast<const size_t*>(dataPtr);
 		dataPtr += sizeof(size_t);
-		funcArgs.mData = new char[funcArgs.mSize];
-		memcpy(funcArgs.mData, dataPtr, funcArgs.mSize);
+		char* argsData = new char[argsSize];
+		memcpy(argsData, dataPtr, argsSize);
+
+		FunctionArgContainer funcArgs(argsData, argsSize);
 
 		Hikari::GameObject* obj = static_cast<Hikari::GameObject*>(GameEngine::Instance()->GetNetworkManager()->GetObjectByGUID(guid));
 		if (obj != nullptr)
@@ -90,13 +92,13 @@ namespace Hikari
 	NetMessage* RPCCaller::createNetMessage(const NetGUID& arg_guid, const char* arg_function, const FunctionArgContainer& arg_funcargs)
 	{
 		const size_t funcNameLen = std::strlen(arg_function) + 1;
-		size_t dataSize = sizeof(NetGUID) + funcNameLen + sizeof(size_t) + arg_funcargs.mSize;
+		size_t dataSize = sizeof(NetGUID) + funcNameLen + sizeof(size_t) + arg_funcargs.GetSize();
 		char* data = new char[dataSize]; // will be owned by NetMessage below
 		// Copy data
 		memcpy(data, &arg_guid, sizeof(NetGUID));
 		memcpy(data + sizeof(NetGUID), arg_function, funcNameLen);
-		memcpy(data + sizeof(NetGUID) + funcNameLen, &arg_funcargs.mSize, sizeof(size_t));
-		memcpy(data + sizeof(NetGUID) + funcNameLen + sizeof(size_t), arg_funcargs.mData, arg_funcargs.mSize);
+		memcpy(data + sizeof(NetGUID) + funcNameLen, &arg_funcargs.GetSize(), sizeof(size_t));
+		memcpy(data + sizeof(NetGUID) + funcNameLen + sizeof(size_t), arg_funcargs.GetData(), arg_funcargs.GetSize());
 		// Create NetMessage
 		NetMessage* rpcMessage = new NetMessage(NetMessageType::RPC);
 		rpcMessage->SetMessageDataPtr(data, dataSize);
