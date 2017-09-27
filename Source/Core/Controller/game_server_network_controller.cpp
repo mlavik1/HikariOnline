@@ -20,9 +20,9 @@ namespace Hikari
 
 	}
 
-	void GameServerNetworkController::ServerSendMessage(NetMessageData::ChatMessage arg_message)
+	void GameServerNetworkController::ServerSendMessage(std::string arg_message)
 	{
-		LOG_INFO() << "Called ServerSendMessage: " << arg_message.Message;
+		LOG_INFO() << "Called ServerSendMessage: " << arg_message;
 
 #ifdef HIKARI_GAMESERVER
 		auto clientList = GameEngine::Instance()->GetGameServer()->GetConnectedClients();
@@ -33,12 +33,12 @@ namespace Hikari
 #endif
 	}
 
-	void GameServerNetworkController::ClientSendMessage(NetMessageData::ChatMessage arg_message)
+	void GameServerNetworkController::ClientSendMessage(std::string arg_message)
 	{
-		LOG_INFO() << "Called ClientSendMessage: " << arg_message.Message;
+		LOG_INFO() << "Called ClientSendMessage: " << arg_message;
 #ifdef HIKARI_CLIENT
 		GameHUD* hud = (GameHUD*)GameEngine::Instance()->GetWindowManager()->GetWindow(GameHUD::GetStaticClass());
-		hud->AddChatMessage(arg_message.Message);
+		hud->AddChatMessage(arg_message.c_str());
 #endif
 	}
 }

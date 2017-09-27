@@ -3,6 +3,7 @@
 
 #include "network_controller.h"
 #include "Core/Networking/net_message_data.h"
+#include <string>
 
 namespace Hikari
 {
@@ -13,11 +14,11 @@ namespace Hikari
 	public:
 		GameServerNetworkController();
 
-		void ServerSendMessage(NetMessageData::ChatMessage arg_message);
-		void ClientSendMessage(NetMessageData::ChatMessage arg_message); // MOVE TO CLIENT NETWORK CONTROLLER !!!
+		void ServerSendMessage(std::string arg_message);
+		void ClientSendMessage(std::string arg_message); // MOVE TO CLIENT NETWORK CONTROLLER !!!
 
-		DEFINE_FUNCTION(ServerSendMessage, NetMessageData::ChatMessage)
-		DEFINE_FUNCTION(ClientSendMessage, NetMessageData::ChatMessage)
+		DEFINE_FUNCTION(ServerSendMessage, std::string)
+		DEFINE_FUNCTION(ClientSendMessage, std::string)
 
 		BEGIN_REGISTER_CLASSPROPERTIES(Hikari::GameServerNetworkController)
 			REGISTER_CLASS_FUNCTION(Hikari::GameServerNetworkController, ServerSendMessage)

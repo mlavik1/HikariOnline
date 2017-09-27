@@ -49,19 +49,6 @@ namespace Hikari
 			uint32_t ClientNetworkControllerNetGUID;
 		};
 
-		class ChatMessage
-		{
-		public:
-			char Message[100];
-
-			ChatMessage(){}
-
-			ChatMessage(const char* arg_message)
-			{
-				memcpy(Message, arg_message, strlen(arg_message) + 1);
-			}
-		};
-
 	}
 }
 

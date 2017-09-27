@@ -79,7 +79,7 @@ namespace Hikari
 	{
 		AddChatMessage(((std::string("You: ") + std::string(arg_message)).c_str()));
 #ifdef HIKARI_CLIENT // TODO: don't include GUI source folder in server projects
-		NetMessageData::ChatMessage chatMessage(arg_message);
+		std::string chatMessage(arg_message);
 		GameServerCall(GameEngine::Instance()->GetClient()->GetGameServerNetworkController(), ServerSendMessage, chatMessage);
 #endif
 	}
