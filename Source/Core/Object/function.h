@@ -14,7 +14,7 @@ namespace Hikari
 		DataWriter mDataWriter;
 
 		FunctionArgContainer()
-			: mDataWriter(100)
+			: mDataWriter(30)
 		{
 		}
 

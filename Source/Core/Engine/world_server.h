@@ -8,6 +8,7 @@
 #include "Core/Engine/game_engine.h"
 #include <tuple>
 #include "Core/Networking/player.h"
+#include "Core/Controller/world_server_network_controller.h"
 
 namespace Hikari
 {
@@ -18,6 +19,7 @@ namespace Hikari
 	class WorldServer
 	{
 	private:
+		WorldServerNetworkController* mWorldServerNetworkController;
 		Hikari::ServerConnection* mGameServerConnection;
 		Hikari::ClientConnection* mClientConnection;
 

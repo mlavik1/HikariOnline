@@ -2,7 +2,7 @@
 #define HIKARI_INGAMECONTROLLER_H
 
 #include "client_controller.h"
-#include "Core/Object/objectptr.h"
+#include "Core/Object/weak_objectptr.h"
 #include "OGRE/Ogre.h"
 
 namespace Hikari
@@ -15,7 +15,7 @@ namespace Hikari
 	class InGameController : public ClientController
 	{
 	protected:
-		ObjectPtr<PlayerCharacter> mControlledCharacter;
+		WeakObjectPtr<PlayerCharacter> mControlledCharacter;
 		Actor* mCameraActor = nullptr;
 		Actor* mCameraAttachPoint = nullptr;
 		CameraComponent* mCameraComponent = nullptr;

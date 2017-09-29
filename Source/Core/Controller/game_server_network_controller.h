@@ -1,6 +1,10 @@
 #ifndef HIKARI_GAMESERVERNETWORKCONTROLLER_H
 #define HIKARI_GAMESERVERNETWORKCONTROLLER_H
 
+/*=============================================================================================
+Class used for communication between game server and clients.
+==============================================================================================*/
+
 #include "network_controller.h"
 #include "Core/Networking/net_message_data.h"
 #include <string>

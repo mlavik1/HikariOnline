@@ -37,20 +37,20 @@ int main(int args, char** argv)
 
 	GameEngine::Instance()->GetGameWindow()->SetTitle("Hikari Client");
 
-	
-	Hikari::PlayerCharacter* actor = new Hikari::PlayerCharacter(GameEngine::Instance()->GetWorld());
+	/*
+	Hikari::PlayerCharacter* actor = new Hikari::PlayerCharacter();
 	actor->Initialise();
 	actor->SetScale(Ogre::Vector3(1, 1, 1));
 	actor->SetPosition(Ogre::Vector3(130.0f, 2.0f, 130.0f));
 
 	Hikari::MeshComponent* meshComp = actor->AddComponent<Hikari::MeshComponent>();
 	meshComp->SetMesh("GMObject0.mesh");
-	meshComp->Initialise();
+	meshComp->Initialise();*/
 
 	Hikari::WorldFactory::SetupGameWorld(GameEngine::Instance()->GetWorld());
 	// TODO: initialise components and actors from game engine!
 
-	GameEngine::Instance()->GetClient()->GetInGameController()->SetControlledCharacter(actor);
+	//GameEngine::Instance()->GetClient()->GetInGameController()->SetControlledCharacter(actor);
 
 	Hikari::GameHUD* gameHUD = (Hikari::GameHUD*)GameEngine::Instance()->GetWindowManager()->ShowWindow(Hikari::GameHUD::GetStaticClass());
 

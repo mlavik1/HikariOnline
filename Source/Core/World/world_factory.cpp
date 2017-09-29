@@ -10,7 +10,7 @@ namespace Hikari
 	void WorldFactory::SetupGameWorld(World* arg_world)
 	{
 #ifdef HIKARI_CLIENT
-		Hikari::Actor* lightActor = new Hikari::Actor(arg_world);
+		Hikari::Actor* lightActor = new Hikari::Actor();
 		Hikari::LightComponent* lightComp = lightActor->AddComponent<Hikari::LightComponent>();
 		lightComp->Initialise();
 
@@ -22,7 +22,7 @@ namespace Hikari
 #endif
 
 		// TODO: load scene from file
-		Hikari::Actor* landscapeTest = new Hikari::Actor(arg_world);
+		Hikari::Actor* landscapeTest = new Hikari::Actor();
 		landscapeTest->SetScale(Ogre::Vector3(100, 100, 100));
 		landscapeTest->Rotate(Ogre::Vector3(1.0f, 0.0f, 0.0f), 270.0f);
 		landscapeTest->SetPosition(Ogre::Vector3(130.0f, 0.0f, 130.0f));

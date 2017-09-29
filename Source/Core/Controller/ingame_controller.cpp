@@ -132,8 +132,8 @@ namespace Hikari
 	{
 		mControlledCharacter = arg_character;
 
-		mCameraActor = new Hikari::Actor(GameEngine::Instance()->GetWorld());
-		mCameraAttachPoint = new Hikari::Actor(GameEngine::Instance()->GetWorld());
+		mCameraActor = new Hikari::Actor();
+		mCameraAttachPoint = new Hikari::Actor();
 		mCameraActor->SetPosition(Ogre::Vector3(0.0f, 0.0f, -7.0f));
 		mCameraActor->Rotate(Ogre::Vector3::UNIT_X, 0.0f);
 		mCameraComponent = mCameraActor->AddComponent<Hikari::CameraComponent>();

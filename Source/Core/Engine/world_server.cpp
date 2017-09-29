@@ -7,6 +7,9 @@
 #include "Core/Engine/game_engine.h"
 #include "Core/Managers/network_manager.h"
 #include "Core/Networking/player_manager.h"
+#include "Core/Actor/player_character.h"
+#include "Core/Networking/rpc.h"
+#include "Core/Networking/net_message_data.h"
 
 namespace Hikari
 {
@@ -14,6 +17,7 @@ namespace Hikari
 	{
 		mGameServerConnection = new Hikari::ServerConnection();
 		mClientConnection = new Hikari::ClientConnection(1000);
+		mWorldServerNetworkController = new WorldServerNetworkController();
 	}
 
 	WorldServer::~WorldServer()
@@ -28,6 +32,9 @@ namespace Hikari
 	{
 		std::string myIP = GetLocalhostIP();
 		LOG_INFO() << "My IP: " << myIP;
+
+		GameEngine::Instance()->GetNetworkManager()->GenerateNetGUID(mWorldServerNetworkController);
+		GameEngine::Instance()->GetNetworkManager()->RegisterObject(mWorldServerNetworkController);
 
 		mClientConnection->Connect(PORT_WORLDSERVER_CLIENT);
 
@@ -62,6 +69,7 @@ namespace Hikari
 
 	void WorldServer::Update()
 	{
+		// Fetch new messages
 		if (mGameServerConnection != nullptr && mGameServerConnection->IsConnected())
 		{
 			mGameServerConnection->FetchNewMessages();
@@ -69,15 +77,6 @@ namespace Hikari
 		if (mClientConnection != nullptr && mClientConnection->IsConnected())
 		{
 			mClientConnection->FetchNewMessages();
-		}
-
-		for (NetMessage* outMessage : mOutgoingGameServerMessages)
-		{
-			mGameServerConnection->SendNetworkMessage(outMessage);
-		}
-		for (ClientNetMessage& outMessage : mOutgoingClientMessages)
-		{
-			mClientConnection->SendNetworkMessage(std::get<0>(outMessage), std::get<1>(outMessage));
 		}
 
 
@@ -98,15 +97,36 @@ namespace Hikari
 			switch (messageType)
 			{
 				case NetMessageType::EstablishConnection:
+				{
 					std::string clientAccountName = netMessage->GetMessageData();
 					ClientConnectionData clientConnData;
 					clientConnData.mAccountName = clientAccountName;
 					clientConnData.mClientID = clientID;
 					clientConnData.mIPAddress = mClientConnection->GetSocketIPAddress(clientID);
 					handleIncomingClientConnectionRequest(clientConnData);
-				break;
+					break;
+				}
+				case NetMessageType::RPC:
+				{
+					RPCCaller::HandleIncomingRPC(netMessage);
+					break;
+				}
 			}
 		}
+
+		// Send outgoing messages
+		for (NetMessage* outMessage : mOutgoingGameServerMessages)
+		{
+			mGameServerConnection->SendNetworkMessage(outMessage);
+		}
+		for (ClientNetMessage& outMessage : mOutgoingClientMessages)
+		{
+			if(std::get<0>(outMessage) == -1)
+				mClientConnection->SendNetworkMessageToAll(std::get<1>(outMessage));
+			else
+				mClientConnection->SendNetworkMessage(std::get<0>(outMessage), std::get<1>(outMessage));
+		}
+
 
 		// Delete all received/sent NetMessage instances. Multiple client messages may reference the same NetMessage.
 		for (NetMessage* msg : mPendingDeleteNetMessages)
@@ -114,9 +134,13 @@ namespace Hikari
 			delete(msg);
 		}
 
+		// Clear list of outgoing messages
 		mOutgoingGameServerMessages.clear();
 		mOutgoingClientMessages.clear();
+
 		mPendingDeleteNetMessages.clear();
+		mIncomingClientMessages.clear();
+		mIncomingGameServerMessages.clear();
 	}
 
 	void WorldServer::SendMessageToClient(int arg_clientid, NetMessage* arg_message)
@@ -163,8 +187,24 @@ namespace Hikari
 		// Register Player in PlayerManager
 		GameEngine::Instance()->GetPlayerManager()->AddPlayer(clientNetworkController->GetNetGUID(), arg_conndata);
 
+		// Send ack
 		NetMessage* msgAck = new NetMessage(NetMessageType::ConnectionEstablishedAck, "");
 		mOutgoingClientMessages.push_back(ClientNetMessage(arg_conndata.mClientID, msgAck));
+
+		// Tell client to initialise WorldServerNetworkController, and set its GUID
+		NetMessageData::ClientGameServerConnectionData initGSNetController;
+		initGSNetController.GameServerNetworkControllerNetGUID = mWorldServerNetworkController->GetNetGUID();
+		initGSNetController.ClientNetworkControllerNetGUID = clientNetworkController->GetNetGUID();
+		NetMessage *initGSNetControllerMsg = new NetMessage(NetMessageType::ClientInitWorldServerConnection, sizeof(NetMessageData::ClientGameServerConnectionData), reinterpret_cast<char*>(&initGSNetController));
+		mOutgoingClientMessages.push_back(ClientNetMessage(arg_conndata.mClientID, initGSNetControllerMsg));
+
+		// Create PlayerCharacter on server and clients
+		PlayerCharacter* playerChar = (PlayerCharacter*)mWorldServerNetworkController->ServerCreateNetworkedObjectByClass(PlayerCharacter::GetStaticClass());
+		if (playerChar != nullptr)
+		{
+			playerChar->SetPosition(Ogre::Vector3(130.0f, 2.0f, 130.0f));
+			playerChar->ReplicateInitialData();
+		}
 	}
 
 }

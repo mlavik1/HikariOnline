@@ -14,6 +14,7 @@ Making a class inherit from Hikari::Object will:
 
 namespace Hikari
 {
+	// forward declarations
 	class Function;
 	class FunctionArgContainer;
 
@@ -38,15 +39,11 @@ namespace Hikari
 		void CallFunction(Function* arg_function, FunctionArgContainer args);
 
 		void Destroy();
-
 		virtual void OnDestroy() {}; // TODO: call this on all objects marked for pending destroy
 		
 		inline ObjectRefHandle*  GetRefHandle() { return mObjectRefHandle; }
 		inline NetGUID GetNetGUID() { return mNetGUID; }
 		inline void SetNetGUID(const NetGUID& arg_guid) { mNetGUID = arg_guid; }
-
-		virtual InitialReplicationData* GetInitialReplicationData() { return nullptr; }
-		virtual void ClientOnInitialReplication(InitialReplicationData* arg_data) {}
 
 		std::string GetMemoryHash() const;
 

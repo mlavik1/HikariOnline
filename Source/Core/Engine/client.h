@@ -7,6 +7,7 @@
 #include <string>
 #include "Core/Controller/game_server_network_controller.h"
 #include "Core/Controller/client_network_controller.h"
+#include "Core/Controller/world_server_network_controller.h"
 
 namespace Hikari
 {
@@ -26,6 +27,7 @@ namespace Hikari
 		std::vector<NetMessage*> mIncomingWorldServerMessages;
 		std::string mAccountName;
 		GameServerNetworkController* mGameServerNetworkController;
+		WorldServerNetworkController* mWorldServerNetworkController;
 		ClientNetworkController* mClientNetworkController;
 
 	public:

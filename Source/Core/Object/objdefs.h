@@ -26,14 +26,11 @@ struct ObjectInitialiserParams
 
 };
 
-struct InitialReplicationData
-{
-};
-
 // Do not use this directly!
 #define DEFINE_CLASS_INTERNAL(name, constructorinitlist, baseclassaccessor) \
 private: \
 	static Hikari::Class* StaticClass; \
+	static bool ClassPropertiesRegistered; \
 public: \
 	static Hikari::Class* GetStaticClass() \
 	{ \
@@ -50,12 +47,9 @@ public: \
 		return GetStaticClass(); \
 	} \
 	\
-	##name##(MingObject_EmptyConstructorParams params) constructorinitlist  \
-	{ \
-	} \
 	static Hikari::Object* _CreateInstanceFromDefaultConstructor() \
 	{ \
-		return new name##(MingObject_EmptyConstructorParams()); \
+		return new name##(); \
 	}
 
 /**
@@ -89,7 +83,7 @@ public: \
 	myClass->AddMemberFunction(new Hikari::Function(#functionname, (void(Hikari::Object::*)(Hikari::FunctionArgContainer))(&##classname##::call_##functionname##) ));
 
 #define REGISTER_CLASSPROPERTIES(classname) \
-	bool sdfsdfjkjghrghre = ##classname##::RegisterClassProperties();
+	bool classname##::ClassPropertiesRegistered = ##classname##::RegisterClassProperties();
 	
 #define CALL_FUNCTION(objectptr, functionname, ...) \
 	objectptr->CallFunction(objectptr->GetClass()->GetFunctionByName(#functionname), getargs_##functionname##(__VA_ARGS__));

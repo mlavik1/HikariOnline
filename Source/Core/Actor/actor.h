@@ -24,7 +24,7 @@ namespace Hikari
 		Hikari::Actor* mParent;
 
 	public:
-		Actor(Hikari::World* arg_world);
+		Actor();
 
 		const Ogre::Vector3& GetPosition() const;
 		const Ogre::Vector3& GetScale() const;

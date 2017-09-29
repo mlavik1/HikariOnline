@@ -1,5 +1,5 @@
 #include "client_network_controller.h"
-
+/*
 #include "Core/Actor/player_character.h"
 #include "Core/Component/mesh_component.h"
 #include "Core/Controller/client_controller.h"
@@ -7,7 +7,7 @@
 #include "Core/Engine/world_server.h"
 #include "Core/Managers/network_manager.h"
 #include "Core/Networking/rpc.h"
-
+*/
 namespace Hikari
 {
 	IMPLEMENT_CLASS(Hikari::ClientNetworkController)
@@ -18,29 +18,34 @@ namespace Hikari
 
 	}
 	/*
-	void ClientNetworkController::WorldServerCreatePlayer()
+	void ClientNetworkController::ServerCreateNetworkedObjectByClass(Class* arg_class)
 	{
 #ifdef HIKARI_WORLDSERVER
-		PlayerCharacter* playerChar = CreatePlayerInternal();
-		GameEngine::Instance()->GetNetworkManager()->GenerateNetGUID(playerChar);
+		Object* obj = arg_class->CreateInstance();
+		GameEngine::Instance()->GetNetworkManager()->GenerateNetGUID(obj);
+
+		std::string className = arg_class->GetName();
+		NetGUID netGUID = obj->GetNetGUID();
 
 		auto clientList = GameEngine::Instance()->GetWorldServer()->GetConnectedClients();
 		for (auto client : clientList)
 		{
-			ClientCall(client.second.mClientID, this, ClientSendMessage, arg_message);
+			ClientCall(client.second.mClientID, this, ClintCreateNetworkedObjectByClass, className, netGUID);
 		}
 #endif
 	}
 
-	void ClientNetworkController::ClientCreatePlayer(NetGUID arg_netguid, bool arg_owner)
+	void ClientNetworkController::ClintCreateNetworkedObjectByClass(std::string arg_classname, NetGUID arg_guid)
 	{
-		PlayerCharacter* playerChar = CreatePlayerInternal();
-		playerChar->SetNetGUID(arg_netguid);
-
-		if (arg_owner)
+#ifdef HIKARI_CLIENT
+		Class* objClass = Class::GetClassByName(arg_classname.c_str(), false);
+		if (objClass != nullptr)
 		{
-			GameEngine::Instance()->GetClient()->GetInGameController()->SetControlledCharacter(actor);
+			Object* obj = objClass->CreateInstance();
+			obj->SetNetGUID(arg_guid);
+			GameEngine::Instance()->GetNetworkManager()->RegisterObject(obj);
 		}
+#endif
 	}
 
 	PlayerCharacter* ClientNetworkController::CreatePlayerInternal()
@@ -57,6 +62,6 @@ namespace Hikari
 		GameEngine::Instance()->GetClient()->GetInGameController()->SetControlledCharacter(actor);
 
 		return actor;
-	}
-	*/
+	}*/
+	
 }

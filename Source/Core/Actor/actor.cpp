@@ -10,12 +10,13 @@ IMPLEMENT_CLASS(Hikari::Actor)
 
 namespace Hikari
 {
-	Actor::Actor(Hikari::World* arg_world)
+	Actor::Actor()
 		: GameObject()
 	{
-		__Assert(arg_world != nullptr);
+		World* world = GameEngine::Instance()->GetWorld();
+		__Assert(world != nullptr);
 		mParent = nullptr;
-		mWorld = arg_world;
+		mWorld = world;
 		mSceneNode = mWorld->GetSceneManager()->getRootSceneNode()->createChildSceneNode(mObjectName);
 		mWorld->AddActor(this);
 	}

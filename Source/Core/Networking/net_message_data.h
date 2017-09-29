@@ -49,6 +49,13 @@ namespace Hikari
 			uint32_t ClientNetworkControllerNetGUID;
 		};
 
+		class ClientWorldServerConnectionData
+		{
+		public:
+			uint32_t WorldServerNetworkControllerNetGUID;
+			uint32_t ClientNetworkControllerNetGUID;
+		};
+
 	}
 }
 

@@ -10,7 +10,7 @@ namespace Hikari
 	template<typename T>
 	T* ObjectPtrBase<T>::Get() const
 	{
-		return static_cast<T*>(mRefHandle->GetObject());
+		return static_cast<T*>(mRefHandle->GetObjectPointer());
 	}
 
 	template<typename T>

@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 
+#include "i_serialisable.h"
+
 namespace Hikari
 {
 	template<typename T, typename ENABLE = void>
@@ -79,6 +81,27 @@ namespace Hikari
 			}
 		}
 	};
+
+
+	template<typename T>
+	struct TypeSerialisationTraits<T, typename std::enable_if_t<std::is_base_of<ISerialisable,T>::value>>
+	{
+		static constexpr bool valid = true;
+
+		template<typename DataWriter>
+		static void Write(DataWriter& writer, T& v)
+		{
+			v.Write(writer);
+		}
+
+		template<typename DataReader>
+		static void Read(DataReader& reader, T& v)
+		{
+			v.Read(reader);
+		}
+	};
+
+
 } // namespace Hikari
 
 #endif // HIKARI_DATASERIALISATION_H

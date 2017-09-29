@@ -2,7 +2,7 @@
 #define HIKARI_CLIENTNETWORKCONTROLLER_H
 
 /*=============================================================================================
-Controller for communication between a server (GameServer or WorldServer) and a client.
+Controller for one-way communication from server to a client.
 
 ==============================================================================================*/
 
@@ -19,12 +19,13 @@ namespace Hikari
 	public:
 		ClientNetworkController();
 		/*
-		void WorldServerCreatePlayer();
-		void ClientCreatePlayer(NetGUID arg_netguid, bool arg_owner);
-		PlayerCharacter* CreatePlayerInternal();
+		void ServerCreateNetworkedObjectByClass(Class* arg_class);
+		void ClintCreateNetworkedObjectByClass(std::string arg_classname, NetGUID arg_guid);
+
+		DEFINE_FUNCTION(ClintCreateNetworkedObjectByClass, std::string, NetGUID)
 
 		BEGIN_REGISTER_CLASSPROPERTIES(Hikari::ClientNetworkController)
-			REGISTER_CLASS_FUNCTION(Hikari::ClientNetworkController, ClientCreatePlayer)
+			REGISTER_CLASS_FUNCTION(Hikari::ClientNetworkController, ClintCreateNetworkedObjectByClass)
 		END_REGISTER_CLASSPROPERTIES(Hikari::ClientNetworkController)
 		*/
 	};

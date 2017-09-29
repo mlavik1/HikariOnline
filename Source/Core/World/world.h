@@ -5,6 +5,7 @@
 #include "terrain.h"
 #include "Core/Actor/actor.h"
 #include <vector>
+#include "Core/Object/objectptr.h"
 
 namespace Hikari
 {
@@ -12,7 +13,7 @@ namespace Hikari
 	{
 	private:
 		Ogre::SceneManager* mSceneManager;
-		std::vector<Actor*> mActors;
+		std::vector<ObjectPtr<Actor>> mActors;
 		Terrain* mTerrain;
 		int mWorldSizeX = 1000;
 		int mWorldSizeZ = 1000;

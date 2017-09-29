@@ -12,7 +12,7 @@
 
 namespace Hikari
 {
-	void RPCCaller::RPC_GameServerCall(GameObject* arg_object, const char* arg_function, FunctionArgContainer arg_funcargs)
+	void RPCCaller::RPC_GameServerCall(GameObject* arg_object, const char* arg_function, const FunctionArgContainer& arg_funcargs)
 	{
 		// Get Network GUID
 		NetGUID guid = arg_object->GetNetGUID();
@@ -29,7 +29,7 @@ namespace Hikari
 		// TODO: #ifdef HIKARI_WORLDSERVER
 	}
 
-	void RPCCaller::RPC_ClientCall(int arg_clientid, GameObject* arg_object, const char* arg_function, FunctionArgContainer arg_funcargs)
+	void RPCCaller::RPC_ClientCall(int arg_clientid, GameObject* arg_object, const char* arg_function, const FunctionArgContainer& arg_funcargs)
 	{
 		// Get Network GUID
 		NetGUID guid = arg_object->GetNetGUID();

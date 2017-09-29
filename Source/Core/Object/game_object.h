@@ -4,10 +4,14 @@
 #include "Core/Object/object.h"
 #include "Core/Debug/st_assert.h"
 
+#include "Core/Networking/initial_replication_data.h"
+#include "Core/Serialisation/serialised_data_container.h"
+
 namespace Hikari
 {
 	class TickManager;
 	class InputManager;
+	class InitialReplicationData;
 
 	class GameObject : public Hikari::Object
 	{
@@ -29,6 +33,20 @@ namespace Hikari
 		//virtual void Tick() = 0;
 		virtual void OnStart();
 		virtual void OnStop();
+
+		virtual InitialReplicationData* CreateInitialReplicationData() { return nullptr; }
+		virtual void ClientOnInitialReplication(InitialReplicationData* arg_data) {}
+
+		virtual void ReplicateInitialData();
+		virtual void ClientReceiveInitialReplicationData(SerialisedDataContainer arg_datacontainer);
+
+		DEFINE_FUNCTION(ReplicateInitialData)
+		DEFINE_FUNCTION(ClientReceiveInitialReplicationData, SerialisedDataContainer)
+
+		BEGIN_REGISTER_CLASSPROPERTIES(Hikari::GameObject)
+			REGISTER_CLASS_FUNCTION(Hikari::GameObject, ReplicateInitialData)
+			REGISTER_CLASS_FUNCTION(Hikari::GameObject, ClientReceiveInitialReplicationData)
+		END_REGISTER_CLASSPROPERTIES(Hikari::GameObject)
 
 	};
 }

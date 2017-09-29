@@ -3,20 +3,25 @@
 
 #include "character.h"
 
+#include "Core/Networking/initial_replication_data.h"
+
 namespace Hikari
 {
-	struct InitialReplicationData_PlayerCharacter : InitialReplicationData
+	class InitialReplicationData_PlayerCharacter : public InitialReplicationData
 	{
+	public:
 		Ogre::Vector3 Position;
+
+		virtual size_t GetSize() override { return sizeof(*this); }
 	};
 
 	class PlayerCharacter : public Hikari::Character
 	{
 		DEFINE_CLASS(Hikari::PlayerCharacter, Hikari::Character)
 	public:
-		PlayerCharacter(Hikari::World* arg_world);
+		PlayerCharacter();
 
-		virtual InitialReplicationData* GetInitialReplicationData() override;
+		virtual InitialReplicationData* CreateInitialReplicationData() override;
 		virtual void ClientOnInitialReplication(InitialReplicationData* arg_data) override;
 	};
 }

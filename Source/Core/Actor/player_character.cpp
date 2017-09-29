@@ -9,13 +9,13 @@ IMPLEMENT_CLASS(Hikari::PlayerCharacter)
 
 namespace Hikari
 {
-	PlayerCharacter::PlayerCharacter(Hikari::World* arg_world)
-		: Character::Character(arg_world)
+	PlayerCharacter::PlayerCharacter()
+		: Character::Character()
 	{
 
 	}
 
-	InitialReplicationData* PlayerCharacter::GetInitialReplicationData()
+	InitialReplicationData* PlayerCharacter::CreateInitialReplicationData()
 	{
 		InitialReplicationData_PlayerCharacter* repData = new InitialReplicationData_PlayerCharacter();
 
@@ -43,6 +43,7 @@ namespace Hikari
 		meshComp->SetMesh("GMObject0.mesh");
 		meshComp->Initialise(); // TODO: MAKE AUTOMATIC
 		
+		// TEMP: DO FROM RPC
 		GameEngine::Instance()->GetClient()->GetInGameController()->SetControlledCharacter(this);
 #endif
 	}

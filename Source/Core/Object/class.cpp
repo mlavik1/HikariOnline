@@ -98,6 +98,8 @@ namespace Hikari
 		{
 			return iter->second;
 		}
+		if (mBaseClass != nullptr)
+			return mBaseClass->GetFunctionByName(arg_name); // TODO: ADD BASE CLASS FUNCTIONS TO MAP
 		return nullptr;
 	}
 

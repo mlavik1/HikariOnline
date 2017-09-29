@@ -12,6 +12,7 @@ namespace Hikari
 		ConnectionEstablishedAck,
 		WorldServerListUpdate,
 		ClientInitGameServerConnection,
+		ClientInitWorldServerConnection,
 		WorldServerInitGameServerConnection
 	};
 }

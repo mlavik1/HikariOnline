@@ -13,6 +13,7 @@ namespace Hikari
 	Client::Client()
 	{
 		mGameServerNetworkController = nullptr;
+		mWorldServerNetworkController = nullptr;
 		mClientNetworkController = nullptr;
 
 		// TEMP!  this should happen hafter joining game
@@ -184,7 +185,20 @@ namespace Hikari
 				const NetMessageType& messageType = message->GetMessageType();
 				switch (messageType)
 				{
-				
+					case NetMessageType::ClientInitWorldServerConnection:
+					{
+						NetMessageData::ClientWorldServerConnectionData initWSNetMgr = *reinterpret_cast<const NetMessageData::ClientWorldServerConnectionData*>(message->GetMessageData());
+						LOG_INFO() << "Creating WorldServerNetworkController, with GUID: " << (int)initWSNetMgr.WorldServerNetworkControllerNetGUID;
+						mWorldServerNetworkController = new WorldServerNetworkController();
+						mWorldServerNetworkController->SetNetGUID(initWSNetMgr.WorldServerNetworkControllerNetGUID);
+						GameEngine::Instance()->GetNetworkManager()->RegisterObject(mWorldServerNetworkController);
+						break;
+					}
+					case NetMessageType::RPC:
+					{
+						RPCCaller::HandleIncomingRPC(message);
+						break;
+					}
 				}
 				delete(message);
 			}

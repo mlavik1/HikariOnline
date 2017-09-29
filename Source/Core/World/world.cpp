@@ -30,14 +30,14 @@ namespace Hikari
 		std::fill(mTerrain->HeightMap, mTerrain->HeightMap + gridSize, -1000000.0f);
 		//std::vector<size_t>* triangleIndexArray = new std::vector<size_t>[gridSize];
 
-		for (Actor* actor : mActors)
+		for (ObjectPtrBase<Actor>& actor : mActors)
 		{
 			TerrainComponent* terrainComp = actor->GetComponentOfType<TerrainComponent>();
 			if (terrainComp != nullptr)
 			{
 				std::vector<Ogre::Vector3> vertices;
 				std::vector<unsigned int> indices;
-				OgreUtils::GetMeshInfo(actor, vertices, indices);
+				OgreUtils::GetMeshInfo(actor.Get(), vertices, indices);
 
 				size_t numVertices = vertices.size();
 				size_t numIndices = indices.size();
