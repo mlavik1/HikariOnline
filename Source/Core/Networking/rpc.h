@@ -8,6 +8,8 @@ namespace Hikari
 	class GameObject;
 	class NetMessage;
 
+	extern NetGUID CurrentRPCCallerGUID;
+
 	class RPCCaller
 	{
 	public:
@@ -21,6 +23,7 @@ namespace Hikari
 	private:
 		static NetMessage* createNetMessage(const NetGUID& arg_guid, const char* arg_function, const FunctionArgContainer& arg_funcargs);
 	};
+
 }
 
 

@@ -4,6 +4,8 @@
 #include "Core/Engine/game_engine.h"
 #include "Core/Engine/client.h"
 #include "Core/Controller/ingame_controller.h"
+#include "Core/Component/movement_component.h"
+#include "Core/Managers/network_manager.h"
 
 IMPLEMENT_CLASS(Hikari::PlayerCharacter)
 
@@ -19,7 +21,10 @@ namespace Hikari
 	{
 		InitialReplicationData_PlayerCharacter* repData = new InitialReplicationData_PlayerCharacter();
 
-		repData->Position = GetPosition();
+		repData->mPosition = GetPosition();
+		repData->mOwningClientNetGUID = GetOwningClientGUID();
+
+		repData->mMoveCompNetGUID = GetMovementComponent()->GetNetGUID();
 
 		return repData;
 	}
@@ -36,15 +41,20 @@ namespace Hikari
 
 		Initialise();
 		SetScale(Ogre::Vector3(1, 1, 1));
-		//SetPosition(Ogre::Vector3(130.0f, 2.0f, 130.0f));
-		SetPosition(repData->Position);
+		SetPosition(repData->mPosition);
+		SetOwningClientGUID(repData->mOwningClientNetGUID);
+
+		GetMovementComponent()->SetNetGUID(repData->mMoveCompNetGUID);
+		GameEngine::Instance()->GetNetworkManager()->RegisterObject(GetMovementComponent());
 
 		MeshComponent* meshComp = AddComponent<Hikari::MeshComponent>();
 		meshComp->SetMesh("GMObject0.mesh");
 		meshComp->Initialise(); // TODO: MAKE AUTOMATIC
 		
-		// TEMP: DO FROM RPC
-		GameEngine::Instance()->GetClient()->GetInGameController()->SetControlledCharacter(this);
+		if (IsOwningClient())
+		{
+			GameEngine::Instance()->GetClient()->GetInGameController()->SetControlledCharacter(this);
+		}
 #endif
 	}
 }

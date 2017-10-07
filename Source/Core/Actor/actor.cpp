@@ -6,6 +6,11 @@
 #include "Core/Managers/tick_manager.h"
 #include "Core/Object/function.h"
 
+#ifdef HIKARI_CLIENT
+#include "Core/Engine/client.h"
+#include "Core/Controller/client_network_controller.h"
+#endif
+
 IMPLEMENT_CLASS(Hikari::Actor)
 
 namespace Hikari
@@ -81,6 +86,19 @@ namespace Hikari
 		return GetRotationAbsolute().xAxis();
 	}
 
+	const NetGUID Actor::GetOwningClientGUID() const
+	{
+		return mOwningClientGUID;
+	}
+
+	const bool Actor::IsOwningClient() const
+	{
+#ifdef HIKARI_CLIENT
+		return mOwningClientGUID == GameEngine::Instance()->GetClient()->GetClientNetworkController()->GetNetGUID();
+#endif
+		return false;
+	}
+
 
 	void Actor::SetPosition(const Ogre::Vector3& arg_position)
 	{
@@ -113,6 +131,11 @@ namespace Hikari
 		
 		mParent = arg_parent;
 		mParent->mSceneNode->addChild(mSceneNode);
+	}
+
+	void Actor::SetOwningClientGUID(const NetGUID& arg_guid)
+	{
+		mOwningClientGUID = arg_guid;
 	}
 
 	void Actor::Initialise()

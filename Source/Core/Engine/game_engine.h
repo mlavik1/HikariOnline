@@ -9,6 +9,7 @@ namespace Hikari
 {
 	class GameEngine;
 	class World;
+	class TaskManager;
 	class InputManager;
 	class TickManager;
 	class WindowManager;
@@ -39,6 +40,7 @@ namespace Hikari
 		WindowManager* mWindowManager;
 		NetworkManager* mNetworkManager;
 		PlayerManager* mPlayerManager;
+		TaskManager* mTaskManager;
 		float mLastTime = 0.0f;
 #ifdef HIKARI_CLIENT
 		Client* mClient;
@@ -99,6 +101,11 @@ namespace Hikari
 		inline PlayerManager* GetPlayerManager()
 		{
 			return mPlayerManager;
+		}
+
+		inline TaskManager* GetTaskManager()
+		{
+			return mTaskManager;
 		}
 
 #ifdef HIKARI_CLIENT

@@ -12,6 +12,8 @@
 
 namespace Hikari
 {
+	NetGUID CurrentRPCCallerGUID = NetGUIDNone;
+
 	void RPCCaller::RPC_GameServerCall(GameObject* arg_object, const char* arg_function, const FunctionArgContainer& arg_funcargs)
 	{
 		// Get Network GUID

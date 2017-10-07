@@ -26,6 +26,7 @@ namespace Hikari
 #ifdef HIKARI_WORLDSERVER
 		obj = arg_class->CreateInstance();
 		GameEngine::Instance()->GetNetworkManager()->GenerateNetGUID(obj);
+		GameEngine::Instance()->GetNetworkManager()->RegisterObject(obj);
 
 		std::string className = arg_class->GetName();
 		NetGUID netGUID = obj->GetNetGUID();

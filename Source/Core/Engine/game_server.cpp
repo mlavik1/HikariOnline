@@ -85,13 +85,28 @@ namespace Hikari
 
 			switch (netMessage->GetMessageType())
 			{
-			case NetMessageType::EstablishConnection:
-				WorldServerConnectionData worldServer;
-				worldServer.mClientID = worldServerID;
-				worldServer.mIPAddress = mWorldServerConnection->GetSocketIPAddress(worldServerID);
-				establishConnectionWithWorldServer(worldServer);
-
-				break;
+				case NetMessageType::EstablishConnection:
+				{
+					WorldServerConnectionData worldServer;
+					worldServer.mClientID = worldServerID;
+					worldServer.mIPAddress = mWorldServerConnection->GetSocketIPAddress(worldServerID);
+					establishConnectionWithWorldServer(worldServer);
+					break;
+				}
+				case NetMessageType::WSRequestClientInfoFromGS:
+				{
+					NetMessageData::ClientInfo clientInfo = *(NetMessageData::ClientInfo*)netMessage->GetMessageData();;
+					for (auto client : mConnectedClients)
+					{
+						if (client.second.mAccountName == clientInfo.mAccountName)
+						{
+							clientInfo.mNetGUID = mClientNetworkControllers[client.first]->GetNetGUID();
+						}
+					}
+					NetMessage* msgRequestClientInfo = new NetMessage(NetMessageType::WSRequestClientInfoFromGS, sizeof(NetMessageData::ClientInfo), reinterpret_cast<char*>(&clientInfo));
+					SendMessageToWorldServer(worldServerID, msgRequestClientInfo);
+					break;
+				}
 			}
 			delete(netMessage);
 		}

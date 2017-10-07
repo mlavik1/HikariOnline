@@ -10,10 +10,13 @@ namespace Hikari
 		ObjectReplication,
 		EstablishConnection,
 		ConnectionEstablishedAck,
+		ConnectionRejected,
 		WorldServerListUpdate,
 		ClientInitGameServerConnection,
 		ClientInitWorldServerConnection,
-		WorldServerInitGameServerConnection
+		WorldServerInitGameServerConnection,
+		WSRequestClientInfoFromGS,
+		GSSendClientInfoTOWS
 	};
 }
 

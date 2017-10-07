@@ -69,6 +69,10 @@ file(GLOB_RECURSE SRC_SERIALISATION
     "${SharedSourceDir}/Core/Serialisation/*.cpp"
     "${SharedSourceDir}/Core/Serialisation/*.h"
 )
+file(GLOB_RECURSE SRC_TASK
+    "${SharedSourceDir}/Core/Task/*.cpp"
+    "${SharedSourceDir}/Core/Task/*.h"
+)
 file(GLOB_RECURSE SRC_WORLDSERVER
     "Source/*.cpp"
     "Source/*.h"
@@ -88,6 +92,7 @@ source_group("Core\\Networking" FILES ${SRC_NETWORKING})
 source_group("Core\\Misc" FILES ${SRC_MISC})
 source_group("Core\\Controller" FILES ${SRC_CONTROLLER})
 source_group("Core\\Serialisation" FILES ${SRC_SERIALISATION})
+source_group("Core\\Task" FILES ${SRC_TASK})
 source_group("WorldServer" FILES ${SRC_WORLDSERVER})
 
 include_directories ("../Dependencies/Include/SDL2")

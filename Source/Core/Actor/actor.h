@@ -22,6 +22,7 @@ namespace Hikari
 		Ogre::SceneNode* mSceneNode;
 		std::vector<Component*> mComponents;
 		Hikari::Actor* mParent;
+		NetGUID mOwningClientGUID = NetGUIDNone;
 
 	public:
 		Actor();
@@ -40,10 +41,14 @@ namespace Hikari
 		const Ogre::Vector3& GetUpVectorAbsolute() const;
 		const Ogre::Vector3& GetRightVectorAbsolute() const;
 
+		const NetGUID GetOwningClientGUID() const;
+		const bool IsOwningClient() const;
+
 		void SetPosition(const Ogre::Vector3& arg_position);
 		void SetScale(const Ogre::Vector3& arg_scale);
 		void Rotate(const Ogre::Vector3& arg_axis, float arg_degrees);
 		void LookAt(const Ogre::Vector3& arg_target);
+		void SetOwningClientGUID(const NetGUID& arg_guid);
 
 		void SetParent(Actor* arg_parent);
 

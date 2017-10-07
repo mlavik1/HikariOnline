@@ -8,6 +8,8 @@
 typedef uint32_t NetGUID;
 typedef uint32_t ObjectFlagRegister;
 
+#define NetGUIDNone 0
+
 enum class ObjectFlag
 {
 	Destroyed = 1,

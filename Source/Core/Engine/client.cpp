@@ -7,6 +7,7 @@
 #include "Core/Networking/rpc.h"
 #include "Core/Networking/rpc.h"
 #include "Core/Engine/game_engine.h"
+#include <Windows.h>
 
 namespace Hikari
 {
@@ -22,8 +23,8 @@ namespace Hikari
 
 		mGameServerConnection = nullptr;
 		mWorldServerConnection = nullptr;
-
-		mAccountName = "mlavik1"; // TEMP
+		
+		mAccountName = std::string("TestAccount_") + std::to_string((int)GetCurrentProcessId()); // TEMP
 	}
 
 	Client::~Client()

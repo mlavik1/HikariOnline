@@ -10,7 +10,9 @@ namespace Hikari
 	class InitialReplicationData_PlayerCharacter : public InitialReplicationData
 	{
 	public:
-		Ogre::Vector3 Position;
+		Ogre::Vector3 mPosition;
+		NetGUID mOwningClientNetGUID = NetGUIDNone;
+		NetGUID mMoveCompNetGUID = NetGUIDNone;
 
 		virtual size_t GetSize() override { return sizeof(*this); }
 	};

@@ -40,8 +40,8 @@ namespace Hikari
 	NetMessage::NetMessage(NetMessageType arg_type, std::string arg_message)
 	{
 		mMessageType = arg_type;
-		mMessageLength = arg_message.size();
-		SetMessageData(arg_message.c_str(), arg_message.size());
+		mMessageLength = arg_message.size() + 1;
+		SetMessageData(arg_message.c_str(), mMessageLength);
 	}
 
 	NetMessage::~NetMessage()

@@ -14,6 +14,7 @@
 #include "Core/Managers/window_manager.h"
 #include "Core/Managers/network_manager.h"
 #include "Core/Networking/player_manager.h"
+#include "Core/Task/task_manager.h"
 #ifdef HIKARI_WORLDSERVER
 #include "Core/Engine/world_server.h"
 #endif
@@ -63,6 +64,8 @@ namespace Hikari
 		mNetworkManager = new NetworkManager();
 
 		mPlayerManager = new PlayerManager();
+
+		mTaskManager = new TaskManager();
 
 #ifdef HIKARI_CLIENT
 
@@ -120,6 +123,8 @@ namespace Hikari
 #endif
 
 		mTickManager->Tick(deltaTime);
+
+		mTaskManager->ProcessTasks();
 
 		mLastTime = currentTime;
 	}

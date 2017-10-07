@@ -3,6 +3,8 @@
 
 #include <stdint.h>
 #include <algorithm>
+#include "Core/Object/objdefs.h"
+#include "Core/Serialisation/i_serialisable.h"
 
 namespace Hikari
 {
@@ -11,13 +13,16 @@ namespace Hikari
 		class ClientInfo
 		{
 		public:
-			char IPAddress[16]; // xxx.xxx.xxx.xxx
-			char AccountName[32];
-			ClientInfo() {}
-			ClientInfo(const char* arg_ip, const char* arg_account)
+			char mIPAddress[16]; // xxx.xxx.xxx.xxx
+			char mAccountName[32];
+			NetGUID mNetGUID;
+			
+			ClientInfo() { }
+			ClientInfo(const char* arg_ip, const char* arg_account, NetGUID arg_guid = 0)
 			{
-				std::memcpy(AccountName, arg_account, std::min((size_t)32, strlen(arg_account) + 1));
-				std::memcpy(IPAddress, arg_ip, std::min((size_t)16, strlen(arg_ip) + 1));
+				std::memcpy(mAccountName, arg_account, std::min((size_t)32, strlen(arg_account) + 1));
+				std::memcpy(mIPAddress, arg_ip, std::min((size_t)16, strlen(arg_ip) + 1));
+				mNetGUID = arg_guid;
 			}
 
 		};

@@ -125,7 +125,7 @@ namespace Hikari
 
 	void ClientConnection::SendNetworkMessageToAll(const NetMessage* message)
 	{
-		for (int i = 1; i < mMaxClients; i++)
+		for (int i = 1; i < mMaxClients; i++) // TODO!!!
 		{
 			if (!mClientIsFree[i])
 				sendMessage(mClients[i], message);

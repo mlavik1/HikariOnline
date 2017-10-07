@@ -1,5 +1,7 @@
 #include "network_manager.h"
 
+#include "Core/Debug/st_assert.h"
+
 namespace Hikari
 {
 	Hikari::Object* NetworkManager::GetObjectByGUID(NetGUID arg_guid)
@@ -19,6 +21,7 @@ namespace Hikari
 	void NetworkManager::RegisterObject(Hikari::Object* arg_object)
 	{
 		const NetGUID& guid = arg_object->GetNetGUID();
+		__Assert(guid != NetGUIDNone);
 		mNetworkObjects[guid] = arg_object;
 	}
 
