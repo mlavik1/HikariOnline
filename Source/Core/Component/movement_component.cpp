@@ -2,8 +2,11 @@
 #include "Core/Debug/st_assert.h"
 //#include "Core/Actor/character.h"
 #include "Core/Actor/actor.h"
+#include "Core/Networking/rpc.h"
 
 IMPLEMENT_CLASS(Hikari::MovementComponent)
+
+REGISTER_CLASSPROPERTIES(Hikari::MovementComponent)
 
 namespace Hikari
 {
@@ -43,6 +46,24 @@ namespace Hikari
 		}
 
 		mParent->SetPosition(mParent->GetPosition() + mVelocity * arg_deltatime);
+
+		// Replicate movement
+		if (mTimeSinceReplicationSent > 0.5f)
+		{
+#ifdef HIKARI_WORLDSERVER
+			ReplicateMovementToClients(); // Replicate movement data to clients
+#endif
+#ifdef HIKARI_CLIENT
+			if(mParent->IsOwningClient())
+				ReplicateMovementToServer(); // Replicate movement data to server, if owning client
+#endif
+			mTimeSinceReplicationSent = 0.0f;
+		}
+		else
+		{
+			mTimeSinceReplicationSent += arg_deltatime;
+		}
+
 	}
 
 	const MovementModeSettings& MovementComponent::GetMovementModeSettings()
@@ -75,6 +96,38 @@ namespace Hikari
 	{
 		mRequestedInput = Ogre::Vector3::ZERO;
 		mVelocity = arg_velocity;
+	}
+
+	void MovementComponent::ReplicateMovementToClients()
+	{
+		Ogre::Vector3 pos = mParent->GetPosition();
+#ifdef HIKARI_WORLDSERVER
+		ClientCall(-1, this, ClientOnReplicateMovement, pos, mVelocity);
+#endif
+	}
+
+	void MovementComponent::ReplicateMovementToServer()
+	{
+		Ogre::Vector3 pos = mParent->GetPosition();
+#ifdef HIKARI_CLIENT
+		WorldServerCall(this, ServerOnReceiveClientMovement, pos, mVelocity);
+#endif
+	}
+
+	void MovementComponent::ServerOnReceiveClientMovement(Ogre::Vector3 arg_position, Ogre::Vector3 arg_velocity)
+	{
+		// TODO
+		mParent->SetPosition(arg_position);
+		SetVelocity(arg_velocity);
+	}
+
+	void MovementComponent::ClientOnReplicateMovement(Ogre::Vector3 arg_position, Ogre::Vector3 arg_velocity)
+	{
+		if (mParent->IsOwningClient())
+			return; // TODO
+		// TODO
+		mParent->SetPosition(arg_position);
+		SetVelocity(arg_velocity);
 	}
 
 }

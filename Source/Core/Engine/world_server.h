@@ -22,10 +22,15 @@ namespace Hikari
 	private:
 		WorldServerNetworkController* mWorldServerNetworkController;
 		Hikari::ServerConnection* mGameServerConnection;
-		Hikari::ClientConnection* mClientConnection;
 
+		/*** Client ***/
+
+		Hikari::ClientConnection* mClientConnection;
 		std::unordered_map<int, ClientConnectionData> mConnectedClients;
 		std::unordered_map<int, ClientNetworkController*> mClientNetworkControllers;
+
+
+		/*** Messages ***/
 
 		std::vector<NetMessage*> mIncomingGameServerMessages;
 		std::vector<ClientNetMessage> mIncomingClientMessages;
@@ -35,6 +40,7 @@ namespace Hikari
 
 		std::unordered_set<NetMessage*> mPendingDeleteNetMessages;
 
+		/** Task responsible for setting up a connection to the client. */
 		std::unordered_map<std::string, WSEstablishClientConnectionTask*> mEstablishClientConnectionTasks;
 
 	public:
@@ -45,10 +51,20 @@ namespace Hikari
 		bool ConnectToGameServer();
 		void Update();
 
+		/** Sends a message to client, with the given client ID. */
 		void SendMessageToClient(int arg_clientid, NetMessage* arg_message);
+
+		/** Sends a message to all connected clients. */
 		void SendMessageToAllClients(NetMessage* arg_message);
+
+		/**
+		* Registers a client. Will create a ClientNetworkController and add client to list of connected clients.
+		* @param arg_conndata Connection Data for the client.
+		* @param arg_netguid  NetGUID for the client.
+		*/
 		void RegisterClient(const ClientConnectionData& arg_conndata, NetGUID arg_netguid);
 
+		/** Sends a message to the GameServer */
 		void SendMessageToGameServer(NetMessage* arg_message);
 
 		std::unordered_map<int, ClientConnectionData> GetConnectedClients() { return mConnectedClients; }

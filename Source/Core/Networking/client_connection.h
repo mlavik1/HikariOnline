@@ -2,6 +2,7 @@
 
 #include "tcp_connection.h"
 #include <functional>
+#include <set>
 
 namespace Hikari
 {
@@ -10,6 +11,7 @@ namespace Hikari
 	private:
 		TCPsocket mClients[9000];
 		bool mClientIsFree[9000];
+		std::set<int> mFreeClients;
 		int mMaxClients;
 		char textBuffer[BUFFER_SIZE]; // buffer used when receiving data
 

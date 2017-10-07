@@ -128,6 +128,9 @@ namespace Hikari
 #endif
 		
 	};
+
+	extern GameEngine* GGameEngine;
+
 }
 
 #endif

@@ -31,6 +31,23 @@ namespace Hikari
 		// TODO: #ifdef HIKARI_WORLDSERVER
 	}
 
+	void RPCCaller::RPC_WorldServerCall(GameObject* arg_object, const char* arg_function, const FunctionArgContainer& arg_funcargs)
+	{
+		// Get Network GUID
+		NetGUID guid = arg_object->GetNetGUID();
+
+		// Create message
+		NetMessage* rpcMessage = createNetMessage(guid, arg_function, arg_funcargs);
+
+		// Send message
+#ifdef HIKARI_CLIENT
+		Client* client = GameEngine::Instance()->GetClient();
+		client->SendMessageToWorldServer(rpcMessage);
+#endif
+
+		// TODO: #ifdef HIKARI_WORLDSERVER
+	}
+
 	void RPCCaller::RPC_ClientCall(int arg_clientid, GameObject* arg_object, const char* arg_function, const FunctionArgContainer& arg_funcargs)
 	{
 		// Get Network GUID

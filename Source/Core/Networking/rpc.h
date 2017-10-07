@@ -14,6 +14,7 @@ namespace Hikari
 	{
 	public:
 		static void RPC_GameServerCall(GameObject* arg_object, const char* arg_function, const FunctionArgContainer& arg_funcargs);
+		static void RPC_WorldServerCall(GameObject* arg_object, const char* arg_function, const FunctionArgContainer& arg_funcargs);
 		static void RPC_ClientCall(int arg_clientid, GameObject* arg_object, const char* arg_function, const FunctionArgContainer& arg_funcargs);
 		
 		static void ClientSendMessage(int arg_clientid, NetMessage* arg_message);
@@ -30,6 +31,8 @@ namespace Hikari
 //#if defined(HIKARI_CLIENT) || defined(HIKARI_WORLDSERVER)
 #define GameServerCall(objectptr, functionname, ...) \
 	RPCCaller::RPC_GameServerCall(objectptr, #functionname, objectptr->getargs_##functionname##(__VA_ARGS__));
+#define WorldServerCall(objectptr, functionname, ...) \
+	RPCCaller::RPC_WorldServerCall(objectptr, #functionname, objectptr->getargs_##functionname##(__VA_ARGS__));
 //#endif
 #define ClientCall(clientid, objectptr, functionname, ...) \
 	RPCCaller::RPC_ClientCall(clientid, objectptr, #functionname, objectptr->getargs_##functionname##(__VA_ARGS__));

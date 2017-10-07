@@ -35,8 +35,8 @@ namespace Hikari
 		std::string myIP = GetLocalhostIP();
 		LOG_INFO() << "My IP: " << myIP;
 
-		GameEngine::Instance()->GetNetworkManager()->GenerateNetGUID(mWorldServerNetworkController);
-		GameEngine::Instance()->GetNetworkManager()->RegisterObject(mWorldServerNetworkController);
+		GGameEngine->GetNetworkManager()->GenerateNetGUID(mWorldServerNetworkController);
+		GGameEngine->GetNetworkManager()->RegisterObject(mWorldServerNetworkController);
 
 		mClientConnection->Connect(PORT_WORLDSERVER_CLIENT);
 

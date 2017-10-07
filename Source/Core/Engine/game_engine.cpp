@@ -24,6 +24,8 @@
 
 namespace Hikari
 {
+	GameEngine* GGameEngine = nullptr;
+
 	__ImplementSingleton(GameEngine)
 
 	GameEngine::GameEngine()
@@ -31,6 +33,8 @@ namespace Hikari
 		__ConstructSingleton(GameEngine)
 
 		mOgreRoot = nullptr;
+		__Assert(GGameEngine == nullptr);
+		GGameEngine = this; 
 	}
 
 	GameEngine::~GameEngine()

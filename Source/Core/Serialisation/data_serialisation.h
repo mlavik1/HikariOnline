@@ -11,8 +11,19 @@ namespace Hikari
 	template<typename T, typename ENABLE = void>
 	struct TypeSerialisationTraits
 	{
-		static constexpr bool valid = false;
-		using store_type = int;
+		static constexpr bool valid = true;
+
+		template<typename DataWriter>
+		static void Write(DataWriter& writer, const T& v)
+		{
+			writer.Write(&v, sizeof(v));
+		}
+
+		template<typename DataReader>
+		static void Read(DataReader& reader, T& v)
+		{
+			reader.Read(&v, sizeof(v));
+		}
 	};
 
 	template<typename T>

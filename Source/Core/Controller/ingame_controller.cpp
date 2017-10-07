@@ -123,7 +123,14 @@ namespace Hikari
 			if (mTargetPoint != Ogre::Vector3::ZERO)
 			{
 				Ogre::Vector3 dir = mTargetPoint - mControlledCharacter->GetPositionAbsolute();
-				mControlledCharacter->GetMovementComponent()->AddInput(dir);
+				if (dir.length() > mControlledCharacter->GetMovementComponent()->GetVelocity().length())
+				{
+					mControlledCharacter->GetMovementComponent()->AddInput(dir);
+				}
+				else
+				{
+					mTargetPoint = Ogre::Vector3::ZERO;
+				}
 			}
 		} // if (mControlledCharacter != nullptr)
 	}

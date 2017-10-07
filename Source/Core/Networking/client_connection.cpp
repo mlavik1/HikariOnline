@@ -9,11 +9,13 @@ namespace Hikari
 	ClientConnection::ClientConnection(int max_clients)
 	{
 		mMaxClients = max_clients;
+		mClientIsFree[0] = false; // server
 
-		for (int i = 0; i < max_clients; i++)
+		for (int i = 1; i < max_clients; i++)
 		{
 			mClients[i] = 0;
 			mClientIsFree[i] = true;
+			mFreeClients.insert(i);
 		}
 
 		mSocketSet = SDLNet_AllocSocketSet(max_clients);
@@ -37,18 +39,11 @@ namespace Hikari
 			else {
 				IPaddress *ip = SDLNet_TCP_GetPeerAddress(new_tcpsock);
 
-				int iFreeClient;
-				for (iFreeClient = 1; iFreeClient < mMaxClients; iFreeClient++)
-					if (mClientIsFree[iFreeClient])
-						break;
-				if (iFreeClient >= mMaxClients)
-				{
-					std::cout << "Error: Too many clients!!" << std::endl;
-					goto FetchMessages;
-				}
+				int iFreeClient = *mFreeClients.begin();
 
 				mClients[iFreeClient] = new_tcpsock;
 				mClientIsFree[iFreeClient] = false;
+				mFreeClients.erase(iFreeClient);
 
 				SDLNet_TCP_AddSocket(mSocketSet, new_tcpsock);
 
@@ -84,6 +79,7 @@ namespace Hikari
 				{
 					SDLNet_TCP_Close(mClients[i]);
 					mClientIsFree[i] = true;
+					mFreeClients.insert(i);
 					if (mClientDisconnectedCallback)
 						mClientDisconnectedCallback(i);
 				}
